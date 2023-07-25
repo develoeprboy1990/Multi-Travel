@@ -110,12 +110,12 @@ $result=check_role($users[0]->UserID,$users[0]->BranchID,$value->Table,$value->A
                                             
                                              <div class="custom-control custom-checkbox">
   <input name="Check[]" type="checkbox" class="custom-control-input" id="{{$value->RoleID}}"  value="Y" 
-  {{($result[0]->Allow == 'Y') ? 'checked' : '' }}   >
+  {{(@$result[0]->Allow == 'Y') ? 'checked' : '' }}   >
   <label class="custom-control-label" for="customCheck33079">{{$value->Action}} </label>
   <label>
   <input name="TableName[]" type="hidden" id="{{$value->RoleID}}" value="{{$value1->Table}}">
    <input name="Action[]" type="hidden" id="{{$value->RoleID}}" value="{{$value->Action}}">
-   <input name="Allow[]" type="hidden" id="{{$value->RoleID}}Allow" value="{{$result[0]->Allow}}" class="role" >
+   <input name="Allow[]" type="hidden" id="{{@$value->RoleID}}Allow" value="{{@$result[0]->Allow}}" class="role" >
    
   </label>
   
