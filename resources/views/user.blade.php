@@ -48,7 +48,16 @@
 <p class="card-title-desc"></p>
 
  
-
+ <div class="mb-1 row">
+<label for="example-text-input" class="col-md-2 col-form-label">Branch Name</label>
+<div class="col-md-4">
+<select name="BranchID" class="form-select">
+    @foreach($branch as $value)
+    <option value="{{$value->BranchID}}">{{$value->BranchName}}</option>
+    @endforeach
+</select>
+</div>
+ </div>
 
 
 <div class="mb-1 row">
@@ -136,7 +145,7 @@
                 <th>Password</th>
                 <th>User Type</th>
                 <th>Created on</th>
-                 
+                <th>User's Branch</th> 
                 <th>Active</th>
                 <th>Action</th>
               </tr>
@@ -154,7 +163,7 @@
                 <td>*********</td>
                 <td>{{$value->UserType}}</td>
                 <td>{{$value->eDate}}</td>
-                 
+                <td>{{$value->BranchName}}</td>
                 <td>{{$value->Active}}</td>
                 <td><div class="d-flex gap-1">
         <a href="{{URL('/UserEdit/'.$value->UserID)}}" class="text-secondary"><i class="mdi mdi-pencil font-size-15"></i></a>

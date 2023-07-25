@@ -1,0 +1,4 @@
+1) Create Branch Table
+2) Add BranchID in user Table
+3) Create v_users view
+4) Add BranchID in user_role Table

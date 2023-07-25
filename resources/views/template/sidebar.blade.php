@@ -102,8 +102,12 @@
                                 </a>
                             </li> 
 
-
- 
+                            <li>
+                                <a href="{{URL('/Branches')}}" class="waves-effect">
+                                <i class="bx bxs-bank"></i>
+                                <span key="t-calendar">Branch</span>
+                                </a>
+                            </li>
 
 
                             <li>

@@ -108,14 +108,15 @@ if(session::get('UserType')=='User')
 
  session::put('menu','User');     
         $pagetitle = 'User';
-       
-        $user= DB::table('user')->get();
+
+        $branch= DB::table('branch')->get();
+        $user= DB::table('v_users')->get();
         
-        return  view ('user',compact('user','pagetitle'));
+        return  view ('user',compact('branch','user','pagetitle'));
      }
 
 
-     public function UserSave (request $request)
+     public function UserSave(request $request)
      {
 
 if(session::get('UserType')=='User')
@@ -127,7 +128,7 @@ if(session::get('UserType')=='User')
 
 
 ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'User','List / Create');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'User','List / Create');
 if($allow[0]->Allow=='N')
 {
 return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -145,7 +146,7 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
 
 
         $data = array (
-
+                'BranchID' => $request->input('BranchID'),
                  'FullName' => $request->input('FullName'),
                 'Email' => $request->input('Email'),
                 'Password' => $request->input('Password'),
@@ -178,16 +179,16 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
  session::put('menu','User');     
         $pagetitle = 'User';
  ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'User','Update');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'User','Update');
 if($allow[0]->Allow=='N')
 {
 return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
 }
 ////////////////////////////END SCRIPT ////////////////////////////////////////////////
+        $branch= DB::table('branch')->get();
+         $v_users= DB::table('v_users')->where('UserID',$id)->get();
 
-         $v_users= DB::table('user')->where('UserID',$id)->get();
-
-        return  view ('user_edit',compact('v_users','pagetitle'));
+        return  view ('user_edit',compact('branch','v_users','pagetitle'));
      }
 
 
@@ -196,7 +197,7 @@ public function UserUpdate(request $request)
 
      
   ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'User','Update');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'User','Update');
 if($allow[0]->Allow=='N')
 {
 return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -215,7 +216,7 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
 
         $data = array 
         (
-               
+                'BranchID' => $request->input('BranchID'),
                 'FullName' => $request->input('FullName'),
                  'Email' => $request->input('Email'),
                  'Password' => $request->input('Password'),
@@ -233,7 +234,7 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
      public function UserDelete($id)
      {  
        ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'User','Delete');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'User','Delete');
 if($allow[0]->Allow=='N')
 {
 return redirect()->back()->with('error', 'You access is limited')->with('class','danger');

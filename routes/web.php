@@ -269,5 +269,10 @@ Route::get('/CompanyEdit/{id}',[CompanyController::class,'CompanyEdit']);
 Route::post('/CompanyUpdate/',[CompanyController::class,'CompanyUpdate']);
 Route::get('/CompanyDelete/{id}',[CompanyController::class,'CompanyDelete']); 
 
-
+// branch section
+ route::get('/Branches',[Accounts::class,'Branches']);
+ route::Post('/BranchSave',[Accounts::class,'BranchSave']);
+ route::get('/BranchDelete/{id}',[Accounts::class,'BranchDelete']);
+ route::get('/BranchEdit/{id}',[Accounts::class,'BranchEdit']);
+ route::post('/BranchUpdate/',[Accounts::class,'BranchUpdate']);
 });

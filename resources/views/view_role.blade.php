@@ -40,7 +40,16 @@
   
      
    
-   
+    <div class="col-md-4">
+        <div class="mb-3">
+           <label for="basicpill-firstname-input">Branch*</label>
+            <select name="BranchID" id="BranchID" class="form-select">
+            @foreach($branch as $value)
+             <option value="{{$value->BranchID}}" {{(old('BranchID')== $value->BranchID) ? 'selected=selected': '' }}>{{$value->BranchName}}</option>
+            @endforeach
+            </select>
+        </div>
+    </div>
    
   
   
@@ -88,7 +97,7 @@ foreach ($permission as $key =>$value)
 
    { 
 
-$result=check_role($users[0]->UserID,$value->Table,$value->Action);
+$result=check_role($users[0]->UserID,$users[0]->BranchID,$value->Table,$value->Action);
 
 
 

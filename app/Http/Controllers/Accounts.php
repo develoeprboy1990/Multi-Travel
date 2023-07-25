@@ -51,7 +51,7 @@ class Accounts extends Controller
 
     public function CheckUserRole1($userid,$tablename,$action)
       {
-       // $allow= check_role(session::get('UserID'),'Petty Cash','List');
+       // $allow= check_role(session::get('UserID'),session::get('BranchID'),'Petty Cash','List');
 
        $allow = DB::table('user_role')->where('UserID',$userid)
                     ->where('Table',$tablename)
@@ -115,6 +115,7 @@ class Accounts extends Controller
            Session::put('UserID', $data[0]->UserID);
            Session::put('Email', $data[0]->Email);
            Session::put('UserType', $data[0]->UserType);
+           Session::put('BranchID', $data[0]->BranchID);
             
 
               
@@ -152,7 +153,7 @@ class Accounts extends Controller
        $pagetitle='Petty Cash';
 
       ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-      $allow= check_role(session::get('UserID'),'Petty Cash','List');  
+      $allow= check_role(session::get('UserID'),session::get('BranchID'),session::get('BranchID'),'Petty Cash','List');  
       if($allow[0]->Allow=='N')
       {
       return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -203,7 +204,7 @@ public  function PettyCashCreate()
     {
 
           ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-      $allow= check_role(session::get('UserID'),'Petty Cash','Create');  
+      $allow= check_role(session::get('UserID'),session::get('BranchID'),'Petty Cash','Create');  
       if($allow[0]->Allow=='N')
       {
       return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -228,7 +229,7 @@ public  function PettyCashCreate()
     {
 
    ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-      $allow= check_role(session::get('UserID'),'Petty Cash','Create');  
+      $allow= check_role(session::get('UserID'),session::get('BranchID'),'Petty Cash','Create');  
       if($allow[0]->Allow=='N')
       {
       return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -297,7 +298,7 @@ $iddd= DB::table('pettycash_detail')->insert($invoice_det);
 
 
          ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-      $allow= check_role(session::get('UserID'),'Petty Cash','Update');  
+      $allow= check_role(session::get('UserID'),session::get('BranchID'),'Petty Cash','Update');  
       if($allow[0]->Allow=='N')
       {
       return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -326,7 +327,7 @@ public  function PettyCashUpdate(request $request)
 
 
    ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-      $allow= check_role(session::get('UserID'),'Petty Cash','Update');  
+      $allow= check_role(session::get('UserID'),session::get('BranchID'),'Petty Cash','Update');  
       if($allow[0]->Allow=='N')
       {
       return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -408,7 +409,7 @@ $idd= DB::table('pettycash_detail')->where('PettyMstID',$request->input('Voucher
        $pagetitle='Visa';
 
       ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-      $allow= check_role(session::get('UserID'),'Petty Cash','List');  
+      $allow= check_role(session::get('UserID'),session::get('BranchID'),'Petty Cash','List');  
       if($allow[0]->Allow=='N')
       {
       return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -459,7 +460,7 @@ public  function VisaCreate()
     {
 
           ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-      $allow= check_role(session::get('UserID'),'Petty Cash','Create');  
+      $allow= check_role(session::get('UserID'),session::get('BranchID'),'Petty Cash','Create');  
       if($allow[0]->Allow=='N')
       {
       return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -485,7 +486,7 @@ public  function VisaCreate()
     {
  
    ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-      $allow= check_role(session::get('UserID'),'Petty Cash','Create');  
+      $allow= check_role(session::get('UserID'),session::get('BranchID'),'Petty Cash','Create');  
       if($allow[0]->Allow=='N')
       {
       return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -517,7 +518,7 @@ public  function VisaCreate()
 
 
          ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-      $allow= check_role(session::get('UserID'),'Petty Cash','Update');  
+      $allow= check_role(session::get('UserID'),session::get('BranchID'),'Petty Cash','Update');  
       if($allow[0]->Allow=='N')
       {
       return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -545,7 +546,7 @@ public  function VisaUpdate(request $request)
 
 
    ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-      $allow= check_role(session::get('UserID'),'Petty Cash','Update');  
+      $allow= check_role(session::get('UserID'),session::get('BranchID'),'Petty Cash','Update');  
       if($allow[0]->Allow=='N')
       {
       return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -639,7 +640,7 @@ $visaexpirylist = DB::table('v_visa')->where('DueDate','<',Carbon::now()->addDay
     {
 
          ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-      $allow= check_role(session::get('UserID'),'Voucher','List');  
+      $allow= check_role(session::get('UserID'),session::get('BranchID'),'Voucher','List');  
       if($allow[0]->Allow=='N')
       {
       return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -721,7 +722,7 @@ public function ajax_voucher(Request $request)
     {
 
    ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-      $allow= check_role(session::get('UserID'),'Voucher','Create');  
+      $allow= check_role(session::get('UserID'),session::get('BranchID'),'Voucher','Create');  
       if($allow[0]->Allow=='N')
       {
       return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -772,7 +773,7 @@ public function VoucherSave(request $request )
 {
    
    ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-      $allow= check_role(session::get('UserID'),'Voucher','Create');  
+      $allow= check_role(session::get('UserID'),session::get('BranchID'),'Voucher','Create');  
       if($allow[0]->Allow=='N')
       {
       return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -919,7 +920,7 @@ public  function VoucherEdit($id)
 
 
    ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-      $allow= check_role(session::get('UserID'),'Voucher','Update');  
+      $allow= check_role(session::get('UserID'),session::get('BranchID'),'Voucher','Update');  
       if($allow[0]->Allow=='N')
       {
       return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -945,7 +946,7 @@ public  function VoucherEdit($id)
 
 
    ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-      $allow= check_role(session::get('UserID'),'Voucher','Update');  
+      $allow= check_role(session::get('UserID'),session::get('BranchID'),'Voucher','Update');  
       if($allow[0]->Allow=='N')
       {
       return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -1020,7 +1021,7 @@ public function VoucherView($id)
  {   
 
      ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-      $allow= check_role(session::get('UserID'),'Voucher','View');  
+      $allow= check_role(session::get('UserID'),session::get('BranchID'),'Voucher','View');  
       if($allow[0]->Allow=='N')
       {
       return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -1055,7 +1056,7 @@ $voucher_master = DB::table('v_voucher_master')
 {
 
 ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-          $allow= check_role(session::get('UserID'),'Voucher','View');  
+          $allow= check_role(session::get('UserID'),session::get('BranchID'),'Voucher','View');  
           if($allow[0]->Allow=='N')
           {
             return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -1099,7 +1100,7 @@ $voucher_master = DB::table('v_voucher_master')
                
 
     ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-      $allow= check_role(session::get('UserID'),'Voucher','Delete');  
+      $allow= check_role(session::get('UserID'),session::get('BranchID'),'Voucher','Delete');  
       if($allow[0]->Allow=='N')
       {
       return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -1126,7 +1127,7 @@ $id = DB::table('journal')->where('VoucherMstID',$id)->delete();
            $pagetitle='Invoice';
 
       ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-      $allow= check_role(session::get('UserID'),'Invoice','List');  
+      $allow= check_role(session::get('UserID'),session::get('BranchID'),'Invoice','List');  
       if($allow[0]->Allow=='N')
       {
       return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -1202,7 +1203,7 @@ $id = DB::table('journal')->where('VoucherMstID',$id)->delete();
     {
 
         ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-          $allow= check_role(session::get('UserID'),'Invoice','Create');
+          $allow= check_role(session::get('UserID'),session::get('BranchID'),'Invoice','Create');
           if($allow[0]->Allow=='N')
           {
             return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -1290,7 +1291,7 @@ $id = DB::table('journal')->where('VoucherMstID',$id)->delete();
     {
 
           ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-          $allow= check_role(session::get('UserID'),'Invoice','Create');
+          $allow= check_role(session::get('UserID'),session::get('BranchID'),'Invoice','Create');
           if($allow[0]->Allow=='N')
           {
             return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -1813,7 +1814,7 @@ public  function InvoiceEdit($id)
 
 
           ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-          $allow= check_role(session::get('UserID'),'Invoice','Update');
+          $allow= check_role(session::get('UserID'),session::get('BranchID'),'Invoice','Update');
           if($allow[0]->Allow=='N')
           {
             return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -1848,7 +1849,7 @@ public  function InvoiceUpdate(request $request)
     {
 
          ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-          $allow= check_role(session::get('UserID'),'Invoice','Update');
+          $allow= check_role(session::get('UserID'),session::get('BranchID'),'Invoice','Update');
           if($allow[0]->Allow=='N')
           {
             return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -2362,7 +2363,7 @@ $id= DB::table('journal')->insertGetId($loop_ap);
         {
                     
 ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'Invoice','Delete');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'Invoice','Delete');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -2407,7 +2408,7 @@ public  function InvoiceView($id)
 
 
 ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'Invoice','View');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'Invoice','View');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -2450,7 +2451,7 @@ public  function InvoicePDF($id)
 
 
 ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-          $allow= check_role(session::get('UserID'),'Invoice','PDF');
+          $allow= check_role(session::get('UserID'),session::get('BranchID'),'Invoice','PDF');
           if($allow[0]->Allow=='N')
           {
             return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -2484,7 +2485,7 @@ public  function InvoicePDF1($id)
 {
 
 ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-          $allow= check_role(session::get('UserID'),'Invoice','PDF');
+          $allow= check_role(session::get('UserID'),session::get('BranchID'),'Invoice','PDF');
           if($allow[0]->Allow=='N')
           {
             return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -2672,7 +2673,7 @@ foreach ($v_cashflow as $key => $value) {
     {
 
 ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'Item/Inventory','List / Create');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'Item/Inventory','List / Create');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -2698,7 +2699,7 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
  public  function ItemSave(request $request)
   {
     ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'Item/Inventory','List / Create');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'Item/Inventory','List / Create');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -2758,7 +2759,7 @@ public  function ItemEdit($id)
 
 
       ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'Item/Inventory','Update');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'Item/Inventory','Update');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -2792,7 +2793,7 @@ public  function ItemUpdate(request $request)
         {
 
       ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'Item/Inventory','Update');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'Item/Inventory','Update');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -2855,7 +2856,7 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
             {
                         
        ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'Item/Inventory','Delete');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'Item/Inventory','Delete');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -2883,7 +2884,7 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
     {
 
 ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'Supplier','List / Create');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'Supplier','List / Create');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -2916,7 +2917,7 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
 
 
 ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'Supplier','List / Create');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'Supplier','List / Create');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -2982,7 +2983,7 @@ public  function SupplierEdit($id)
 
 
 ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'Supplier','Update');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'Supplier','Update');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -3014,7 +3015,7 @@ public  function SupplierUpdate(request $request)
         {
 
 ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'Supplier','Update');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'Supplier','Update');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -3076,7 +3077,7 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
 
 
     ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'Supplier','Delete');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'Supplier','Delete');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -3109,7 +3110,7 @@ public  function Parties()
 
   
     ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'Party / Customers','List / Create');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'Party / Customers','List / Create');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -3140,7 +3141,7 @@ $party_category = DB::table('party_category')->get();
       public  function SaveParties(request $request)
         {
  ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'Party / Customers','List / Create');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'Party / Customers','List / Create');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -3202,7 +3203,7 @@ public  function PartiesEdit($id)
     {
 
        ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'Party / Customers','Update');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'Party / Customers','Update');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -3237,7 +3238,7 @@ public  function PartiesUpdate(request $request)
         {
 
      ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'Party / Customers','Update');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'Party / Customers','Update');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -3302,7 +3303,7 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
 
 
       ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'Party / Customers','Delete');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'Party / Customers','Delete');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -3331,7 +3332,7 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
 
 
 ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'Chart of Account','List / Create');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'Chart of Account','List / Create');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -3441,7 +3442,7 @@ public function Role($UserID)
 
 
   ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'User Rights','Assign');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'User Rights','Assign');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -3482,7 +3483,7 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
 
 
  ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'User Rights','Assign');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'User Rights','Assign');
 
 
 if(!$allow->isEmpty())
@@ -3502,13 +3503,13 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
 
     $pagetitle='User Rights & Control';
     $users = DB::table('user')->where('UserID',$UserID)->get();
- 
+    $branch = DB::table('branch')->where('BranchID',$users[0]->BranchID)->get();
     $role = DB::table('role')->select('Table')->distinct()->get();
 
 
 
    
-    return view ('view_role',compact('pagetitle','role','users'));
+    return view ('view_role',compact('pagetitle','role','users','branch'));
 
   }
 
@@ -3517,7 +3518,7 @@ public function RoleSave(request $request)
 {
    
   ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'User Rights','Assign');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'User Rights','Assign');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -3574,7 +3575,7 @@ public function RoleUpdate(request $request)
 {
    
   ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'User Rights','Assign');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'User Rights','Assign');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -3591,7 +3592,7 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
 
 
 
-$id = DB::table('user_role')->where('UserID',$request->UserID)->delete();
+$id = DB::table('user_role')->where('UserID',$request->UserID)->where('BranchID',$request->BranchID)->delete();
 
  
 $TableName=$request->TableName;
@@ -3605,7 +3606,7 @@ for($i=0; $i<$tot; $i++)
 // echo $TableName[$i] .'-' . $Action[$i] .'-'.  $Allow[$i] . "<BR>";
 
  $data = array(
-
+  'BranchID' =>$request->BranchID,  
  'UserID' =>$request->UserID,
 'Table' =>$TableName[$i],
 'Action' =>$Action[$i],
@@ -3820,7 +3821,7 @@ return redirect(url('/')."/".$fileName);
  {   
 
 ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'Party Ledger','View');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'Party Ledger','View');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -3849,7 +3850,7 @@ $voucher_type = DB::table('voucher_type')->get();
  {   
 
  ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'Party Ledger','View');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'Party Ledger','View');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -3981,7 +3982,7 @@ $journal = DB::table('v_journal')->where('PartyID',$request->PartyID)
  {   
 
 ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'Party Ledger','PDF');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'Party Ledger','PDF');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -4114,7 +4115,7 @@ $journal = DB::table('v_journal')->where('PartyID',$request->PartyID)
     {
 
 ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'Adjustment Balance','Create');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'Adjustment Balance','Create');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -4145,7 +4146,7 @@ public function AdjustmentBalanceSave(request $request)
 {   
 
    ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'Adjustment Balance','Create');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'Adjustment Balance','Create');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -4571,7 +4572,7 @@ $id2= DB::table('voucher_detail')->insert($FEE_CHARGED);
 
 
  ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-  $allow= check_role(session::get('UserID'),'Supplier Balance','View');
+  $allow= check_role(session::get('UserID'),session::get('BranchID'),'Supplier Balance','View');
   if($allow[0]->Allow=='N')
   {
   return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -4593,7 +4594,7 @@ $id2= DB::table('voucher_detail')->insert($FEE_CHARGED);
 
 
  ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-  $allow= check_role(session::get('UserID'),'Supplier Balance','PDF');
+  $allow= check_role(session::get('UserID'),session::get('BranchID'),'Supplier Balance','PDF');
   if($allow[0]->Allow=='N')
   {
   return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -4620,7 +4621,7 @@ $id2= DB::table('voucher_detail')->insert($FEE_CHARGED);
 
 
 ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-  $allow= check_role(session::get('UserID'),'Party List','View');
+  $allow= check_role(session::get('UserID'),session::get('BranchID'),'Party List','View');
   if($allow[0]->Allow=='N')
   {
   return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -4643,7 +4644,7 @@ $id2= DB::table('voucher_detail')->insert($FEE_CHARGED);
     {
 
       ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-  $allow= check_role(session::get('UserID'),'Party List','PDF');
+  $allow= check_role(session::get('UserID'),session::get('BranchID'),'Party List','PDF');
   if($allow[0]->Allow=='N')
   {
   return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -4682,7 +4683,7 @@ $id2= DB::table('voucher_detail')->insert($FEE_CHARGED);
     {
 
       ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-  $allow= check_role(session::get('UserID'),'Outstanding Invoices','View');
+  $allow= check_role(session::get('UserID'),session::get('BranchID'),'Outstanding Invoices','View');
   if($allow[0]->Allow=='N')
   {
   return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -4716,7 +4717,7 @@ public function OutStandingInvoice1PDF(request $request)
 
 
         ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-  $allow= check_role(session::get('UserID'),'Outstanding Invoices','PDF');
+  $allow= check_role(session::get('UserID'),session::get('BranchID'),'Outstanding Invoices','PDF');
   if($allow[0]->Allow=='N')
   {
   return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -4764,7 +4765,7 @@ $party = DB::table('party')->get();
     {
 
         ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-  $allow= check_role(session::get('UserID'),'Party Wise Sale','View');
+  $allow= check_role(session::get('UserID'),session::get('BranchID'),'Party Wise Sale','View');
   if($allow[0]->Allow=='N')
   {
   return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -4827,7 +4828,7 @@ $party = DB::table('party')->get();
  
 
          ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-  $allow= check_role(session::get('UserID'),'Party Wise Sale','PDF');
+  $allow= check_role(session::get('UserID'),session::get('BranchID'),'Party Wise Sale','PDF');
   if($allow[0]->Allow=='N')
   {
   return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -4899,7 +4900,7 @@ $party_category = DB::table('party_category')->get();
     {
  
    ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-  $allow= check_role(session::get('UserID'),'Party Balance','View');
+  $allow= check_role(session::get('UserID'),session::get('BranchID'),'Party Balance','View');
   if($allow[0]->Allow=='N')
   {
   return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -4945,7 +4946,7 @@ public function PartyBalance1PDF(request $request)
  
 
    ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-  $allow= check_role(session::get('UserID'),'Party Balance','PDF');
+  $allow= check_role(session::get('UserID'),session::get('BranchID'),'Party Balance','PDF');
   if($allow[0]->Allow=='N')
   {
   return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -5011,7 +5012,7 @@ else
 
 
  ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-  $allow= check_role(session::get('UserID'),'Yearly Report','View');
+  $allow= check_role(session::get('UserID'),session::get('BranchID'),'Yearly Report','View');
   if($allow[0]->Allow=='N')
   {
   return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -5036,7 +5037,7 @@ public  function PartyYearlyBalance1PDF(request $request)
 
 
  ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-  $allow= check_role(session::get('UserID'),'Yearly Report','PDF');
+  $allow= check_role(session::get('UserID'),session::get('BranchID'),'Yearly Report','PDF');
   if($allow[0]->Allow=='N')
   {
   return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -5087,7 +5088,7 @@ $chartofaccount = DB::table('chartofaccount')->where('ChartOfAccountID',210100)-
 
 
  ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-  $allow= check_role(session::get('UserID'),'Supplier Ledger','View');
+  $allow= check_role(session::get('UserID'),session::get('BranchID'),'Supplier Ledger','View');
   if($allow[0]->Allow=='N')
   {
   return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -5150,7 +5151,7 @@ public function SupplierLedger1PDF(request $request)
 
 
 ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-  $allow= check_role(session::get('UserID'),'Supplier Ledger','PDF');
+  $allow= check_role(session::get('UserID'),session::get('BranchID'),'Supplier Ledger','PDF');
   if($allow[0]->Allow=='N')
   {
   return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -5224,7 +5225,7 @@ $party = DB::table('v_party')->where('PartyCategoryID',2)->get();
  
 
  ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-  $allow= check_role(session::get('UserID'),'Sales Report','View');
+  $allow= check_role(session::get('UserID'),session::get('BranchID'),'Sales Report','View');
   if($allow[0]->Allow=='N')
   {
   return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -5327,7 +5328,7 @@ public function SupplierWiseSale1PDF(request $request)
     {
  
  ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-  $allow= check_role(session::get('UserID'),'Sales Report','PDF');
+  $allow= check_role(session::get('UserID'),session::get('BranchID'),'Sales Report','PDF');
   if($allow[0]->Allow=='N')
   {
   return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -5441,7 +5442,7 @@ $item = DB::table('item')->get();
     {
 
        ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-  $allow= check_role(session::get('UserID'),'Tax Report','View');
+  $allow= check_role(session::get('UserID'),session::get('BranchID'),'Tax Report','View');
   if($allow[0]->Allow=='N')
   {
   return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -5546,7 +5547,7 @@ public function TaxReport1PDF(request $request)
 
 
        ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-  $allow= check_role(session::get('UserID'),'Tax Report','PDF');
+  $allow= check_role(session::get('UserID'),session::get('BranchID'),'Tax Report','PDF');
   if($allow[0]->Allow=='N')
   {
   return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -5666,7 +5667,7 @@ public function SalemanReport1(request $request)
 
 
       ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-      $allow= check_role(session::get('UserID'),'Sale Man Report','View');
+      $allow= check_role(session::get('UserID'),session::get('BranchID'),'Sale Man Report','View');
       if($allow[0]->Allow=='N')
       {
       return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -5768,7 +5769,7 @@ public function SalemanReport1PDF(request $request)
 
 
        ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-      $allow= check_role(session::get('UserID'),'Sale Man Report','PDF');
+      $allow= check_role(session::get('UserID'),session::get('BranchID'),'Sale Man Report','PDF');
       if($allow[0]->Allow=='N')
       {
       return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -5884,7 +5885,7 @@ public function SalemanReport1PDF(request $request)
  
 
  ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
- $allow= check_role(session::get('UserID'),'Airline Summary','View');
+ $allow= check_role(session::get('UserID'),session::get('BranchID'),'Airline Summary','View');
  if($allow[0]->Allow=='N')
  {
  return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -5985,7 +5986,7 @@ public function AirlineSummary1PDF(request $request)
  
 
  ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
- $allow= check_role(session::get('UserID'),'Airline Summary','PDF');
+ $allow= check_role(session::get('UserID'),session::get('BranchID'),'Airline Summary','PDF');
  if($allow[0]->Allow=='N')
  {
  return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -6099,7 +6100,7 @@ public function AirlineSummary1PDF(request $request)
  {   
 
   ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
- $allow= check_role(session::get('UserID'),'Voucher Report','View');
+ $allow= check_role(session::get('UserID'),session::get('BranchID'),'Voucher Report','View');
  if($allow[0]->Allow=='N')
  {
  return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -6145,7 +6146,7 @@ public function VoucherReport1PDF(request $request)
  {   
 
     ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
- $allow= check_role(session::get('UserID'),'Voucher Report','PDF');
+ $allow= check_role(session::get('UserID'),session::get('BranchID'),'Voucher Report','PDF');
  if($allow[0]->Allow=='N')
  {
  return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -6206,7 +6207,7 @@ public function CashbookReport()
 
 
  ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
- $allow= check_role(session::get('UserID'),'Cash Book','View');
+ $allow= check_role(session::get('UserID'),session::get('BranchID'),'Cash Book','View');
  if($allow[0]->Allow=='N')
  {
  return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -6296,7 +6297,7 @@ public function CashbookReport1PDF(request $request)
 
 
  ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
- $allow= check_role(session::get('UserID'),'Cash Book','PDF');
+ $allow= check_role(session::get('UserID'),session::get('BranchID'),'Cash Book','PDF');
  if($allow[0]->Allow=='N')
  {
  return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -6396,7 +6397,7 @@ public function DaybookReport1(request $request)
  {   
 
    ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
- $allow= check_role(session::get('UserID'),'Day Book','View');
+ $allow= check_role(session::get('UserID'),session::get('BranchID'),'Day Book','View');
  if($allow[0]->Allow=='N')
  {
  return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -6530,7 +6531,7 @@ public function DaybookReport1PDF(request $request)
 
 
    ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
- $allow= check_role(session::get('UserID'),'Day Book','PDF');
+ $allow= check_role(session::get('UserID'),session::get('BranchID'),'Day Book','PDF');
  if($allow[0]->Allow=='N')
  {
  return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -6681,7 +6682,7 @@ public function GeneralLedger1(request $request)
 
 
 ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'General Ledger','View');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'General Ledger','View');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -6788,7 +6789,7 @@ public function GeneralLedger1PDF(request $request)
  {   
 
   ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'General Ledger','PDF');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'General Ledger','PDF');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -6909,7 +6910,7 @@ public function TrialBalance1(request $request)
 
 
 ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'Trial Balance','View');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'Trial Balance','View');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -6965,7 +6966,7 @@ $trial = DB::table('v_journal')
 {
 
 ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'Trial Balance','PDF');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'Trial Balance','PDF');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -7046,7 +7047,7 @@ public function TicketRegister1(request $request)
     {
 
 ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'Ticket Register','View');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'Ticket Register','View');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -7131,7 +7132,7 @@ public function TicketRegister1PDF(request $request)
  
 
  ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'Ticket Register','PDF');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'Ticket Register','PDF');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -7235,7 +7236,7 @@ public function TrialBalanceActivity1(request $request)
 
 
 ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'Trial with Activity','View');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'Trial with Activity','View');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -7270,7 +7271,7 @@ public function TrialBalanceActivity1PDF(request $request)
 
 
 ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-$allow= check_role(session::get('UserID'),'Trial with Activity','PDF');
+$allow= check_role(session::get('UserID'),session::get('BranchID'),'Trial with Activity','PDF');
 if(!$allow->isEmpty())
 {
     if($allow[0]->Allow=='N')
@@ -7322,7 +7323,7 @@ public function InvoiceSummary1(request $request)
 
 
       ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-      $allow= check_role(session::get('UserID'),'Invoice Summary','View');
+      $allow= check_role(session::get('UserID'),session::get('BranchID'),'Invoice Summary','View');
       if($allow[0]->Allow=='N')
       {
       return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -7392,7 +7393,7 @@ $where = array_add( $where, 'UserID' , $request->UserID);
     {
 
            ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-      $allow= check_role(session::get('UserID'),'Invoice Summary','PDF');
+      $allow= check_role(session::get('UserID'),session::get('BranchID'),'Invoice Summary','PDF');
       if($allow[0]->Allow=='N')
       {
       return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -7565,7 +7566,6 @@ public function checkUserRole($UserID)
 
      if(count($role)>0)
     {
-     
    
      return redirect('RoleView/'.$UserID)->with('error','$2 updated Successfully')->with('class','success');
      
@@ -7588,6 +7588,216 @@ public  function Logout()
                  Session::flush(); // removes all session data
                  return redirect ('/')->with('error', 'Logout Successfully.')->with('class','success');
              }
+
+
+
+              public function Branches()
+    {   
+        
+          ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
+          $allow= check_role(session::get('UserID'),session::get('BranchID'),'Branch','Create/List');
+          if($allow[0]->Allow=='N')
+          {
+            return redirect('Dashboard')->with('error', 'You access is limited')->with('class','danger');
+          }
+          ////////////////////////////END SCRIPT ////////////////////////////////////////////////
+
+
+         $branch = DB::table('branch')->get();
+        
+ 
+
+        return view ('branch',compact('branch')); 
+    }
+ 
+
+ public function BranchEdit($id)
+    {   
+
+       ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
+          $allow= check_role(session::get('UserID'),session::get('BranchID'),'Branch','Update');
+          if($allow[0]->Allow=='N')
+          {
+            return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
+          }
+          ////////////////////////////END SCRIPT ////////////////////////////////////////////////
+        
+         $branch = DB::table('branch')->where('BranchID',$id)->get();
+        
+        return view ('branchedit',compact('branch')); 
+    }
+
+
+
+         public function BranchSave(Request $request)
+        {   
+
+          ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
+          $allow= check_role(session::get('UserID'),session::get('BranchID'),'Branch','Create/List');
+          if($allow[0]->Allow=='N')
+          {
+           return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
+          }
+          ////////////////////////////END SCRIPT ////////////////////////////////////////////////
+          
+                       $this->validate($request, [
+          
+                             // 'file' => 'required|mimes:jpeg,png,jpg,gif,svg,xlsx,pdf|max:1000',
+                               'BranchLogo' => 'required|image|mimes:jpeg,png,jpg,gif|max:100000',
+          
+                          ] );
+
+
+          
+                       $file = $request->file('BranchLogo');
+                       $input['filename'] = time().'.'.$file->extension();
+                       
+                       
+          
+          
+          
+                       $destinationPath = public_path('/uploads');
+          
+                       $file->move($destinationPath, $input['filename']);
+                     
+                          // $destinationPath = public_path('/images');
+                          // $image->move($destinationPath, $input['imagename']);
+          
+                         // $input['filename']===========is final data in it.
+                        
+          
+                       
+          
+                       $data = array ( 
+                        "BranchName" => $request->input('BranchName'),
+          
+          "BranchContact" =>   $request->input('BranchContact'),
+          
+          "BranchEmail" => $request->input('BranchEmail'),
+          
+          "BranchAddress"  =>  $request->input('BranchAddress'),
+          "BranchAddress"  =>  $request->input('BranchAddress'),
+                        
+                       'BranchLogo'=> $input['filename'],
+                       // 'mimeType'=>substr($file->getMimeType(), 0, 5)
+                                      );
+          
+                        
+          
+                  
+                   
+          
+            
+
+                
+          
+            $id= DB::table('branch')->insertGetId($data);
+
+
+            return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
+            
+            
+               
+
+            
+        }
+    
+
+        public function BranchUpdate(Request $request)
+        {   
+
+
+          ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
+          $allow= check_role(session::get('UserID'),session::get('BranchID'),'Branch','Update');
+          if($allow[0]->Allow=='N')
+          {
+            return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
+          }
+          ////////////////////////////END SCRIPT ////////////////////////////////////////////////
+          
+                       $this->validate($request, [
+          
+                             // 'file' => 'required|mimes:jpeg,png,jpg,gif,svg,xlsx,pdf|max:1000',
+                               'BranchLogo' => 'required|image|mimes:jpeg,png,jpg,gif|max:100000',
+          
+                          ] );
+
+
+          
+                       $file = $request->file('BranchLogo');
+                       $input['filename'] = time().'.'.$file->extension();
+                       
+                       
+          
+          
+          
+                       $destinationPath = public_path('/uploads');
+          
+                       $file->move($destinationPath, $input['filename']);
+                     
+                          // $destinationPath = public_path('/images');
+                          // $image->move($destinationPath, $input['imagename']);
+          
+                         // $input['filename']===========is final data in it.
+                        
+          
+                       
+          
+                       $data = array ( 
+                        "BranchName" => $request->input('BranchName'),
+          
+          "BranchContact" =>   $request->input('BranchContact'),
+          
+          "BranchEmail" => $request->input('BranchEmail'),
+          
+          "BranchAddress"  =>  $request->input('BranchAddress'),
+          "BranchAddress"  =>  $request->input('BranchAddress'),
+                        
+                       'BranchLogo'=> $input['filename'],
+                       // 'mimeType'=>substr($file->getMimeType(), 0, 5)
+                                      );
+          
+                        
+          
+                  
+                   
+          
+            
+
+                
+          
+
+
+        $id= DB::table('branch')->where('BranchID' , $request->BranchID)->update($data);
+
+
+            return redirect('Branches')->with('error','Branch Updated Successfully')->with('class','success');
+            
+            
+               
+
+            
+        }
+
+
+
+         public function BranchDelete($id)
+        {   
+            
+            ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
+          $allow= check_role(session::get('UserID'),session::get('BranchID'),'Branch','Delete');
+          if($allow[0]->Allow=='N')
+          {
+            return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
+          }
+          ////////////////////////////END SCRIPT ////////////////////////////////////////////////
+            
+            $id = DB::table('branch')->where('BranchID',$id)->delete();
+            return redirect('/Branches')->with('error','Deleted Successfully')->with('class','success');
+            
+        }
+    
+    
 
 
   

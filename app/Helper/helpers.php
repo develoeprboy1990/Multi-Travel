@@ -53,10 +53,13 @@ function dateformatreport($date){
 // }
 
 
-function check_role($UserID,$TableName,$Action)
+function check_role($UserID,$BranchID,$TableName,$Action)
 {
+
+	//dd($UserID,$BranchID,$TableName,$Action);
 		// action is (list,view,updat,delete etc)
 		$check = DB::table('user_role')->where('UserID',$UserID)
+										->where('BranchID',$BranchID)
  										->where('Table',$TableName)
 										->where('Action',$Action)
  										->get();

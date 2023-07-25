@@ -47,7 +47,17 @@
 
  <input type="hidden" name="UserID" value="{{$v_users[0]->UserID}}">
 
-
+<div class="mb-3 row">
+<label for="example-text-input" class="col-md-2 col-form-label">Branch Name</label>
+<div class="col-md-10">
+<input type="hidden" name="UserID" value="{{$v_users[0]->UserID}}">
+<select name="BranchID" class="form-select">
+    @foreach($branch as $value)
+    <option value="{{$value->BranchID}}" {{($v_users[0]->BranchID == $value->BranchID ) ? 'selected=selected':'' }}>{{$value->BranchName}}</option>
+    @endforeach
+</select>
+</div>
+ </div>
 
 <div class="mb-3 row">
 <label for="example-email-input" class="col-md-2 col-form-label">Full Name</label>
