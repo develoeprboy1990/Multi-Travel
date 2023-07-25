@@ -2,3 +2,21 @@
 2) Add BranchID in user Table
 3) Create v_users view
 4) Add BranchID in user_role Table
+5) Add SalemanID in invoice_master Table and release UserID for User Table
+
+
+ALTER TABLE `invoice_master` ADD `SalemanID` INT NULL DEFAULT NULL AFTER `UserID`;
+
+ALTER TABLE `expense_master` ADD `UserID` INT NULL DEFAULT NULL AFTER `ExpenseMasterID`;
+
+ALTER TABLE `journal` ADD `UserID` INT NULL DEFAULT NULL AFTER `ChartOfAccountID`;
+
+ALTER TABLE `pettycash_master` ADD `UserID` INT NULL DEFAULT NULL AFTER `PettyMstID`;
+
+ALTER TABLE `visa` ADD `UserID` INT NULL DEFAULT NULL AFTER `VisaID`;
+
+ALTER TABLE `voucher_master` ADD `UserID` INT NULL DEFAULT NULL AFTER `VoucherCodeID`;
+
+ALTER TABLE `party` ADD `UserID` INT NULL DEFAULT NULL AFTER `PartyCategoryID`;
+
+ALTER TABLE `supplier` ADD `UserID` INT NULL DEFAULT NULL AFTER `SupplierCatID`;

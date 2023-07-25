@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 25, 2023 at 07:42 AM
+-- Generation Time: Jul 25, 2023 at 02:29 PM
 -- Server version: 8.0.27
 -- PHP Version: 8.1.0
 
@@ -313,6 +313,7 @@ CREATE TABLE `expense_detail` (
 
 CREATE TABLE `expense_master` (
   `ExpenseMasterID` int NOT NULL,
+  `UserID` int DEFAULT NULL,
   `Date` date DEFAULT NULL,
   `PaidThrough` int DEFAULT NULL,
   `SupplierID` int DEFAULT NULL,
@@ -352,7 +353,9 @@ CREATE TABLE `invoice_detail` (
 INSERT INTO `invoice_detail` (`InvoiceDetailID`, `InvoiceMasterID`, `ItemID`, `SupplierID`, `VisaType`, `PaxName`, `PNR`, `Sector`, `Fare`, `RefNo`, `Taxable`, `Service`, `OPVAT`, `IPVAT`, `Discount`, `Total`) VALUES
 (3, 1, 21, 4, NULL, 'RAMESH GOVIND KATTI', NULL, NULL, 160.00, 'ITL/44/78084/AE2023', 0.00, 140.00, NULL, NULL, NULL, 300.00),
 (4, 2, 12, 3, '12345', 'Muh,. Abduallah', NULL, NULL, 1500.00, NULL, 14.28, 285.72, NULL, NULL, NULL, 1800.00),
-(5, 3, 17, 3, NULL, NULL, NULL, NULL, 1500.00, NULL, 0.00, 0.00, NULL, NULL, 250.00, 1250.00);
+(5, 3, 17, 3, NULL, NULL, NULL, NULL, 1500.00, NULL, 0.00, 0.00, NULL, NULL, 250.00, 1250.00),
+(6, 4, NULL, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(7, 5, 8, 3, '2', '3', '4', '2', NULL, '1', NULL, NULL, NULL, NULL, NULL, 2.00);
 
 -- --------------------------------------------------------
 
@@ -367,6 +370,7 @@ CREATE TABLE `invoice_master` (
   `DueDate` date DEFAULT NULL,
   `PartyID` int DEFAULT NULL,
   `UserID` int DEFAULT NULL,
+  `SalemanID` int DEFAULT NULL,
   `PaymentMode` varchar(25) DEFAULT NULL,
   `Note` varchar(255) DEFAULT NULL,
   `Total` int DEFAULT NULL,
@@ -378,10 +382,12 @@ CREATE TABLE `invoice_master` (
 -- Dumping data for table `invoice_master`
 --
 
-INSERT INTO `invoice_master` (`InvoiceMasterID`, `InvoiceTypeID`, `Date`, `DueDate`, `PartyID`, `UserID`, `PaymentMode`, `Note`, `Total`, `Paid`, `Balance`) VALUES
-(1, 1, '2023-05-01', '2023-05-01', 6, 1, '110101', NULL, 300, 300, 0),
-(2, 1, '2023-07-04', '2023-07-04', 1, 1, '110101', NULL, 1800, 1800, 0),
-(3, 2, '2023-07-04', '2023-07-04', 8, 1, '110101', NULL, 1250, 1250, 0);
+INSERT INTO `invoice_master` (`InvoiceMasterID`, `InvoiceTypeID`, `Date`, `DueDate`, `PartyID`, `UserID`, `SalemanID`, `PaymentMode`, `Note`, `Total`, `Paid`, `Balance`) VALUES
+(1, 1, '2023-05-01', '2023-05-01', 6, 1, 1, '110101', NULL, 300, 300, 0),
+(2, 1, '2023-07-04', '2023-07-04', 1, 1, 1, '110101', NULL, 1800, 1800, 0),
+(3, 2, '2023-07-04', '2023-07-04', 8, 1, 1, '110101', NULL, 1250, 1250, 0),
+(4, 1, '2023-07-25', '2023-07-25', 1, 1, 1, '110101', NULL, NULL, 0, NULL),
+(5, 1, '2023-07-25', '2023-07-25', 1, 1, 1, '110101', NULL, 2, 0, 2);
 
 -- --------------------------------------------------------
 
@@ -455,6 +461,7 @@ CREATE TABLE `journal` (
   `VHNO` varchar(15) DEFAULT NULL,
   `JournalType` varchar(10) DEFAULT NULL,
   `ChartOfAccountID` int DEFAULT NULL,
+  `UserID` int DEFAULT NULL,
   `PartyID` int DEFAULT NULL,
   `SupplierID` int DEFAULT NULL,
   `VoucherMstID` int DEFAULT NULL,
@@ -471,35 +478,47 @@ CREATE TABLE `journal` (
 -- Dumping data for table `journal`
 --
 
-INSERT INTO `journal` (`JournalID`, `VHNO`, `JournalType`, `ChartOfAccountID`, `PartyID`, `SupplierID`, `VoucherMstID`, `PettyMstID`, `InvoiceMasterID`, `Narration`, `Date`, `Dr`, `Cr`, `Trace`) VALUES
-(1, 'BP23050001', 'BP', 210100, 4, NULL, 1, NULL, NULL, 'CASH TOP UP TO APAR TRAVEL AED 10,000/-', '2023-05-01', 10000.00, NULL, 0),
-(2, 'BP23050001', 'BP', 110201, 4, NULL, 1, NULL, NULL, 'CASH TOP UP TO APAR TRAVEL AED 10,000/-', '2023-05-01', NULL, 10000.00, 0),
-(17, 'SI1', 'SI', 110101, 6, NULL, NULL, NULL, 1, NULL, '2023-05-01', 300.00, NULL, 101),
-(18, 'SI1', 'SI', 110400, 6, NULL, NULL, NULL, 1, NULL, '2023-05-01', NULL, 300.00, 102),
-(19, 'SI1', 'SI', 110400, 6, NULL, NULL, NULL, 1, NULL, '2023-05-01', 300.00, NULL, 105),
-(20, 'SI1', 'SI', 510103, 4, NULL, NULL, NULL, 1, NULL, '2023-05-01', NULL, 160.00, 106),
-(21, 'SI1', 'SI', 410101, 4, NULL, NULL, NULL, 1, NULL, '2023-05-01', NULL, 140.00, 107),
-(22, 'SI1', 'SI', 510103, 4, NULL, NULL, NULL, 1, NULL, '2023-05-01', 160.00, NULL, 109),
-(23, 'SI1', 'SI', 210100, 4, NULL, NULL, NULL, 1, NULL, '2023-05-01', NULL, 160.00, 110),
-(24, 'SI1', 'SI', 210300, 6, NULL, NULL, NULL, 1, NULL, '2023-05-01', 0.00, NULL, 111),
-(29, 'JV23050001', 'JV', 310101, 5, NULL, 2, NULL, NULL, 'Opening balances for air blue', '2023-05-01', 5513.00, NULL, 0),
-(30, 'JV23050001', 'JV', 210100, 5, NULL, 2, NULL, NULL, 'Opening balances for air blue', '2023-05-01', NULL, 5513.00, 0),
-(31, 'SI2', 'SI', 110101, 1, NULL, NULL, NULL, 2, NULL, '2023-07-04', 1800.00, NULL, 101),
-(32, 'SI2', 'SI', 110400, 1, NULL, NULL, NULL, 2, NULL, '2023-07-04', NULL, 1800.00, 102),
-(33, 'SI2', 'SI', 110400, 1, NULL, NULL, NULL, 2, NULL, '2023-07-04', 1800.00, NULL, 105),
-(34, 'SI2', 'SI', 510103, 3, NULL, NULL, NULL, 2, NULL, '2023-07-04', NULL, 1500.00, 106),
-(35, 'SI2', 'SI', 410101, 3, NULL, NULL, NULL, 2, NULL, '2023-07-04', NULL, 285.72, 107),
-(36, 'SI2', 'SI', 510103, 3, NULL, NULL, NULL, 2, NULL, '2023-07-04', 1500.00, NULL, 109),
-(37, 'SI2', 'SI', 210100, 3, NULL, NULL, NULL, 2, NULL, '2023-07-04', NULL, 1500.00, 110),
-(38, 'SI2', 'SI', 210300, 1, NULL, NULL, NULL, 2, NULL, '2023-07-04', NULL, 14.28, 111),
-(39, 'SR3', 'SR', 110400, 8, NULL, NULL, NULL, 3, NULL, '2023-07-04', 1250.00, NULL, 103),
-(40, 'SR3', 'SR', 110101, 8, NULL, NULL, NULL, 3, NULL, '2023-07-04', NULL, 1250.00, 104),
-(41, 'SR3', 'SR', 110400, 8, NULL, NULL, NULL, 3, NULL, '2023-07-04', NULL, 1250.00, 201),
-(42, 'SR3', 'SR', 410101, 3, NULL, NULL, NULL, 3, NULL, '2023-07-04', NULL, 0.00, 2022),
-(43, 'SR3', 'SR', 410101, 3, NULL, NULL, NULL, 3, NULL, '2023-07-04', NULL, 250.00, 203),
-(44, 'SR3', 'SR', 510103, 3, NULL, NULL, NULL, 3, NULL, '2023-07-04', 1500.00, NULL, 204),
-(45, 'SR3', 'SR', 510103, 3, NULL, NULL, NULL, 3, NULL, '2023-07-04', NULL, 1500.00, 205),
-(46, 'SR3', 'SR', 210100, 3, NULL, NULL, NULL, 3, NULL, '2023-07-04', 1500.00, NULL, 206);
+INSERT INTO `journal` (`JournalID`, `VHNO`, `JournalType`, `ChartOfAccountID`, `UserID`, `PartyID`, `SupplierID`, `VoucherMstID`, `PettyMstID`, `InvoiceMasterID`, `Narration`, `Date`, `Dr`, `Cr`, `Trace`) VALUES
+(1, 'BP23050001', 'BP', 210100, NULL, 4, NULL, 1, NULL, NULL, 'CASH TOP UP TO APAR TRAVEL AED 10,000/-', '2023-05-01', 10000.00, NULL, 0),
+(2, 'BP23050001', 'BP', 110201, NULL, 4, NULL, 1, NULL, NULL, 'CASH TOP UP TO APAR TRAVEL AED 10,000/-', '2023-05-01', NULL, 10000.00, 0),
+(17, 'SI1', 'SI', 110101, NULL, 6, NULL, NULL, NULL, 1, NULL, '2023-05-01', 300.00, NULL, 101),
+(18, 'SI1', 'SI', 110400, NULL, 6, NULL, NULL, NULL, 1, NULL, '2023-05-01', NULL, 300.00, 102),
+(19, 'SI1', 'SI', 110400, NULL, 6, NULL, NULL, NULL, 1, NULL, '2023-05-01', 300.00, NULL, 105),
+(20, 'SI1', 'SI', 510103, NULL, 4, NULL, NULL, NULL, 1, NULL, '2023-05-01', NULL, 160.00, 106),
+(21, 'SI1', 'SI', 410101, NULL, 4, NULL, NULL, NULL, 1, NULL, '2023-05-01', NULL, 140.00, 107),
+(22, 'SI1', 'SI', 510103, NULL, 4, NULL, NULL, NULL, 1, NULL, '2023-05-01', 160.00, NULL, 109),
+(23, 'SI1', 'SI', 210100, NULL, 4, NULL, NULL, NULL, 1, NULL, '2023-05-01', NULL, 160.00, 110),
+(24, 'SI1', 'SI', 210300, NULL, 6, NULL, NULL, NULL, 1, NULL, '2023-05-01', 0.00, NULL, 111),
+(29, 'JV23050001', 'JV', 310101, NULL, 5, NULL, 2, NULL, NULL, 'Opening balances for air blue', '2023-05-01', 5513.00, NULL, 0),
+(30, 'JV23050001', 'JV', 210100, NULL, 5, NULL, 2, NULL, NULL, 'Opening balances for air blue', '2023-05-01', NULL, 5513.00, 0),
+(31, 'SI2', 'SI', 110101, NULL, 1, NULL, NULL, NULL, 2, NULL, '2023-07-04', 1800.00, NULL, 101),
+(32, 'SI2', 'SI', 110400, NULL, 1, NULL, NULL, NULL, 2, NULL, '2023-07-04', NULL, 1800.00, 102),
+(33, 'SI2', 'SI', 110400, NULL, 1, NULL, NULL, NULL, 2, NULL, '2023-07-04', 1800.00, NULL, 105),
+(34, 'SI2', 'SI', 510103, NULL, 3, NULL, NULL, NULL, 2, NULL, '2023-07-04', NULL, 1500.00, 106),
+(35, 'SI2', 'SI', 410101, NULL, 3, NULL, NULL, NULL, 2, NULL, '2023-07-04', NULL, 285.72, 107),
+(36, 'SI2', 'SI', 510103, NULL, 3, NULL, NULL, NULL, 2, NULL, '2023-07-04', 1500.00, NULL, 109),
+(37, 'SI2', 'SI', 210100, NULL, 3, NULL, NULL, NULL, 2, NULL, '2023-07-04', NULL, 1500.00, 110),
+(38, 'SI2', 'SI', 210300, NULL, 1, NULL, NULL, NULL, 2, NULL, '2023-07-04', NULL, 14.28, 111),
+(39, 'SR3', 'SR', 110400, NULL, 8, NULL, NULL, NULL, 3, NULL, '2023-07-04', 1250.00, NULL, 103),
+(40, 'SR3', 'SR', 110101, NULL, 8, NULL, NULL, NULL, 3, NULL, '2023-07-04', NULL, 1250.00, 104),
+(41, 'SR3', 'SR', 110400, NULL, 8, NULL, NULL, NULL, 3, NULL, '2023-07-04', NULL, 1250.00, 201),
+(42, 'SR3', 'SR', 410101, NULL, 3, NULL, NULL, NULL, 3, NULL, '2023-07-04', NULL, 0.00, 2022),
+(43, 'SR3', 'SR', 410101, NULL, 3, NULL, NULL, NULL, 3, NULL, '2023-07-04', NULL, 250.00, 203),
+(44, 'SR3', 'SR', 510103, NULL, 3, NULL, NULL, NULL, 3, NULL, '2023-07-04', 1500.00, NULL, 204),
+(45, 'SR3', 'SR', 510103, NULL, 3, NULL, NULL, NULL, 3, NULL, '2023-07-04', NULL, 1500.00, 205),
+(46, 'SR3', 'SR', 210100, NULL, 3, NULL, NULL, NULL, 3, NULL, '2023-07-04', 1500.00, NULL, 206),
+(47, 'SI4', 'SI', 110400, NULL, 1, NULL, NULL, NULL, 4, NULL, '2023-07-25', NULL, NULL, 105),
+(48, 'SI4', 'SI', 510103, NULL, 2, NULL, NULL, NULL, 4, NULL, '2023-07-25', NULL, NULL, 106),
+(49, 'SI4', 'SI', 410101, NULL, 2, NULL, NULL, NULL, 4, NULL, '2023-07-25', 0.00, NULL, 108),
+(50, 'SI4', 'SI', 510103, NULL, 2, NULL, NULL, NULL, 4, NULL, '2023-07-25', NULL, NULL, 109),
+(51, 'SI4', 'SI', 210100, NULL, 2, NULL, NULL, NULL, 4, NULL, '2023-07-25', NULL, NULL, 110),
+(52, 'SI4', 'SI', 210300, NULL, 1, NULL, NULL, NULL, 4, NULL, '2023-07-25', 0.00, NULL, 111),
+(53, 'SI5', 'SI', 110400, NULL, 1, NULL, NULL, NULL, 5, NULL, '2023-07-25', 2.00, NULL, 105),
+(54, 'SI5', 'SI', 510103, NULL, 3, NULL, NULL, NULL, 5, NULL, '2023-07-25', NULL, NULL, 106),
+(55, 'SI5', 'SI', 410101, NULL, 3, NULL, NULL, NULL, 5, NULL, '2023-07-25', 0.00, NULL, 108),
+(56, 'SI5', 'SI', 510103, NULL, 3, NULL, NULL, NULL, 5, NULL, '2023-07-25', NULL, NULL, 109),
+(57, 'SI5', 'SI', 210100, NULL, 3, NULL, NULL, NULL, 5, NULL, '2023-07-25', NULL, NULL, 110),
+(58, 'SI5', 'SI', 210300, NULL, 1, NULL, NULL, NULL, 5, NULL, '2023-07-25', 0.00, NULL, 111);
 
 -- --------------------------------------------------------
 
@@ -522,6 +541,7 @@ CREATE TABLE `migrations` (
 CREATE TABLE `party` (
   `PartyID` int NOT NULL,
   `PartyCategoryID` int DEFAULT NULL,
+  `UserID` int DEFAULT NULL,
   `PartyName` varchar(155) DEFAULT NULL,
   `Address` varchar(155) DEFAULT NULL,
   `Phone` varchar(155) DEFAULT NULL,
@@ -535,14 +555,16 @@ CREATE TABLE `party` (
 -- Dumping data for table `party`
 --
 
-INSERT INTO `party` (`PartyID`, `PartyCategoryID`, `PartyName`, `Address`, `Phone`, `Email`, `Active`, `InvoiceDueDays`, `eDate`) VALUES
-(1, 1, 'Walkin Customer', NULL, NULL, NULL, 'Yes', NULL, '2023-05-01 11:24:41'),
-(2, 2, 'Demo Supplier', NULL, NULL, NULL, 'Yes', NULL, '2023-05-01 11:26:31'),
-(3, 2, 'FLY DUBAI', NULL, '600 544 445', 'agencysupportuae@flydubai.com', 'Yes', NULL, '2023-05-01 12:05:43'),
-(4, 2, 'APAR TRAVEL', 'DUBAI', '607575375377', 'tangotravel21@gmail.com', 'Yes', NULL, '2023-05-01 13:00:21'),
-(5, 2, 'AIRBLUE', 'DEIRA DUBAI', '600544542', 'website@airblue.com', 'Yes', 0, '2023-05-01 13:30:43'),
-(6, 1, 'SANDEEP KATTI', 'DUBAI', '0501234567', 'tangotravel21@gmail.com', 'Yes', NULL, '2023-05-01 13:34:12'),
-(8, 1, 'Mehmood Exchange', 'Deira Dubai', '0555186303', NULL, 'Yes', 15, '2023-07-04 11:33:35');
+INSERT INTO `party` (`PartyID`, `PartyCategoryID`, `UserID`, `PartyName`, `Address`, `Phone`, `Email`, `Active`, `InvoiceDueDays`, `eDate`) VALUES
+(1, 1, NULL, 'Walkin Customer', NULL, NULL, NULL, 'Yes', NULL, '2023-05-01 11:24:41'),
+(2, 2, NULL, 'Demo Supplier', NULL, NULL, NULL, 'Yes', NULL, '2023-05-01 11:26:31'),
+(3, 2, NULL, 'FLY DUBAI', NULL, '600 544 445', 'agencysupportuae@flydubai.com', 'Yes', NULL, '2023-05-01 12:05:43'),
+(4, 2, NULL, 'APAR TRAVEL', 'DUBAI', '607575375377', 'tangotravel21@gmail.com', 'Yes', NULL, '2023-05-01 13:00:21'),
+(5, 2, NULL, 'AIRBLUE', 'DEIRA DUBAI', '600544542', 'website@airblue.com', 'Yes', 0, '2023-05-01 13:30:43'),
+(6, 1, NULL, 'SANDEEP KATTI', 'DUBAI', '0501234567', 'tangotravel21@gmail.com', 'Yes', NULL, '2023-05-01 13:34:12'),
+(8, 1, NULL, 'Mehmood Exchange', 'Deira Dubai', '0555186303', NULL, 'Yes', 15, '2023-07-04 11:33:35'),
+(9, 1, NULL, 'Test Customer', 'Address Line 1', '+923339322880', 'mr.elahi.ehsan@gmail.com', 'Yes', NULL, '2023-07-25 14:26:52'),
+(10, 6, NULL, 'Test Supplier', 'Address Line 1', '+923339322880', 'mr.elahi.ehsan@gmail.com', 'Yes', NULL, '2023-07-25 14:27:18');
 
 -- --------------------------------------------------------
 
@@ -623,6 +645,7 @@ DELIMITER ;
 
 CREATE TABLE `pettycash_master` (
   `PettyMstID` int NOT NULL,
+  `UserID` int DEFAULT NULL,
   `PettyVoucher` varchar(11) DEFAULT NULL,
   `ChOfAcc` int DEFAULT NULL,
   `Date` date DEFAULT NULL,
@@ -732,7 +755,10 @@ INSERT INTO `role` (`RoleID`, `Table`, `Action`, `Allow`) VALUES
 (138, 'Invoice Summary', 'View', 'Y'),
 (139, 'Invoice Summary', 'PDF', 'Y'),
 (140, 'Party Wise Sale', 'View', 'Y'),
-(141, 'Party Wise Sale', 'PDF', 'Y');
+(141, 'Party Wise Sale', 'PDF', 'Y'),
+(142, 'Branch', 'Create/List', 'Y'),
+(143, 'Branch', 'Update', 'Y'),
+(144, 'Branch', 'Delete', 'Y');
 
 -- --------------------------------------------------------
 
@@ -795,6 +821,7 @@ INSERT INTO `saleman` (`SalemanID`, `SalemanName`) VALUES
 CREATE TABLE `supplier` (
   `SupplierID` int NOT NULL,
   `SupplierCatID` int DEFAULT NULL,
+  `UserID` int DEFAULT NULL,
   `Category` varchar(150) DEFAULT NULL,
   `SupplierName` varchar(150) DEFAULT NULL,
   `Address` varchar(150) DEFAULT NULL,
@@ -904,91 +931,6 @@ CREATE TABLE `user_role` (
 --
 
 INSERT INTO `user_role` (`RoleId`, `BranchID`, `UserID`, `Table`, `Action`, `Allow`) VALUES
-(4471, 1, 1, 'Invoice', 'List', 'Y'),
-(4472, 1, 1, 'Invoice', 'Create', 'Y'),
-(4473, 1, 1, 'Invoice', 'Update', 'Y'),
-(4474, 1, 1, 'Invoice', 'Delete', 'Y'),
-(4475, 1, 1, 'Invoice', 'View', 'Y'),
-(4476, 1, 1, 'Invoice', 'PDF', 'Y'),
-(4477, 1, 1, 'Voucher', 'List', 'Y'),
-(4478, 1, 1, 'Voucher', 'Create', 'Y'),
-(4479, 1, 1, 'Voucher', 'Update', 'Y'),
-(4480, 1, 1, 'Voucher', 'Delete', 'Y'),
-(4481, 1, 1, 'Voucher', 'View', 'Y'),
-(4482, 1, 1, 'Petty Cash', 'List', 'Y'),
-(4483, 1, 1, 'Petty Cash', 'Create', 'Y'),
-(4484, 1, 1, 'Petty Cash', 'Update', 'Y'),
-(4485, 1, 1, 'Petty Cash', 'Delete', 'Y'),
-(4486, 1, 1, 'Petty Cash', 'View', 'Y'),
-(4487, 1, 1, 'Adjustment Balance', 'Create', 'Y'),
-(4488, 1, 1, 'Chart of Account', 'List / Create', 'Y'),
-(4489, 1, 1, 'Chart of Account', 'Update', 'Y'),
-(4490, 1, 1, 'Chart of Account', 'Delete', 'Y'),
-(4491, 1, 1, 'Item/Inventory', 'List / Create', 'Y'),
-(4492, 1, 1, 'Item/Inventory', 'Update', 'Y'),
-(4493, 1, 1, 'Item/Inventory', 'Delete', 'Y'),
-(4494, 1, 1, 'Party / Customers', 'List / Create', 'Y'),
-(4495, 1, 1, 'Party / Customers', 'Update', 'Y'),
-(4496, 1, 1, 'Party / Customers', 'Delete', 'Y'),
-(4497, 1, 1, 'Supplier', 'List / Create', 'Y'),
-(4498, 1, 1, 'Supplier', 'Update', 'Y'),
-(4499, 1, 1, 'Supplier', 'Delete', 'Y'),
-(4500, 1, 1, 'User', 'List / Create', 'Y'),
-(4501, 1, 1, 'User', 'Update', 'Y'),
-(4502, 1, 1, 'User', 'Delete', 'Y'),
-(4503, 1, 1, 'User Rights', 'Assign', 'Y'),
-(4504, 1, 1, 'Party Ledger', 'View', 'Y'),
-(4505, 1, 1, 'Party Ledger', 'PDF', 'Y'),
-(4506, 1, 1, 'Party Balance', 'View', 'Y'),
-(4507, 1, 1, 'Party Balance', 'PDF', 'Y'),
-(4508, 1, 1, 'Yearly Report', 'View', 'Y'),
-(4509, 1, 1, 'Yearly Report', 'PDF', 'Y'),
-(4510, 1, 1, 'Ageing Report', 'View', 'Y'),
-(4511, 1, 1, 'Ageing Report', 'PDF', 'Y'),
-(4512, 1, 1, 'Party Analysis', 'View', 'Y'),
-(4513, 1, 1, 'Party Analysis', 'PDF', 'Y'),
-(4514, 1, 1, 'Party List', 'View', 'Y'),
-(4515, 1, 1, 'Party List', 'PDF', 'Y'),
-(4516, 1, 1, 'Outstanding Invoices', 'View', 'Y'),
-(4517, 1, 1, 'Outstanding Invoices', 'PDF', 'Y'),
-(4518, 1, 1, 'Supplier Ledger', 'View', 'Y'),
-(4519, 1, 1, 'Supplier Ledger', 'PDF', 'Y'),
-(4520, 1, 1, 'Supplier Balance', 'View', 'Y'),
-(4521, 1, 1, 'Supplier Balance', 'PDF', 'Y'),
-(4522, 1, 1, 'Sale Invoice', 'View', 'Y'),
-(4523, 1, 1, 'Sale Invoice', 'PDF', 'Y'),
-(4524, 1, 1, 'Ticket Register', 'View', 'Y'),
-(4525, 1, 1, 'Ticket Register', 'PDF', 'Y'),
-(4526, 1, 1, 'Airline Summary', 'View', 'Y'),
-(4527, 1, 1, 'Airline Summary', 'PDF', 'Y'),
-(4528, 1, 1, 'Sale Man Report', 'View', 'Y'),
-(4529, 1, 1, 'Sale Man Report', 'PDF', 'Y'),
-(4530, 1, 1, 'Tax Report', 'View', 'Y'),
-(4531, 1, 1, 'Tax Report', 'PDF', 'Y'),
-(4532, 1, 1, 'Sales Report', 'View', 'Y'),
-(4533, 1, 1, 'Sales Report', 'PDF', 'Y'),
-(4534, 1, 1, 'Voucher Report', 'View', 'Y'),
-(4535, 1, 1, 'Voucher Report', 'PDF', 'Y'),
-(4536, 1, 1, 'Cash Book', 'View', 'Y'),
-(4537, 1, 1, 'Cash Book', 'PDF', 'Y'),
-(4538, 1, 1, 'Day Book', 'View', 'Y'),
-(4539, 1, 1, 'Day Book', 'PDF', 'Y'),
-(4540, 1, 1, 'General Ledger', 'View', 'Y'),
-(4541, 1, 1, 'General Ledger', 'PDF', 'Y'),
-(4542, 1, 1, 'Trial Balance', 'View', 'Y'),
-(4543, 1, 1, 'Trial Balance', 'PDF', 'Y'),
-(4544, 1, 1, 'Trial with Activity', 'View', 'Y'),
-(4545, 1, 1, 'Trial with Activity', 'PDF', 'Y'),
-(4546, 1, 1, 'Yearly Summary', 'View', 'Y'),
-(4547, 1, 1, 'Yearly Summary', 'PDF', 'Y'),
-(4548, 1, 1, 'Profit & Loss', 'View', 'Y'),
-(4549, 1, 1, 'Profit & Loss', 'PDF', 'Y'),
-(4550, 1, 1, 'Balance Sheet', 'View', 'Y'),
-(4551, 1, 1, 'Balance Sheet', 'PDF', 'Y'),
-(4552, 1, 1, 'Invoice Summary', 'View', 'Y'),
-(4553, 1, 1, 'Invoice Summary', 'PDF', 'Y'),
-(4554, 1, 1, 'Party Wise Sale', 'View', 'Y'),
-(4555, 1, 1, 'Party Wise Sale', 'PDF', 'Y'),
 (4556, NULL, 2, 'Invoice', 'List', 'Y'),
 (4557, NULL, 2, 'Invoice', 'Create', 'Y'),
 (4558, NULL, 2, 'Invoice', 'Update', 'Y'),
@@ -1073,7 +1015,95 @@ INSERT INTO `user_role` (`RoleId`, `BranchID`, `UserID`, `Table`, `Action`, `All
 (4637, NULL, 2, 'Invoice Summary', 'View', 'Y'),
 (4638, NULL, 2, 'Invoice Summary', 'PDF', 'Y'),
 (4639, NULL, 2, 'Party Wise Sale', 'View', 'Y'),
-(4640, NULL, 2, 'Party Wise Sale', 'PDF', 'Y');
+(4640, NULL, 2, 'Party Wise Sale', 'PDF', 'Y'),
+(4641, 1, 1, 'Invoice', 'List', 'Y'),
+(4642, 1, 1, 'Invoice', 'Create', 'Y'),
+(4643, 1, 1, 'Invoice', 'Update', 'Y'),
+(4644, 1, 1, 'Invoice', 'Delete', 'Y'),
+(4645, 1, 1, 'Invoice', 'View', 'Y'),
+(4646, 1, 1, 'Invoice', 'PDF', 'Y'),
+(4647, 1, 1, 'Voucher', 'List', 'Y'),
+(4648, 1, 1, 'Voucher', 'Create', 'Y'),
+(4649, 1, 1, 'Voucher', 'Update', 'Y'),
+(4650, 1, 1, 'Voucher', 'Delete', 'Y'),
+(4651, 1, 1, 'Voucher', 'View', 'Y'),
+(4652, 1, 1, 'Petty Cash', 'List', 'Y'),
+(4653, 1, 1, 'Petty Cash', 'Create', 'Y'),
+(4654, 1, 1, 'Petty Cash', 'Update', 'Y'),
+(4655, 1, 1, 'Petty Cash', 'Delete', 'Y'),
+(4656, 1, 1, 'Petty Cash', 'View', 'Y'),
+(4657, 1, 1, 'Adjustment Balance', 'Create', 'Y'),
+(4658, 1, 1, 'Chart of Account', 'List / Create', 'Y'),
+(4659, 1, 1, 'Chart of Account', 'Update', 'Y'),
+(4660, 1, 1, 'Chart of Account', 'Delete', 'Y'),
+(4661, 1, 1, 'Item/Inventory', 'List / Create', 'Y'),
+(4662, 1, 1, 'Item/Inventory', 'Update', 'Y'),
+(4663, 1, 1, 'Item/Inventory', 'Delete', 'Y'),
+(4664, 1, 1, 'Party / Customers', 'List / Create', 'Y'),
+(4665, 1, 1, 'Party / Customers', 'Update', 'Y'),
+(4666, 1, 1, 'Party / Customers', 'Delete', 'Y'),
+(4667, 1, 1, 'Supplier', 'List / Create', 'Y'),
+(4668, 1, 1, 'Supplier', 'Update', 'Y'),
+(4669, 1, 1, 'Supplier', 'Delete', 'Y'),
+(4670, 1, 1, 'User', 'List / Create', 'Y'),
+(4671, 1, 1, 'User', 'Update', 'Y'),
+(4672, 1, 1, 'User', 'Delete', 'Y'),
+(4673, 1, 1, 'User Rights', 'Assign', 'Y'),
+(4674, 1, 1, 'Party Ledger', 'View', 'Y'),
+(4675, 1, 1, 'Party Ledger', 'PDF', 'Y'),
+(4676, 1, 1, 'Party Balance', 'View', 'Y'),
+(4677, 1, 1, 'Party Balance', 'PDF', 'Y'),
+(4678, 1, 1, 'Yearly Report', 'View', 'Y'),
+(4679, 1, 1, 'Yearly Report', 'PDF', 'Y'),
+(4680, 1, 1, 'Ageing Report', 'View', 'Y'),
+(4681, 1, 1, 'Ageing Report', 'PDF', 'Y'),
+(4682, 1, 1, 'Party Analysis', 'View', 'Y'),
+(4683, 1, 1, 'Party Analysis', 'PDF', 'Y'),
+(4684, 1, 1, 'Party List', 'View', 'Y'),
+(4685, 1, 1, 'Party List', 'PDF', 'Y'),
+(4686, 1, 1, 'Outstanding Invoices', 'View', 'Y'),
+(4687, 1, 1, 'Outstanding Invoices', 'PDF', 'Y'),
+(4688, 1, 1, 'Supplier Ledger', 'View', 'Y'),
+(4689, 1, 1, 'Supplier Ledger', 'PDF', 'Y'),
+(4690, 1, 1, 'Supplier Balance', 'View', 'Y'),
+(4691, 1, 1, 'Supplier Balance', 'PDF', 'Y'),
+(4692, 1, 1, 'Sale Invoice', 'View', 'Y'),
+(4693, 1, 1, 'Sale Invoice', 'PDF', 'Y'),
+(4694, 1, 1, 'Ticket Register', 'View', 'Y'),
+(4695, 1, 1, 'Ticket Register', 'PDF', 'Y'),
+(4696, 1, 1, 'Airline Summary', 'View', 'Y'),
+(4697, 1, 1, 'Airline Summary', 'PDF', 'Y'),
+(4698, 1, 1, 'Sale Man Report', 'View', 'Y'),
+(4699, 1, 1, 'Sale Man Report', 'PDF', 'Y'),
+(4700, 1, 1, 'Tax Report', 'View', 'Y'),
+(4701, 1, 1, 'Tax Report', 'PDF', 'Y'),
+(4702, 1, 1, 'Sales Report', 'View', 'Y'),
+(4703, 1, 1, 'Sales Report', 'PDF', 'Y'),
+(4704, 1, 1, 'Voucher Report', 'View', 'Y'),
+(4705, 1, 1, 'Voucher Report', 'PDF', 'Y'),
+(4706, 1, 1, 'Cash Book', 'View', 'Y'),
+(4707, 1, 1, 'Cash Book', 'PDF', 'Y'),
+(4708, 1, 1, 'Day Book', 'View', 'Y'),
+(4709, 1, 1, 'Day Book', 'PDF', 'Y'),
+(4710, 1, 1, 'General Ledger', 'View', 'Y'),
+(4711, 1, 1, 'General Ledger', 'PDF', 'Y'),
+(4712, 1, 1, 'Trial Balance', 'View', 'Y'),
+(4713, 1, 1, 'Trial Balance', 'PDF', 'Y'),
+(4714, 1, 1, 'Trial with Activity', 'View', 'Y'),
+(4715, 1, 1, 'Trial with Activity', 'PDF', 'Y'),
+(4716, 1, 1, 'Yearly Summary', 'View', 'Y'),
+(4717, 1, 1, 'Yearly Summary', 'PDF', 'Y'),
+(4718, 1, 1, 'Profit & Loss', 'View', 'Y'),
+(4719, 1, 1, 'Profit & Loss', 'PDF', 'Y'),
+(4720, 1, 1, 'Balance Sheet', 'View', 'Y'),
+(4721, 1, 1, 'Balance Sheet', 'PDF', 'Y'),
+(4722, 1, 1, 'Invoice Summary', 'View', 'Y'),
+(4723, 1, 1, 'Invoice Summary', 'PDF', 'Y'),
+(4724, 1, 1, 'Party Wise Sale', 'View', 'Y'),
+(4725, 1, 1, 'Party Wise Sale', 'PDF', 'Y'),
+(4726, 1, 1, 'Branch', 'Create/List', 'Y'),
+(4727, 1, 1, 'Branch', 'Update', 'Y'),
+(4728, 1, 1, 'Branch', 'Delete', 'Y');
 
 -- --------------------------------------------------------
 
@@ -1083,6 +1113,7 @@ INSERT INTO `user_role` (`RoleId`, `BranchID`, `UserID`, `Table`, `Action`, `All
 
 CREATE TABLE `visa` (
   `VisaID` int NOT NULL,
+  `UserID` int DEFAULT NULL,
   `Date` date DEFAULT NULL,
   `DueDate` date DEFAULT NULL,
   `PassangerName` varchar(155) DEFAULT NULL,
@@ -1100,11 +1131,11 @@ CREATE TABLE `visa` (
 -- Dumping data for table `visa`
 --
 
-INSERT INTO `visa` (`VisaID`, `Date`, `DueDate`, `PassangerName`, `VisaNo`, `SupplierID`, `PartyID`, `Nationality`, `Phone`, `Email`, `Address`, `eDate`) VALUES
-(1, '2023-05-03', '2023-05-30', 'Kashif', '12345666', 1576, 1053, 'Pakistani', NULL, NULL, NULL, '2023-05-03 11:50:39'),
-(2, '2023-05-03', '2023-06-08', 'klmmmmm', '654654', 1023, 1012, 'd', NULL, NULL, NULL, '2023-05-03 16:33:44'),
-(4, '2023-05-04', '2023-05-11', 'Kashif Mushtaq', '12345', 3, 4, 'Pakistani', NULL, NULL, NULL, '2023-05-04 04:27:53'),
-(5, '2023-07-10', '2023-07-29', 'Ahsan', '32423423', 2, 3, 'Pakistani', '+923339322880', 'mr.elahi.ehsan@gmail.com', 'Address Line 2', '2023-07-10 10:29:32');
+INSERT INTO `visa` (`VisaID`, `UserID`, `Date`, `DueDate`, `PassangerName`, `VisaNo`, `SupplierID`, `PartyID`, `Nationality`, `Phone`, `Email`, `Address`, `eDate`) VALUES
+(1, NULL, '2023-05-03', '2023-05-30', 'Kashif', '12345666', 1576, 1053, 'Pakistani', NULL, NULL, NULL, '2023-05-03 11:50:39'),
+(2, NULL, '2023-05-03', '2023-06-08', 'klmmmmm', '654654', 1023, 1012, 'd', NULL, NULL, NULL, '2023-05-03 16:33:44'),
+(4, NULL, '2023-05-04', '2023-05-11', 'Kashif Mushtaq', '12345', 3, 4, 'Pakistani', NULL, NULL, NULL, '2023-05-04 04:27:53'),
+(5, NULL, '2023-07-10', '2023-07-29', 'Ahsan', '32423423', 2, 3, 'Pakistani', '+923339322880', 'mr.elahi.ehsan@gmail.com', 'Address Line 2', '2023-07-10 10:29:32');
 
 -- --------------------------------------------------------
 
@@ -1158,6 +1189,7 @@ DELIMITER ;
 CREATE TABLE `voucher_master` (
   `VoucherMstID` int NOT NULL,
   `VoucherCodeID` int DEFAULT NULL,
+  `UserID` int DEFAULT NULL,
   `Voucher` varchar(15) DEFAULT NULL,
   `Date` date DEFAULT NULL,
   `Narration` varchar(255) DEFAULT NULL
@@ -1167,9 +1199,9 @@ CREATE TABLE `voucher_master` (
 -- Dumping data for table `voucher_master`
 --
 
-INSERT INTO `voucher_master` (`VoucherMstID`, `VoucherCodeID`, `Voucher`, `Date`, `Narration`) VALUES
-(1, 1, 'BP23050001', '2023-05-01', 'CASH TOP UP TO APAR TRAVEL AED 10,000/-'),
-(2, 7, 'JV23050001', '2023-05-01', 'Opening balances for air blue');
+INSERT INTO `voucher_master` (`VoucherMstID`, `VoucherCodeID`, `UserID`, `Voucher`, `Date`, `Narration`) VALUES
+(1, 1, NULL, 'BP23050001', '2023-05-01', 'CASH TOP UP TO APAR TRAVEL AED 10,000/-'),
+(2, 7, NULL, 'JV23050001', '2023-05-01', 'Opening balances for air blue');
 
 -- --------------------------------------------------------
 
@@ -1229,7 +1261,9 @@ CREATE TABLE `v_chartofaccount` (
 --
 CREATE TABLE `v_expense_chart` (
 `Balance` double(22,2)
+,`BranchName` varchar(150)
 ,`ChartOfAccountName` varchar(75)
+,`FullName` varchar(55)
 ,`MonthName` varchar(69)
 );
 
@@ -1254,11 +1288,13 @@ CREATE TABLE `v_income_exp_chart` (
 --
 CREATE TABLE `v_invoice_detail` (
 `Balance` int
+,`BranchName` varchar(150)
 ,`CategoryCode` varchar(10)
 ,`CategoryName` varchar(55)
 ,`Date` date
 ,`Discount` double(22,2)
 ,`Fare` double(8,2)
+,`FullName` varchar(55)
 ,`InvoiceDetailID` int
 ,`InvoiceMasterID` int
 ,`InvoiceNo` varchar(47)
@@ -1329,9 +1365,11 @@ CREATE TABLE `v_invoice_detail1` (
 CREATE TABLE `v_invoice_master` (
 `Address` varchar(155)
 ,`Balance` int
+,`BranchName` varchar(150)
 ,`Date` date
 ,`DueDate` date
 ,`Email` varchar(155)
+,`FullName` varchar(55)
 ,`InvoiceCode` varchar(47)
 ,`InvoiceMasterID` int
 ,`InvoiceType` varchar(35)
@@ -1343,6 +1381,7 @@ CREATE TABLE `v_invoice_master` (
 ,`PartyName` varchar(155)
 ,`PaymentMode` varchar(25)
 ,`Phone` varchar(155)
+,`SalemanName` varchar(35)
 ,`Total` int
 ,`UserID` int
 );
@@ -1354,12 +1393,14 @@ CREATE TABLE `v_invoice_master` (
 -- (See below for the actual view)
 --
 CREATE TABLE `v_journal` (
-`ChartOfAccountID` int
+`BranchName` varchar(150)
+,`ChartOfAccountID` int
 ,`ChartOfAccountName` varchar(75)
 ,`CODE` varchar(15)
 ,`Cr` double(19,2)
 ,`Date` date
 ,`Dr` double(19,2)
+,`FullName` varchar(55)
 ,`InvoiceMasterID` int
 ,`JournalType` varchar(10)
 ,`L1` int
@@ -1382,10 +1423,12 @@ CREATE TABLE `v_journal` (
 CREATE TABLE `v_party` (
 `Active` varchar(155)
 ,`Address` varchar(155)
+,`BranchName` varchar(150)
 ,`CategoryCode` varchar(10)
 ,`CategoryName` varchar(55)
 ,`eDate` timestamp
 ,`Email` varchar(155)
+,`FullName` varchar(55)
 ,`InvoiceDueDays` int
 ,`PartyCategoryID` int
 ,`PartyID` int
@@ -1402,10 +1445,12 @@ CREATE TABLE `v_party` (
 CREATE TABLE `v_party1` (
 `Active` varchar(155)
 ,`Address` varchar(155)
+,`BranchName` varchar(150)
 ,`CategoryCode` varchar(10)
 ,`CategoryName` varchar(55)
 ,`eDate` timestamp
 ,`Email` varchar(155)
+,`FullName` varchar(55)
 ,`InvoiceDueDays` int
 ,`PartyCategoryID` int
 ,`PartyID` int
@@ -1420,8 +1465,10 @@ CREATE TABLE `v_party1` (
 -- (See below for the actual view)
 --
 CREATE TABLE `v_partywise_sale` (
-`Discount` double(19,2)
+`BranchName` varchar(150)
+,`Discount` double(19,2)
 ,`Fare` double(19,2)
+,`FullName` varchar(55)
 ,`InvoiceType` varchar(35)
 ,`InvoiceTypeCode` varchar(35)
 ,`InvoiceTypeID` int
@@ -1439,11 +1486,13 @@ CREATE TABLE `v_partywise_sale` (
 -- (See below for the actual view)
 --
 CREATE TABLE `v_party_balance` (
-`ChartOfAccountID` int
+`BranchName` varchar(150)
+,`ChartOfAccountID` int
 ,`ChartOfAccountName` varchar(75)
 ,`Cr` double(19,2)
 ,`Date` date
 ,`Dr` double(19,2)
+,`FullName` varchar(55)
 ,`InvoiceMasterID` int
 ,`JournalType` varchar(10)
 ,`Narration` varchar(255)
@@ -1463,9 +1512,11 @@ CREATE TABLE `v_party_balance` (
 --
 CREATE TABLE `v_party_montly_balance` (
 `Balance` double(22,2)
+,`BranchName` varchar(150)
 ,`Cr` double(19,2)
 ,`Date` varchar(37)
 ,`Dr` double(19,2)
+,`FullName` varchar(55)
 ,`PartyID` int
 );
 
@@ -1476,11 +1527,13 @@ CREATE TABLE `v_party_montly_balance` (
 -- (See below for the actual view)
 --
 CREATE TABLE `v_pettycash_master` (
-`ChartOfAccountID` int
+`BranchName` varchar(150)
+,`ChartOfAccountID` int
 ,`ChartOfAccountName` varchar(75)
 ,`CODE` varchar(15)
 ,`Credit` double(10,2)
 ,`Date` date
+,`FullName` varchar(55)
 ,`Narration` varchar(255)
 ,`PettyMstID` int
 ,`PettyVoucher` varchar(11)
@@ -1520,9 +1573,11 @@ CREATE TABLE `v_rev_exp_chart` (
 CREATE TABLE `v_supplier` (
 `Active` varchar(150)
 ,`Address` varchar(150)
+,`BranchName` varchar(150)
 ,`Category` varchar(150)
 ,`eDate` timestamp
 ,`Email` varchar(150)
+,`FullName` varchar(55)
 ,`InvoiceDueDays` int
 ,`Phone` varchar(150)
 ,`SupplierCategory` varchar(66)
@@ -1542,6 +1597,7 @@ CREATE TABLE `v_supplier_balance` (
 ,`Cr` double(19,2)
 ,`Date` varchar(37)
 ,`Dr` double(19,2)
+,`FullName` varchar(55)
 ,`SupplierID` int
 );
 
@@ -1602,9 +1658,11 @@ CREATE TABLE `v_users` (
 --
 CREATE TABLE `v_vc_montly_balance` (
 `Balance` double(22,2)
+,`BranchName` varchar(150)
 ,`Cr` double(19,2)
 ,`Date` varchar(37)
 ,`Dr` double(19,2)
+,`FullName` varchar(55)
 ,`PartyID` int
 );
 
@@ -1616,10 +1674,12 @@ CREATE TABLE `v_vc_montly_balance` (
 --
 CREATE TABLE `v_visa` (
 `Address` varchar(255)
+,`BranchName` varchar(150)
 ,`Date` varchar(10)
 ,`DueDate` varchar(10)
 ,`eDate` timestamp
 ,`Email` varchar(255)
+,`FullName` varchar(55)
 ,`Nationality` varchar(155)
 ,`PartyAddress` varchar(155)
 ,`PartyEmail` varchar(155)
@@ -1641,7 +1701,9 @@ CREATE TABLE `v_visa` (
 -- (See below for the actual view)
 --
 CREATE TABLE `v_voucher` (
-`Date` date
+`BranchName` varchar(150)
+,`Date` date
+,`FullName` varchar(55)
 ,`Narration` varchar(255)
 ,`Voucher` varchar(15)
 ,`VoucherCode` varchar(35)
@@ -1656,11 +1718,13 @@ CREATE TABLE `v_voucher` (
 -- (See below for the actual view)
 --
 CREATE TABLE `v_voucher_detail` (
-`ChartOfAccountName` varchar(75)
+`BranchName` varchar(150)
+,`ChartOfAccountName` varchar(75)
 ,`ChOfAcc` int
 ,`Credit` double(10,2)
 ,`Date` date
 ,`Debit` double(10,2)
+,`FullName` varchar(55)
 ,`InvoiceNo` varchar(75)
 ,`Narration` varchar(255)
 ,`NarrationMaster` varchar(255)
@@ -1681,7 +1745,9 @@ CREATE TABLE `v_voucher_detail` (
 -- (See below for the actual view)
 --
 CREATE TABLE `v_voucher_master` (
-`Date` date
+`BranchName` varchar(150)
+,`Date` date
+,`FullName` varchar(55)
 ,`Narration` varchar(255)
 ,`Voucher` varchar(15)
 ,`VoucherCode` varchar(35)
@@ -1698,7 +1764,7 @@ CREATE TABLE `v_voucher_master` (
 --
 DROP TABLE IF EXISTS `v_cashflow`;
 
-Create or Replace VIEW `v_cashflow`  AS SELECT sum(ifnull(`journal`.`Dr`,0)) AS `Dr`, sum(ifnull(`journal`.`Cr`,0)) AS `Cr`, (sum(ifnull(`journal`.`Dr`,0)) - sum(ifnull(`journal`.`Cr`,0))) AS `Balance`, date_format(`journal`.`Date`,'%b-%Y') AS `MonthName` FROM `journal` WHERE (`journal`.`ChartOfAccountID` in (110201,110250,110101,110200)) GROUP BY date_format(`journal`.`Date`,'%b-%Y') ORDER BY date_format(`journal`.`Date`,'%b-%Y') ASC  ;
+CREATE OR REPLACE VIEW `v_cashflow`  AS SELECT sum(ifnull(`journal`.`Dr`,0)) AS `Dr`, sum(ifnull(`journal`.`Cr`,0)) AS `Cr`, (sum(ifnull(`journal`.`Dr`,0)) - sum(ifnull(`journal`.`Cr`,0))) AS `Balance`, date_format(`journal`.`Date`,'%b-%Y') AS `MonthName` FROM `journal` WHERE (`journal`.`ChartOfAccountID` in (110201,110250,110101,110200)) GROUP BY date_format(`journal`.`Date`,'%b-%Y') ORDER BY date_format(`journal`.`Date`,'%b-%Y') ASC  ;
 
 -- --------------------------------------------------------
 
@@ -1707,7 +1773,7 @@ Create or Replace VIEW `v_cashflow`  AS SELECT sum(ifnull(`journal`.`Dr`,0)) AS 
 --
 DROP TABLE IF EXISTS `v_chartofaccount`;
 
-Create or Replace VIEW `v_chartofaccount`  AS SELECT `chartofaccount`.`ChartOfAccountID` AS `ChartOfAccountID`, `chartofaccount`.`ChartOfAccountName` AS `ChartOfAccountName`, `chartofaccount`.`CODE` AS `CODE` FROM `chartofaccount` WHERE ((right(`chartofaccount`.`ChartOfAccountID`,5) = 0) AND (`chartofaccount`.`ChartOfAccountName` is not null))  ;
+CREATE OR REPLACE VIEW `v_chartofaccount`  AS SELECT `chartofaccount`.`ChartOfAccountID` AS `ChartOfAccountID`, `chartofaccount`.`ChartOfAccountName` AS `ChartOfAccountName`, `chartofaccount`.`CODE` AS `CODE` FROM `chartofaccount` WHERE ((right(`chartofaccount`.`ChartOfAccountID`,5) = 0) AND (`chartofaccount`.`ChartOfAccountName` is not null))  ;
 
 -- --------------------------------------------------------
 
@@ -1716,7 +1782,7 @@ Create or Replace VIEW `v_chartofaccount`  AS SELECT `chartofaccount`.`ChartOfAc
 --
 DROP TABLE IF EXISTS `v_expense_chart`;
 
-Create or Replace VIEW `v_expense_chart`  AS SELECT date_format(`v_journal`.`Date`,'%M-%Y') AS `MonthName`, (sum(if((`v_journal`.`Dr` is null),0,`v_journal`.`Dr`)) - sum(if((`v_journal`.`Cr` is null),0,`v_journal`.`Cr`))) AS `Balance`, `v_journal`.`ChartOfAccountName` AS `ChartOfAccountName` FROM `v_journal` WHERE (`v_journal`.`CODE` = 'E') GROUP BY date_format(`v_journal`.`Date`,'%M-%Y'), `v_journal`.`ChartOfAccountName`  ;
+CREATE OR REPLACE VIEW `v_expense_chart`  AS SELECT date_format(`v_journal`.`Date`,'%M-%Y') AS `MonthName`, (sum(if((`v_journal`.`Dr` is null),0,`v_journal`.`Dr`)) - sum(if((`v_journal`.`Cr` is null),0,`v_journal`.`Cr`))) AS `Balance`, `v_journal`.`ChartOfAccountName` AS `ChartOfAccountName`, `v_journal`.`BranchName` AS `BranchName`, `v_journal`.`FullName` AS `FullName` FROM `v_journal` WHERE (`v_journal`.`CODE` = 'E') GROUP BY date_format(`v_journal`.`Date`,'%M-%Y'), `v_journal`.`ChartOfAccountName`  ;
 
 -- --------------------------------------------------------
 
@@ -1725,7 +1791,7 @@ Create or Replace VIEW `v_expense_chart`  AS SELECT date_format(`v_journal`.`Dat
 --
 DROP TABLE IF EXISTS `v_income_exp_chart`;
 
-Create or Replace VIEW `v_income_exp_chart`  AS SELECT sum(ifnull(`journal`.`Dr`,0)) AS `Dr`, sum(ifnull(`journal`.`Cr`,0)) AS `Cr`, (sum(ifnull(`journal`.`Dr`,0)) - sum(ifnull(`journal`.`Cr`,0))) AS `Balance`, date_format(`journal`.`Date`,'%b-%Y') AS `MonthName` FROM `journal` WHERE (`journal`.`ChartOfAccountID` in (110201,110250,110101,110200)) GROUP BY date_format(`journal`.`Date`,'%b-%Y')  ;
+CREATE OR REPLACE VIEW `v_income_exp_chart`  AS SELECT sum(ifnull(`journal`.`Dr`,0)) AS `Dr`, sum(ifnull(`journal`.`Cr`,0)) AS `Cr`, (sum(ifnull(`journal`.`Dr`,0)) - sum(ifnull(`journal`.`Cr`,0))) AS `Balance`, date_format(`journal`.`Date`,'%b-%Y') AS `MonthName` FROM `journal` WHERE (`journal`.`ChartOfAccountID` in (110201,110250,110101,110200)) GROUP BY date_format(`journal`.`Date`,'%b-%Y')  ;
 
 -- --------------------------------------------------------
 
@@ -1734,7 +1800,7 @@ Create or Replace VIEW `v_income_exp_chart`  AS SELECT sum(ifnull(`journal`.`Dr`
 --
 DROP TABLE IF EXISTS `v_invoice_detail`;
 
-Create or Replace VIEW `v_invoice_detail`  AS SELECT `item`.`ItemCode` AS `ItemCode`, `item`.`ItemName` AS `ItemName`, `invoice_detail`.`VisaType` AS `VisaType`, `invoice_detail`.`PaxName` AS `PaxName`, `invoice_detail`.`PNR` AS `PNR`, `invoice_detail`.`Sector` AS `Sector`, `invoice_detail`.`Fare` AS `Fare`, `invoice_detail`.`RefNo` AS `RefNo`, `invoice_detail`.`Taxable` AS `Taxable`, if((`invoice_master`.`InvoiceTypeID` = 1),`invoice_detail`.`Service`,`invoice_detail`.`Discount`) AS `Service`, `invoice_detail`.`OPVAT` AS `OPVAT`, `invoice_detail`.`IPVAT` AS `IPVAT`, if((`invoice_master`.`InvoiceTypeID` = 1),`invoice_detail`.`Discount`,0) AS `Discount`, `invoice_detail`.`InvoiceDetailID` AS `InvoiceDetailID`, `invoice_detail`.`InvoiceMasterID` AS `InvoiceMasterID`, `invoice_detail`.`ItemID` AS `ItemID`, `invoice_detail`.`SupplierID` AS `SupplierID`, `invoice_master`.`Date` AS `Date`, `invoice_master`.`InvoiceTypeID` AS `InvoiceTypeID`, `invoice_type`.`InvoiceTypeCode` AS `InvoiceTypeCode`, `invoice_master`.`UserID` AS `UserID`, `party`.`PartyName` AS `PartyName`, `saleman`.`SalemanName` AS `SalemanName`, `party`.`PartyCategoryID` AS `PartyCategoryID`, `party_category`.`CategoryCode` AS `CategoryCode`, `party_category`.`CategoryName` AS `CategoryName`, `invoice_master`.`PartyID` AS `PartyID`, concat(`invoice_type`.`InvoiceTypeCode`,'-',`invoice_detail`.`InvoiceMasterID`) AS `InvoiceNo`, `invoice_master`.`Total` AS `Total`, `invoice_master`.`Paid` AS `Paid`, `invoice_master`.`Balance` AS `Balance`, `invoice_master`.`PaymentMode` AS `PaymentMode` FROM ((((((`invoice_detail` join `item` on((`invoice_detail`.`ItemID` = `item`.`ItemID`))) join `invoice_master` on((`invoice_detail`.`InvoiceMasterID` = `invoice_master`.`InvoiceMasterID`))) join `invoice_type` on((`invoice_master`.`InvoiceTypeID` = `invoice_type`.`InvoiceTypeID`))) join `party` on((`invoice_master`.`PartyID` = `party`.`PartyID`))) join `saleman` on((`invoice_master`.`UserID` = `saleman`.`SalemanID`))) join `party_category` on((`party`.`PartyCategoryID` = `party_category`.`PartyCategoryID`)))  ;
+CREATE OR REPLACE VIEW `v_invoice_detail`  AS SELECT `item`.`ItemCode` AS `ItemCode`, `item`.`ItemName` AS `ItemName`, `invoice_detail`.`VisaType` AS `VisaType`, `invoice_detail`.`PaxName` AS `PaxName`, `invoice_detail`.`PNR` AS `PNR`, `invoice_detail`.`Sector` AS `Sector`, `invoice_detail`.`Fare` AS `Fare`, `invoice_detail`.`RefNo` AS `RefNo`, `invoice_detail`.`Taxable` AS `Taxable`, if((`invoice_master`.`InvoiceTypeID` = 1),`invoice_detail`.`Service`,`invoice_detail`.`Discount`) AS `Service`, `invoice_detail`.`OPVAT` AS `OPVAT`, `invoice_detail`.`IPVAT` AS `IPVAT`, if((`invoice_master`.`InvoiceTypeID` = 1),`invoice_detail`.`Discount`,0) AS `Discount`, `invoice_detail`.`InvoiceDetailID` AS `InvoiceDetailID`, `invoice_detail`.`InvoiceMasterID` AS `InvoiceMasterID`, `invoice_detail`.`ItemID` AS `ItemID`, `invoice_detail`.`SupplierID` AS `SupplierID`, `invoice_master`.`Date` AS `Date`, `invoice_master`.`InvoiceTypeID` AS `InvoiceTypeID`, `invoice_type`.`InvoiceTypeCode` AS `InvoiceTypeCode`, `party`.`PartyName` AS `PartyName`, `saleman`.`SalemanName` AS `SalemanName`, `party`.`PartyCategoryID` AS `PartyCategoryID`, `party_category`.`CategoryCode` AS `CategoryCode`, `party_category`.`CategoryName` AS `CategoryName`, `invoice_master`.`PartyID` AS `PartyID`, concat(`invoice_type`.`InvoiceTypeCode`,'-',`invoice_detail`.`InvoiceMasterID`) AS `InvoiceNo`, `invoice_master`.`Total` AS `Total`, `invoice_master`.`Paid` AS `Paid`, `invoice_master`.`Balance` AS `Balance`, `invoice_master`.`PaymentMode` AS `PaymentMode`, `invoice_master`.`UserID` AS `UserID`, `user`.`FullName` AS `FullName`, `branch`.`BranchName` AS `BranchName` FROM ((((((((`invoice_detail` join `item` on((`invoice_detail`.`ItemID` = `item`.`ItemID`))) join `invoice_master` on((`invoice_detail`.`InvoiceMasterID` = `invoice_master`.`InvoiceMasterID`))) join `invoice_type` on((`invoice_master`.`InvoiceTypeID` = `invoice_type`.`InvoiceTypeID`))) join `party` on((`invoice_master`.`PartyID` = `party`.`PartyID`))) join `saleman` on((`invoice_master`.`SalemanID` = `saleman`.`SalemanID`))) join `party_category` on((`party`.`PartyCategoryID` = `party_category`.`PartyCategoryID`))) join `user` on((`invoice_master`.`UserID` = `user`.`UserID`))) join `branch` on((`user`.`BranchID` = `branch`.`BranchID`)))  ;
 
 -- --------------------------------------------------------
 
@@ -1743,7 +1809,7 @@ Create or Replace VIEW `v_invoice_detail`  AS SELECT `item`.`ItemCode` AS `ItemC
 --
 DROP TABLE IF EXISTS `v_invoice_detail1`;
 
-Create or Replace VIEW `v_invoice_detail1`  AS SELECT `v_invoice_detail`.`ItemCode` AS `ItemCode`, `v_invoice_detail`.`ItemName` AS `ItemName`, `v_invoice_detail`.`VisaType` AS `VisaType`, `v_invoice_detail`.`PaxName` AS `PaxName`, `v_invoice_detail`.`PNR` AS `PNR`, `v_invoice_detail`.`Sector` AS `Sector`, ifnull(`v_invoice_detail`.`Fare`,0) AS `Fare`, `v_invoice_detail`.`RefNo` AS `RefNo`, `v_invoice_detail`.`Taxable` AS `Taxable`, ifnull(`v_invoice_detail`.`Service`,0) AS `Service`, `v_invoice_detail`.`OPVAT` AS `OPVAT`, `v_invoice_detail`.`IPVAT` AS `IPVAT`, ifnull(`v_invoice_detail`.`Discount`,0) AS `Discount`, ifnull(`v_invoice_detail`.`Total`,0) AS `Total`, `v_invoice_detail`.`InvoiceDetailID` AS `InvoiceDetailID`, `v_invoice_detail`.`InvoiceMasterID` AS `InvoiceMasterID`, `v_invoice_detail`.`ItemID` AS `ItemID`, `v_invoice_detail`.`Date` AS `Date`, `v_invoice_detail`.`InvoiceTypeID` AS `InvoiceTypeID`, `v_invoice_detail`.`InvoiceTypeCode` AS `InvoiceTypeCode`, `v_invoice_detail`.`UserID` AS `UserID`, `v_invoice_detail`.`PartyName` AS `PartyName`, `v_invoice_detail`.`SalemanName` AS `SalemanName`, `v_invoice_detail`.`PartyID` AS `PartyID` FROM `v_invoice_detail`  ;
+CREATE OR REPLACE VIEW `v_invoice_detail1`  AS SELECT `v_invoice_detail`.`ItemCode` AS `ItemCode`, `v_invoice_detail`.`ItemName` AS `ItemName`, `v_invoice_detail`.`VisaType` AS `VisaType`, `v_invoice_detail`.`PaxName` AS `PaxName`, `v_invoice_detail`.`PNR` AS `PNR`, `v_invoice_detail`.`Sector` AS `Sector`, ifnull(`v_invoice_detail`.`Fare`,0) AS `Fare`, `v_invoice_detail`.`RefNo` AS `RefNo`, `v_invoice_detail`.`Taxable` AS `Taxable`, ifnull(`v_invoice_detail`.`Service`,0) AS `Service`, `v_invoice_detail`.`OPVAT` AS `OPVAT`, `v_invoice_detail`.`IPVAT` AS `IPVAT`, ifnull(`v_invoice_detail`.`Discount`,0) AS `Discount`, ifnull(`v_invoice_detail`.`Total`,0) AS `Total`, `v_invoice_detail`.`InvoiceDetailID` AS `InvoiceDetailID`, `v_invoice_detail`.`InvoiceMasterID` AS `InvoiceMasterID`, `v_invoice_detail`.`ItemID` AS `ItemID`, `v_invoice_detail`.`Date` AS `Date`, `v_invoice_detail`.`InvoiceTypeID` AS `InvoiceTypeID`, `v_invoice_detail`.`InvoiceTypeCode` AS `InvoiceTypeCode`, `v_invoice_detail`.`UserID` AS `UserID`, `v_invoice_detail`.`PartyName` AS `PartyName`, `v_invoice_detail`.`SalemanName` AS `SalemanName`, `v_invoice_detail`.`PartyID` AS `PartyID` FROM `v_invoice_detail`  ;
 
 -- --------------------------------------------------------
 
@@ -1752,7 +1818,7 @@ Create or Replace VIEW `v_invoice_detail1`  AS SELECT `v_invoice_detail`.`ItemCo
 --
 DROP TABLE IF EXISTS `v_invoice_master`;
 
-Create or Replace VIEW `v_invoice_master`  AS SELECT `invoice_master`.`InvoiceMasterID` AS `InvoiceMasterID`, `invoice_master`.`InvoiceTypeID` AS `InvoiceTypeID`, `invoice_type`.`InvoiceTypeCode` AS `InvoiceTypeCode`, concat(`invoice_type`.`InvoiceTypeCode`,'-',`invoice_master`.`InvoiceMasterID`) AS `InvoiceCode`, `invoice_type`.`InvoiceType` AS `InvoiceType`, `invoice_master`.`Date` AS `Date`, `invoice_master`.`UserID` AS `UserID`, `invoice_master`.`PaymentMode` AS `PaymentMode`, `invoice_master`.`Total` AS `Total`, `invoice_master`.`Paid` AS `Paid`, `invoice_master`.`Balance` AS `Balance`, `invoice_master`.`DueDate` AS `DueDate`, `invoice_master`.`Note` AS `Note`, `party`.`PartyName` AS `PartyName`, `party`.`Address` AS `Address`, `party`.`Phone` AS `Phone`, `party`.`Email` AS `Email`, `party`.`PartyID` AS `PartyID` FROM (((`invoice_master` join `invoice_detail` on((`invoice_master`.`InvoiceMasterID` = `invoice_detail`.`InvoiceMasterID`))) join `invoice_type` on((`invoice_master`.`InvoiceTypeID` = `invoice_type`.`InvoiceTypeID`))) join `party` on((`invoice_master`.`PartyID` = `party`.`PartyID`))) ORDER BY `invoice_master`.`InvoiceMasterID` ASC  ;
+CREATE OR REPLACE VIEW `v_invoice_master`  AS SELECT `invoice_master`.`InvoiceMasterID` AS `InvoiceMasterID`, `invoice_master`.`InvoiceTypeID` AS `InvoiceTypeID`, `invoice_type`.`InvoiceTypeCode` AS `InvoiceTypeCode`, concat(`invoice_type`.`InvoiceTypeCode`,'-',`invoice_master`.`InvoiceMasterID`) AS `InvoiceCode`, `invoice_type`.`InvoiceType` AS `InvoiceType`, `invoice_master`.`Date` AS `Date`, `invoice_master`.`UserID` AS `UserID`, `invoice_master`.`PaymentMode` AS `PaymentMode`, `invoice_master`.`Total` AS `Total`, `invoice_master`.`Paid` AS `Paid`, `invoice_master`.`Balance` AS `Balance`, `invoice_master`.`DueDate` AS `DueDate`, `invoice_master`.`Note` AS `Note`, `party`.`PartyName` AS `PartyName`, `party`.`Address` AS `Address`, `party`.`Phone` AS `Phone`, `party`.`Email` AS `Email`, `party`.`PartyID` AS `PartyID`, `user`.`FullName` AS `FullName`, `branch`.`BranchName` AS `BranchName`, `saleman`.`SalemanName` AS `SalemanName` FROM ((((((`invoice_master` join `invoice_detail` on((`invoice_master`.`InvoiceMasterID` = `invoice_detail`.`InvoiceMasterID`))) join `invoice_type` on((`invoice_master`.`InvoiceTypeID` = `invoice_type`.`InvoiceTypeID`))) join `party` on((`invoice_master`.`PartyID` = `party`.`PartyID`))) join `user` on((`invoice_master`.`UserID` = `user`.`UserID`))) join `branch` on((`user`.`BranchID` = `branch`.`BranchID`))) join `saleman` on((`invoice_master`.`SalemanID` = `saleman`.`SalemanID`))) ORDER BY `invoice_master`.`InvoiceMasterID` ASC  ;
 
 -- --------------------------------------------------------
 
@@ -1761,7 +1827,7 @@ Create or Replace VIEW `v_invoice_master`  AS SELECT `invoice_master`.`InvoiceMa
 --
 DROP TABLE IF EXISTS `v_journal`;
 
-Create or Replace VIEW `v_journal`  AS SELECT `journal`.`VHNO` AS `VHNO`, `journal`.`JournalType` AS `JournalType`, `journal`.`ChartOfAccountID` AS `ChartOfAccountID`, `chartofaccount`.`ChartOfAccountName` AS `ChartOfAccountName`, `journal`.`SupplierID` AS `SupplierID`, `journal`.`VoucherMstID` AS `VoucherMstID`, `journal`.`PettyMstID` AS `PettyMstID`, `journal`.`InvoiceMasterID` AS `InvoiceMasterID`, `journal`.`Date` AS `Date`, sum(`journal`.`Dr`) AS `Dr`, sum(`journal`.`Cr`) AS `Cr`, `journal`.`PartyID` AS `PartyID`, `journal`.`Narration` AS `Narration`, `chartofaccount`.`L1` AS `L1`, `chartofaccount`.`L2` AS `L2`, `chartofaccount`.`L3` AS `L3`, `chartofaccount`.`CODE` AS `CODE` FROM (`chartofaccount` join `journal` on((`chartofaccount`.`ChartOfAccountID` = `journal`.`ChartOfAccountID`))) GROUP BY `journal`.`VHNO`, `journal`.`JournalType`, `journal`.`ChartOfAccountID`, `chartofaccount`.`ChartOfAccountName`, `journal`.`SupplierID`, `journal`.`VoucherMstID`, `journal`.`PettyMstID`, `journal`.`InvoiceMasterID`, `journal`.`Date`, `journal`.`PartyID`, `journal`.`Narration`, `chartofaccount`.`L1`, `chartofaccount`.`L2`, `chartofaccount`.`L3`, `chartofaccount`.`CODE`, `chartofaccount`.`CODE`, `chartofaccount`.`CODE`  ;
+CREATE OR REPLACE VIEW `v_journal`  AS SELECT `journal`.`VHNO` AS `VHNO`, `journal`.`JournalType` AS `JournalType`, `journal`.`ChartOfAccountID` AS `ChartOfAccountID`, `chartofaccount`.`ChartOfAccountName` AS `ChartOfAccountName`, `journal`.`SupplierID` AS `SupplierID`, `journal`.`VoucherMstID` AS `VoucherMstID`, `journal`.`PettyMstID` AS `PettyMstID`, `journal`.`InvoiceMasterID` AS `InvoiceMasterID`, `journal`.`Date` AS `Date`, sum(`journal`.`Dr`) AS `Dr`, sum(`journal`.`Cr`) AS `Cr`, `journal`.`PartyID` AS `PartyID`, `journal`.`Narration` AS `Narration`, `chartofaccount`.`L1` AS `L1`, `chartofaccount`.`L2` AS `L2`, `chartofaccount`.`L3` AS `L3`, `chartofaccount`.`CODE` AS `CODE`, `branch`.`BranchName` AS `BranchName`, `user`.`FullName` AS `FullName` FROM (((`chartofaccount` join `journal` on((`chartofaccount`.`ChartOfAccountID` = `journal`.`ChartOfAccountID`))) join `user` on((`user`.`UserID` = `journal`.`UserID`))) join `branch` on((`user`.`BranchID` = `branch`.`BranchID`))) GROUP BY `journal`.`VHNO`, `journal`.`JournalType`, `journal`.`ChartOfAccountID`, `chartofaccount`.`ChartOfAccountName`, `journal`.`SupplierID`, `journal`.`VoucherMstID`, `journal`.`PettyMstID`, `journal`.`InvoiceMasterID`, `journal`.`Date`, `journal`.`PartyID`, `journal`.`Narration`, `chartofaccount`.`L1`, `chartofaccount`.`L2`, `chartofaccount`.`L3`, `chartofaccount`.`CODE`, `chartofaccount`.`CODE`, `chartofaccount`.`CODE`  ;
 
 -- --------------------------------------------------------
 
@@ -1770,7 +1836,7 @@ Create or Replace VIEW `v_journal`  AS SELECT `journal`.`VHNO` AS `VHNO`, `journ
 --
 DROP TABLE IF EXISTS `v_party`;
 
-Create or Replace VIEW `v_party`  AS SELECT `party`.`PartyID` AS `PartyID`, `party_category`.`PartyCategoryID` AS `PartyCategoryID`, `party_category`.`CategoryCode` AS `CategoryCode`, `party_category`.`CategoryName` AS `CategoryName`, `party`.`PartyName` AS `PartyName`, `party`.`Address` AS `Address`, `party`.`Phone` AS `Phone`, `party`.`Email` AS `Email`, `party`.`Active` AS `Active`, `party`.`InvoiceDueDays` AS `InvoiceDueDays`, `party`.`eDate` AS `eDate` FROM (`party` join `party_category` on((`party`.`PartyCategoryID` = `party_category`.`PartyCategoryID`)))  ;
+CREATE OR REPLACE VIEW `v_party`  AS SELECT `party`.`PartyID` AS `PartyID`, `party_category`.`PartyCategoryID` AS `PartyCategoryID`, `party_category`.`CategoryCode` AS `CategoryCode`, `party_category`.`CategoryName` AS `CategoryName`, `party`.`PartyName` AS `PartyName`, `party`.`Address` AS `Address`, `party`.`Phone` AS `Phone`, `party`.`Email` AS `Email`, `party`.`Active` AS `Active`, `party`.`InvoiceDueDays` AS `InvoiceDueDays`, `party`.`eDate` AS `eDate`, `user`.`FullName` AS `FullName`, `branch`.`BranchName` AS `BranchName` FROM (((`party` join `party_category` on((`party`.`PartyCategoryID` = `party_category`.`PartyCategoryID`))) join `user` on((`party`.`UserID` = `user`.`UserID`))) join `branch` on((`user`.`BranchID` = `branch`.`BranchID`)))  ;
 
 -- --------------------------------------------------------
 
@@ -1779,7 +1845,7 @@ Create or Replace VIEW `v_party`  AS SELECT `party`.`PartyID` AS `PartyID`, `par
 --
 DROP TABLE IF EXISTS `v_party1`;
 
-Create or Replace VIEW `v_party1`  AS SELECT `party`.`PartyID` AS `PartyID`, `party_category`.`PartyCategoryID` AS `PartyCategoryID`, `party_category`.`CategoryCode` AS `CategoryCode`, `party_category`.`CategoryName` AS `CategoryName`, `party`.`PartyName` AS `PartyName`, `party`.`Address` AS `Address`, `party`.`Phone` AS `Phone`, `party`.`Email` AS `Email`, `party`.`Active` AS `Active`, `party`.`InvoiceDueDays` AS `InvoiceDueDays`, `party`.`eDate` AS `eDate` FROM (`party` join `party_category` on((`party`.`PartyCategoryID` = `party_category`.`PartyCategoryID`))) WHERE (`party_category`.`PartyCategoryID` = 2)  ;
+CREATE OR REPLACE VIEW `v_party1`  AS SELECT `party`.`PartyID` AS `PartyID`, `party_category`.`PartyCategoryID` AS `PartyCategoryID`, `party_category`.`CategoryCode` AS `CategoryCode`, `party_category`.`CategoryName` AS `CategoryName`, `party`.`PartyName` AS `PartyName`, `party`.`Address` AS `Address`, `party`.`Phone` AS `Phone`, `party`.`Email` AS `Email`, `party`.`Active` AS `Active`, `party`.`InvoiceDueDays` AS `InvoiceDueDays`, `party`.`eDate` AS `eDate`, `user`.`FullName` AS `FullName`, `branch`.`BranchName` AS `BranchName` FROM (((`party` join `party_category` on((`party`.`PartyCategoryID` = `party_category`.`PartyCategoryID`))) join `user` on((`party`.`UserID` = `user`.`UserID`))) join `branch` on((`user`.`BranchID` = `branch`.`BranchID`))) WHERE (`party_category`.`PartyCategoryID` = 2)  ;
 
 -- --------------------------------------------------------
 
@@ -1788,7 +1854,7 @@ Create or Replace VIEW `v_party1`  AS SELECT `party`.`PartyID` AS `PartyID`, `pa
 --
 DROP TABLE IF EXISTS `v_partywise_sale`;
 
-Create or Replace VIEW `v_partywise_sale`  AS SELECT `invoice_master`.`PartyID` AS `PartyID`, `party`.`PartyName` AS `PartyName`, count(`invoice_detail`.`InvoiceDetailID`) AS `Qty`, sum(`invoice_detail`.`Fare`) AS `Fare`, sum(`invoice_detail`.`Total`) AS `Total`, sum(`invoice_detail`.`Service`) AS `Service`, `invoice_master`.`InvoiceTypeID` AS `InvoiceTypeID`, sum(`invoice_detail`.`Discount`) AS `Discount`, `invoice_type`.`InvoiceTypeCode` AS `InvoiceTypeCode`, `invoice_type`.`InvoiceType` AS `InvoiceType` FROM (((`invoice_detail` join `invoice_master` on((`invoice_detail`.`InvoiceMasterID` = `invoice_master`.`InvoiceMasterID`))) join `party` on((`invoice_master`.`PartyID` = `party`.`PartyID`))) join `invoice_type` on((`invoice_type`.`InvoiceTypeID` = `invoice_master`.`InvoiceTypeID`))) GROUP BY `invoice_master`.`PartyID`, `party`.`PartyID`, `party`.`PartyName`, `invoice_master`.`InvoiceTypeID`, `invoice_type`.`InvoiceTypeCode`, `invoice_type`.`InvoiceType`  ;
+CREATE OR REPLACE VIEW `v_partywise_sale`  AS SELECT `invoice_master`.`PartyID` AS `PartyID`, `party`.`PartyName` AS `PartyName`, count(`invoice_detail`.`InvoiceDetailID`) AS `Qty`, sum(`invoice_detail`.`Fare`) AS `Fare`, sum(`invoice_detail`.`Total`) AS `Total`, sum(`invoice_detail`.`Service`) AS `Service`, `invoice_master`.`InvoiceTypeID` AS `InvoiceTypeID`, sum(`invoice_detail`.`Discount`) AS `Discount`, `invoice_type`.`InvoiceTypeCode` AS `InvoiceTypeCode`, `invoice_type`.`InvoiceType` AS `InvoiceType`, `user`.`FullName` AS `FullName`, `branch`.`BranchName` AS `BranchName` FROM (((((`invoice_detail` join `invoice_master` on((`invoice_detail`.`InvoiceMasterID` = `invoice_master`.`InvoiceMasterID`))) join `party` on((`invoice_master`.`PartyID` = `party`.`PartyID`))) join `invoice_type` on((`invoice_type`.`InvoiceTypeID` = `invoice_master`.`InvoiceTypeID`))) join `user` on((`invoice_master`.`UserID` = `user`.`UserID`))) join `branch` on((`user`.`BranchID` = `branch`.`BranchID`))) GROUP BY `invoice_master`.`PartyID`, `party`.`PartyID`, `party`.`PartyName`, `invoice_master`.`InvoiceTypeID`, `invoice_type`.`InvoiceTypeCode`, `invoice_type`.`InvoiceType`  ;
 
 -- --------------------------------------------------------
 
@@ -1797,7 +1863,7 @@ Create or Replace VIEW `v_partywise_sale`  AS SELECT `invoice_master`.`PartyID` 
 --
 DROP TABLE IF EXISTS `v_party_balance`;
 
-Create or Replace VIEW `v_party_balance`  AS SELECT `v_journal`.`VHNO` AS `VHNO`, `v_journal`.`JournalType` AS `JournalType`, `v_journal`.`ChartOfAccountID` AS `ChartOfAccountID`, `v_journal`.`ChartOfAccountName` AS `ChartOfAccountName`, `v_journal`.`VoucherMstID` AS `VoucherMstID`, `v_journal`.`PettyMstID` AS `PettyMstID`, `v_journal`.`InvoiceMasterID` AS `InvoiceMasterID`, `v_journal`.`Date` AS `Date`, `v_journal`.`Dr` AS `Dr`, `v_journal`.`Cr` AS `Cr`, `v_journal`.`PartyID` AS `PartyID`, `v_journal`.`Narration` AS `Narration`, `party`.`PartyName` AS `PartyName`, `party`.`PartyCategoryID` AS `PartyCategoryID` FROM (`v_journal` join `party` on((`v_journal`.`PartyID` = `party`.`PartyID`)))  ;
+CREATE OR REPLACE VIEW `v_party_balance`  AS SELECT `v_journal`.`VHNO` AS `VHNO`, `v_journal`.`JournalType` AS `JournalType`, `v_journal`.`ChartOfAccountID` AS `ChartOfAccountID`, `v_journal`.`ChartOfAccountName` AS `ChartOfAccountName`, `v_journal`.`VoucherMstID` AS `VoucherMstID`, `v_journal`.`PettyMstID` AS `PettyMstID`, `v_journal`.`InvoiceMasterID` AS `InvoiceMasterID`, `v_journal`.`Date` AS `Date`, `v_journal`.`Dr` AS `Dr`, `v_journal`.`Cr` AS `Cr`, `v_journal`.`PartyID` AS `PartyID`, `v_journal`.`Narration` AS `Narration`, `party`.`PartyName` AS `PartyName`, `party`.`PartyCategoryID` AS `PartyCategoryID`, `v_journal`.`BranchName` AS `BranchName`, `v_journal`.`FullName` AS `FullName` FROM (`v_journal` join `party` on((`v_journal`.`PartyID` = `party`.`PartyID`)))  ;
 
 -- --------------------------------------------------------
 
@@ -1806,7 +1872,7 @@ Create or Replace VIEW `v_party_balance`  AS SELECT `v_journal`.`VHNO` AS `VHNO`
 --
 DROP TABLE IF EXISTS `v_party_montly_balance`;
 
-Create or Replace VIEW `v_party_montly_balance`  AS SELECT date_format(`journal`.`Date`,'%b-%Y') AS `Date`, sum(ifnull(`journal`.`Dr`,0)) AS `Dr`, sum(ifnull(`journal`.`Cr`,0)) AS `Cr`, (sum(ifnull(`journal`.`Dr`,0)) - sum(ifnull(`journal`.`Cr`,0))) AS `Balance`, `journal`.`PartyID` AS `PartyID` FROM `journal` WHERE ((`journal`.`ChartOfAccountID` = 110400) AND (`journal`.`PartyID` is not null)) GROUP BY `journal`.`PartyID`, date_format(`journal`.`Date`,'%b-%Y')  ;
+CREATE OR REPLACE VIEW `v_party_montly_balance`  AS SELECT date_format(`journal`.`Date`,'%b-%Y') AS `Date`, sum(ifnull(`journal`.`Dr`,0)) AS `Dr`, sum(ifnull(`journal`.`Cr`,0)) AS `Cr`, (sum(ifnull(`journal`.`Dr`,0)) - sum(ifnull(`journal`.`Cr`,0))) AS `Balance`, `journal`.`PartyID` AS `PartyID`, `user`.`FullName` AS `FullName`, `branch`.`BranchName` AS `BranchName` FROM ((`journal` join `user` on((`journal`.`UserID` = `user`.`UserID`))) join `branch` on((`user`.`BranchID` = `branch`.`BranchID`))) WHERE ((`journal`.`ChartOfAccountID` = 110400) AND (`journal`.`PartyID` is not null)) GROUP BY `journal`.`PartyID`, date_format(`journal`.`Date`,'%b-%Y')  ;
 
 -- --------------------------------------------------------
 
@@ -1815,7 +1881,7 @@ Create or Replace VIEW `v_party_montly_balance`  AS SELECT date_format(`journal`
 --
 DROP TABLE IF EXISTS `v_pettycash_master`;
 
-Create or Replace VIEW `v_pettycash_master`  AS SELECT `pettycash_master`.`PettyMstID` AS `PettyMstID`, `pettycash_master`.`PettyVoucher` AS `PettyVoucher`, `chartofaccount`.`ChartOfAccountID` AS `ChartOfAccountID`, `chartofaccount`.`CODE` AS `CODE`, `chartofaccount`.`ChartOfAccountName` AS `ChartOfAccountName`, `pettycash_master`.`Date` AS `Date`, `pettycash_master`.`Narration` AS `Narration`, `pettycash_master`.`Credit` AS `Credit` FROM (`chartofaccount` join `pettycash_master` on((`chartofaccount`.`ChartOfAccountID` = `pettycash_master`.`ChOfAcc`)))  ;
+CREATE OR REPLACE VIEW `v_pettycash_master`  AS SELECT `pettycash_master`.`PettyMstID` AS `PettyMstID`, `pettycash_master`.`PettyVoucher` AS `PettyVoucher`, `chartofaccount`.`ChartOfAccountID` AS `ChartOfAccountID`, `chartofaccount`.`CODE` AS `CODE`, `chartofaccount`.`ChartOfAccountName` AS `ChartOfAccountName`, `pettycash_master`.`Date` AS `Date`, `pettycash_master`.`Narration` AS `Narration`, `pettycash_master`.`Credit` AS `Credit`, `user`.`FullName` AS `FullName`, `branch`.`BranchName` AS `BranchName` FROM (((`chartofaccount` join `pettycash_master` on((`chartofaccount`.`ChartOfAccountID` = `pettycash_master`.`ChOfAcc`))) join `user` on((`pettycash_master`.`UserID` = `user`.`UserID`))) join `branch` on((`user`.`BranchID` = `branch`.`BranchID`)))  ;
 
 -- --------------------------------------------------------
 
@@ -1824,7 +1890,7 @@ Create or Replace VIEW `v_pettycash_master`  AS SELECT `pettycash_master`.`Petty
 --
 DROP TABLE IF EXISTS `v_rev_exp`;
 
-Create or Replace VIEW `v_rev_exp`  AS SELECT (sum(if((`v_journal`.`Cr` is null),0,`v_journal`.`Cr`)) - sum(if((`v_journal`.`Dr` is null),0,`v_journal`.`Dr`))) AS `Rev`, 0 AS `Exp`, date_format(`v_journal`.`Date`,'%M-%Y') AS `DATE_FORMAT(date,'%M-%Y')`, date_format(`v_journal`.`Date`,'%m-%Y') AS `date_format(``v_journal``.``Date``,'%m-%Y')` FROM `v_journal` WHERE (`v_journal`.`CODE` = 'r') GROUP BY date_format(`v_journal`.`Date`,'%M-%Y'), date_format(`v_journal`.`Date`,'%m-%Y'), `v_journal`.`CODE`  ;
+CREATE OR REPLACE VIEW `v_rev_exp`  AS SELECT (sum(if((`v_journal`.`Cr` is null),0,`v_journal`.`Cr`)) - sum(if((`v_journal`.`Dr` is null),0,`v_journal`.`Dr`))) AS `Rev`, 0 AS `Exp`, date_format(`v_journal`.`Date`,'%M-%Y') AS `DATE_FORMAT(date,'%M-%Y')`, date_format(`v_journal`.`Date`,'%m-%Y') AS `date_format(``v_journal``.``Date``,'%m-%Y')` FROM `v_journal` WHERE (`v_journal`.`CODE` = 'r') GROUP BY date_format(`v_journal`.`Date`,'%M-%Y'), date_format(`v_journal`.`Date`,'%m-%Y'), `v_journal`.`CODE`  ;
 
 -- --------------------------------------------------------
 
@@ -1833,7 +1899,7 @@ Create or Replace VIEW `v_rev_exp`  AS SELECT (sum(if((`v_journal`.`Cr` is null)
 --
 DROP TABLE IF EXISTS `v_rev_exp_chart`;
 
-Create or Replace VIEW `v_rev_exp_chart`  AS SELECT abs(round(sum(`v_rev_exp`.`Rev`),0)) AS `Rev`, abs(round(sum(`v_rev_exp`.`Exp`),0)) AS `Exp`, `v_rev_exp`.`DATE_FORMAT(date,'%M-%Y')` AS `MonthName` FROM `v_rev_exp` GROUP BY `v_rev_exp`.`DATE_FORMAT(date,'%M-%Y')` ORDER BY `v_rev_exp`.`DATE_FORMAT(date,'%M-%Y')` ASC  ;
+CREATE OR REPLACE VIEW `v_rev_exp_chart`  AS SELECT abs(round(sum(`v_rev_exp`.`Rev`),0)) AS `Rev`, abs(round(sum(`v_rev_exp`.`Exp`),0)) AS `Exp`, `v_rev_exp`.`DATE_FORMAT(date,'%M-%Y')` AS `MonthName` FROM `v_rev_exp` GROUP BY `v_rev_exp`.`DATE_FORMAT(date,'%M-%Y')` ORDER BY `v_rev_exp`.`DATE_FORMAT(date,'%M-%Y')` ASC  ;
 
 -- --------------------------------------------------------
 
@@ -1842,7 +1908,7 @@ Create or Replace VIEW `v_rev_exp_chart`  AS SELECT abs(round(sum(`v_rev_exp`.`R
 --
 DROP TABLE IF EXISTS `v_supplier`;
 
-Create or Replace VIEW `v_supplier`  AS SELECT `supplier`.`SupplierID` AS `SupplierID`, `supplier`.`SupplierCatID` AS `SupplierCatID`, concat(`supplier_category`.`SupplierCode`,'-',`supplier_category`.`SupplierCategory`) AS `SupplierCategory`, `supplier`.`Category` AS `Category`, `supplier`.`SupplierName` AS `SupplierName`, `supplier`.`Address` AS `Address`, `supplier`.`Phone` AS `Phone`, `supplier`.`Email` AS `Email`, `supplier`.`Active` AS `Active`, `supplier`.`InvoiceDueDays` AS `InvoiceDueDays`, `supplier`.`eDate` AS `eDate` FROM (`supplier_category` join `supplier` on((`supplier_category`.`SupplierCatID` = `supplier`.`SupplierCatID`)))  ;
+CREATE OR REPLACE VIEW `v_supplier`  AS SELECT `supplier`.`SupplierID` AS `SupplierID`, `supplier`.`SupplierCatID` AS `SupplierCatID`, concat(`supplier_category`.`SupplierCode`,'-',`supplier_category`.`SupplierCategory`) AS `SupplierCategory`, `supplier`.`Category` AS `Category`, `supplier`.`SupplierName` AS `SupplierName`, `supplier`.`Address` AS `Address`, `supplier`.`Phone` AS `Phone`, `supplier`.`Email` AS `Email`, `supplier`.`Active` AS `Active`, `supplier`.`InvoiceDueDays` AS `InvoiceDueDays`, `supplier`.`eDate` AS `eDate`, `user`.`FullName` AS `FullName`, `branch`.`BranchName` AS `BranchName` FROM (((`supplier_category` join `supplier` on((`supplier_category`.`SupplierCatID` = `supplier`.`SupplierCatID`))) join `user` on((`supplier`.`UserID` = `user`.`UserID`))) join `branch` on((`user`.`BranchID` = `branch`.`BranchID`)))  ;
 
 -- --------------------------------------------------------
 
@@ -1851,7 +1917,7 @@ Create or Replace VIEW `v_supplier`  AS SELECT `supplier`.`SupplierID` AS `Suppl
 --
 DROP TABLE IF EXISTS `v_supplier_balance`;
 
-Create or Replace VIEW `v_supplier_balance`  AS SELECT `journal`.`SupplierID` AS `SupplierID`, date_format(`journal`.`Date`,'%b-%Y') AS `Date`, sum(if((`journal`.`Dr` is null),0,`journal`.`Dr`)) AS `Dr`, sum(if((`journal`.`Cr` is null),0,`journal`.`Cr`)) AS `Cr`, sum((if((`journal`.`Dr` is null),0,`journal`.`Dr`) - if((`journal`.`Cr` is null),0,`journal`.`Cr`))) AS `Balance` FROM `journal` WHERE (`journal`.`ChartOfAccountID` = 210100) GROUP BY `journal`.`SupplierID`, date_format(`journal`.`Date`,'%b-%Y')  ;
+CREATE OR REPLACE VIEW `v_supplier_balance`  AS SELECT `journal`.`SupplierID` AS `SupplierID`, date_format(`journal`.`Date`,'%b-%Y') AS `Date`, sum(if((`journal`.`Dr` is null),0,`journal`.`Dr`)) AS `Dr`, sum(if((`journal`.`Cr` is null),0,`journal`.`Cr`)) AS `Cr`, sum((if((`journal`.`Dr` is null),0,`journal`.`Dr`) - if((`journal`.`Cr` is null),0,`journal`.`Cr`))) AS `Balance`, `user`.`FullName` AS `FullName` FROM ((`journal` join `user` on((`journal`.`UserID` = `user`.`UserID`))) join `branch` on((`user`.`BranchID` = `branch`.`BranchID`))) WHERE (`journal`.`ChartOfAccountID` = 210100) GROUP BY `journal`.`SupplierID`, date_format(`journal`.`Date`,'%b-%Y')  ;
 
 -- --------------------------------------------------------
 
@@ -1860,7 +1926,7 @@ Create or Replace VIEW `v_supplier_balance`  AS SELECT `journal`.`SupplierID` AS
 --
 DROP TABLE IF EXISTS `v_trial`;
 
-Create or Replace VIEW `v_trial`  AS SELECT `v_journal`.`ChartOfAccountID` AS `ChartOfAccountID`, `v_journal`.`ChartOfAccountName` AS `ChartOfAccountName`, sum(ifnull(`v_journal`.`Dr`,0)) AS `Dr`, sum(ifnull(`v_journal`.`Cr`,0)) AS `Cr`, (sum(ifnull(`v_journal`.`Dr`,0)) - sum(ifnull(`v_journal`.`Cr`,0))) AS `Balance` FROM `v_journal` GROUP BY `v_journal`.`ChartOfAccountID`, `v_journal`.`ChartOfAccountName` ORDER BY `v_journal`.`ChartOfAccountName` ASC  ;
+CREATE OR REPLACE VIEW `v_trial`  AS SELECT `v_journal`.`ChartOfAccountID` AS `ChartOfAccountID`, `v_journal`.`ChartOfAccountName` AS `ChartOfAccountName`, sum(ifnull(`v_journal`.`Dr`,0)) AS `Dr`, sum(ifnull(`v_journal`.`Cr`,0)) AS `Cr`, (sum(ifnull(`v_journal`.`Dr`,0)) - sum(ifnull(`v_journal`.`Cr`,0))) AS `Balance` FROM `v_journal` GROUP BY `v_journal`.`ChartOfAccountID`, `v_journal`.`ChartOfAccountName` ORDER BY `v_journal`.`ChartOfAccountName` ASC  ;
 
 -- --------------------------------------------------------
 
@@ -1869,7 +1935,7 @@ Create or Replace VIEW `v_trial`  AS SELECT `v_journal`.`ChartOfAccountID` AS `C
 --
 DROP TABLE IF EXISTS `v_trial_balance`;
 
-Create or Replace VIEW `v_trial_balance`  AS SELECT `v_trial`.`ChartOfAccountID` AS `ChartOfAccountID`, `v_trial`.`ChartOfAccountName` AS `ChartOfAccountName`, if((`v_trial`.`Balance` >= 0),`v_trial`.`Balance`,0) AS `Dr`, if((`v_trial`.`Balance` < 0),abs(`v_trial`.`Balance`),0) AS `Cr` FROM `v_trial`  ;
+CREATE OR REPLACE VIEW `v_trial_balance`  AS SELECT `v_trial`.`ChartOfAccountID` AS `ChartOfAccountID`, `v_trial`.`ChartOfAccountName` AS `ChartOfAccountName`, if((`v_trial`.`Balance` >= 0),`v_trial`.`Balance`,0) AS `Dr`, if((`v_trial`.`Balance` < 0),abs(`v_trial`.`Balance`),0) AS `Cr` FROM `v_trial`  ;
 
 -- --------------------------------------------------------
 
@@ -1878,7 +1944,7 @@ Create or Replace VIEW `v_trial_balance`  AS SELECT `v_trial`.`ChartOfAccountID`
 --
 DROP TABLE IF EXISTS `v_users`;
 
-Create or Replace VIEW `v_users`  AS SELECT `user`.`UserID` AS `UserID`, `user`.`BranchID` AS `BranchID`, `user`.`FullName` AS `FullName`, `user`.`Email` AS `Email`, `user`.`Password` AS `Password`, `user`.`UserType` AS `UserType`, `user`.`eDate` AS `eDate`, `user`.`Active` AS `Active`, `branch`.`BranchName` AS `BranchName`, `branch`.`BranchContact` AS `BranchContact`, `branch`.`BranchEmail` AS `BranchEmail`, `branch`.`BranchAddress` AS `BranchAddress`, `branch`.`BranchLogo` AS `BranchLogo` FROM (`user` join `branch` on((`user`.`BranchID` = `branch`.`BranchID`)))  ;
+CREATE OR REPLACE VIEW `v_users`  AS SELECT `user`.`UserID` AS `UserID`, `user`.`BranchID` AS `BranchID`, `user`.`FullName` AS `FullName`, `user`.`Email` AS `Email`, `user`.`Password` AS `Password`, `user`.`UserType` AS `UserType`, `user`.`eDate` AS `eDate`, `user`.`Active` AS `Active`, `branch`.`BranchName` AS `BranchName`, `branch`.`BranchContact` AS `BranchContact`, `branch`.`BranchEmail` AS `BranchEmail`, `branch`.`BranchAddress` AS `BranchAddress`, `branch`.`BranchLogo` AS `BranchLogo` FROM (`user` join `branch` on((`user`.`BranchID` = `branch`.`BranchID`)))  ;
 
 -- --------------------------------------------------------
 
@@ -1887,7 +1953,7 @@ Create or Replace VIEW `v_users`  AS SELECT `user`.`UserID` AS `UserID`, `user`.
 --
 DROP TABLE IF EXISTS `v_vc_montly_balance`;
 
-Create or Replace VIEW `v_vc_montly_balance`  AS SELECT date_format(`journal`.`Date`,'%b-%Y') AS `Date`, sum(ifnull(`journal`.`Dr`,0)) AS `Dr`, sum(ifnull(`journal`.`Cr`,0)) AS `Cr`, (sum(ifnull(`journal`.`Dr`,0)) - sum(ifnull(`journal`.`Cr`,0))) AS `Balance`, `journal`.`PartyID` AS `PartyID` FROM (`journal` join `party` on((`journal`.`PartyID` = `party`.`PartyID`))) WHERE ((`journal`.`ChartOfAccountID` in (110400,210100)) AND (`party`.`PartyCategoryID` = 2)) GROUP BY `journal`.`PartyID`, date_format(`journal`.`Date`,'%b-%Y')  ;
+CREATE OR REPLACE VIEW `v_vc_montly_balance`  AS SELECT date_format(`journal`.`Date`,'%b-%Y') AS `Date`, sum(ifnull(`journal`.`Dr`,0)) AS `Dr`, sum(ifnull(`journal`.`Cr`,0)) AS `Cr`, (sum(ifnull(`journal`.`Dr`,0)) - sum(ifnull(`journal`.`Cr`,0))) AS `Balance`, `journal`.`PartyID` AS `PartyID`, `user`.`FullName` AS `FullName`, `branch`.`BranchName` AS `BranchName` FROM (((`journal` join `party` on((`journal`.`PartyID` = `party`.`PartyID`))) join `user` on((`journal`.`UserID` = `user`.`UserID`))) join `branch` on((`user`.`BranchID` = `branch`.`BranchID`))) WHERE ((`journal`.`ChartOfAccountID` in (110400,210100)) AND (`party`.`PartyCategoryID` = 2)) GROUP BY `journal`.`PartyID`, date_format(`journal`.`Date`,'%b-%Y')  ;
 
 -- --------------------------------------------------------
 
@@ -1896,7 +1962,7 @@ Create or Replace VIEW `v_vc_montly_balance`  AS SELECT date_format(`journal`.`D
 --
 DROP TABLE IF EXISTS `v_visa`;
 
-Create or Replace VIEW `v_visa`  AS SELECT `visa`.`VisaID` AS `VisaID`, date_format(`visa`.`Date`,'%d/%m/%Y') AS `Date`, date_format(`visa`.`DueDate`,'%d/%m/%Y') AS `DueDate`, `visa`.`PassangerName` AS `PassangerName`, `visa`.`VisaNo` AS `VisaNo`, `visa`.`SupplierID` AS `SupplierID`, `visa`.`PartyID` AS `PartyID`, `visa`.`Nationality` AS `Nationality`, `visa`.`Phone` AS `Phone`, `visa`.`Email` AS `Email`, `visa`.`Address` AS `Address`, `visa`.`eDate` AS `eDate`, `party`.`PartyName` AS `PartyName`, `party`.`Address` AS `PartyAddress`, `party`.`Phone` AS `PartyPhone`, `party`.`Email` AS `PartyEmail`, timestampdiff(DAY,sysdate(),`visa`.`DueDate`) AS `VisaExpiry` FROM (`visa` join `party` on((`visa`.`PartyID` = `party`.`PartyID`)))  ;
+CREATE OR REPLACE VIEW `v_visa`  AS SELECT `visa`.`VisaID` AS `VisaID`, date_format(`visa`.`Date`,'%d/%m/%Y') AS `Date`, date_format(`visa`.`DueDate`,'%d/%m/%Y') AS `DueDate`, `visa`.`PassangerName` AS `PassangerName`, `visa`.`VisaNo` AS `VisaNo`, `visa`.`SupplierID` AS `SupplierID`, `visa`.`PartyID` AS `PartyID`, `visa`.`Nationality` AS `Nationality`, `visa`.`Phone` AS `Phone`, `visa`.`Email` AS `Email`, `visa`.`Address` AS `Address`, `visa`.`eDate` AS `eDate`, `party`.`PartyName` AS `PartyName`, `party`.`Address` AS `PartyAddress`, `party`.`Phone` AS `PartyPhone`, `party`.`Email` AS `PartyEmail`, timestampdiff(DAY,sysdate(),`visa`.`DueDate`) AS `VisaExpiry`, `user`.`FullName` AS `FullName`, `branch`.`BranchName` AS `BranchName` FROM (((`visa` join `party` on((`visa`.`PartyID` = `party`.`PartyID`))) join `user` on((`visa`.`UserID` = `user`.`UserID`))) join `branch` on((`user`.`BranchID` = `branch`.`BranchID`)))  ;
 
 -- --------------------------------------------------------
 
@@ -1905,7 +1971,7 @@ Create or Replace VIEW `v_visa`  AS SELECT `visa`.`VisaID` AS `VisaID`, date_for
 --
 DROP TABLE IF EXISTS `v_voucher`;
 
-Create or Replace VIEW `v_voucher`  AS SELECT `voucher_master`.`VoucherMstID` AS `VoucherMstID`, `voucher_type`.`VoucherCode` AS `VoucherCode`, `voucher_type`.`VoucherTypeName` AS `VoucherTypeName`, `voucher_master`.`Voucher` AS `Voucher`, `voucher_master`.`Date` AS `Date`, `voucher_master`.`Narration` AS `Narration` FROM (`voucher_master` join `voucher_type` on((`voucher_master`.`VoucherCodeID` = `voucher_type`.`VoucherTypeID`)))  ;
+CREATE OR REPLACE VIEW `v_voucher`  AS SELECT `voucher_master`.`VoucherMstID` AS `VoucherMstID`, `voucher_type`.`VoucherCode` AS `VoucherCode`, `voucher_type`.`VoucherTypeName` AS `VoucherTypeName`, `voucher_master`.`Voucher` AS `Voucher`, `voucher_master`.`Date` AS `Date`, `voucher_master`.`Narration` AS `Narration`, `user`.`FullName` AS `FullName`, `branch`.`BranchName` AS `BranchName` FROM (((`voucher_master` join `voucher_type` on((`voucher_master`.`VoucherCodeID` = `voucher_type`.`VoucherTypeID`))) join `user` on((`voucher_master`.`UserID` = `user`.`UserID`))) join `branch` on((`user`.`BranchID` = `branch`.`BranchID`)))  ;
 
 -- --------------------------------------------------------
 
@@ -1914,7 +1980,7 @@ Create or Replace VIEW `v_voucher`  AS SELECT `voucher_master`.`VoucherMstID` AS
 --
 DROP TABLE IF EXISTS `v_voucher_detail`;
 
-Create or Replace VIEW `v_voucher_detail`  AS SELECT `voucher_master`.`VoucherMstID` AS `VoucherMstID`, `voucher_master`.`VoucherCodeID` AS `VoucherCodeID`, `voucher_master`.`Voucher` AS `Voucher`, `voucher_master`.`Narration` AS `NarrationMaster`, `voucher_detail`.`Date` AS `Date`, `voucher_detail`.`ChOfAcc` AS `ChOfAcc`, `chartofaccount`.`ChartOfAccountName` AS `ChartOfAccountName`, `voucher_detail`.`Debit` AS `Debit`, `voucher_detail`.`Credit` AS `Credit`, `voucher_detail`.`InvoiceNo` AS `InvoiceNo`, `voucher_detail`.`Narration` AS `Narration`, `voucher_detail`.`SupplierID` AS `SupplierID`, `voucher_detail`.`PartyID` AS `PartyID`, `voucher_detail`.`RefNo` AS `RefNo`, `party`.`PartyName` AS `PartyName`, `supplier`.`SupplierName` AS `SupplierName` FROM ((((`voucher_detail` join `voucher_master` on((`voucher_master`.`VoucherMstID` = `voucher_detail`.`VoucherMstID`))) join `chartofaccount` on((`chartofaccount`.`ChartOfAccountID` = `voucher_detail`.`ChOfAcc`))) left join `party` on((`voucher_detail`.`PartyID` = `party`.`PartyID`))) left join `supplier` on((`voucher_detail`.`SupplierID` = `supplier`.`SupplierID`)))  ;
+CREATE OR REPLACE VIEW `v_voucher_detail`  AS SELECT `voucher_master`.`VoucherMstID` AS `VoucherMstID`, `voucher_master`.`VoucherCodeID` AS `VoucherCodeID`, `voucher_master`.`Voucher` AS `Voucher`, `voucher_master`.`Narration` AS `NarrationMaster`, `voucher_detail`.`Date` AS `Date`, `voucher_detail`.`ChOfAcc` AS `ChOfAcc`, `chartofaccount`.`ChartOfAccountName` AS `ChartOfAccountName`, `voucher_detail`.`Debit` AS `Debit`, `voucher_detail`.`Credit` AS `Credit`, `voucher_detail`.`InvoiceNo` AS `InvoiceNo`, `voucher_detail`.`Narration` AS `Narration`, `voucher_detail`.`SupplierID` AS `SupplierID`, `voucher_detail`.`PartyID` AS `PartyID`, `voucher_detail`.`RefNo` AS `RefNo`, `party`.`PartyName` AS `PartyName`, `supplier`.`SupplierName` AS `SupplierName`, `user`.`FullName` AS `FullName`, `branch`.`BranchName` AS `BranchName` FROM ((((((`voucher_detail` join `voucher_master` on((`voucher_master`.`VoucherMstID` = `voucher_detail`.`VoucherMstID`))) join `chartofaccount` on((`chartofaccount`.`ChartOfAccountID` = `voucher_detail`.`ChOfAcc`))) left join `party` on((`voucher_detail`.`PartyID` = `party`.`PartyID`))) left join `supplier` on((`voucher_detail`.`SupplierID` = `supplier`.`SupplierID`))) join `user` on((`voucher_master`.`UserID` = `user`.`UserID`))) join `branch` on((`user`.`BranchID` = `branch`.`BranchID`)))  ;
 
 -- --------------------------------------------------------
 
@@ -1923,7 +1989,7 @@ Create or Replace VIEW `v_voucher_detail`  AS SELECT `voucher_master`.`VoucherMs
 --
 DROP TABLE IF EXISTS `v_voucher_master`;
 
-Create or Replace VIEW `v_voucher_master`  AS SELECT `voucher_master`.`VoucherMstID` AS `VoucherMstID`, `voucher_master`.`VoucherCodeID` AS `VoucherCodeID`, `voucher_master`.`Voucher` AS `Voucher`, `voucher_master`.`Date` AS `Date`, `voucher_master`.`Narration` AS `Narration`, `voucher_type`.`VoucherTypeID` AS `VoucherTypeID`, `voucher_type`.`VoucherCode` AS `VoucherCode`, `voucher_type`.`VoucherTypeName` AS `VoucherTypeName` FROM (`voucher_master` join `voucher_type` on((`voucher_master`.`VoucherCodeID` = `voucher_type`.`VoucherTypeID`)))  ;
+CREATE OR REPLACE VIEW `v_voucher_master`  AS SELECT `voucher_master`.`VoucherMstID` AS `VoucherMstID`, `voucher_master`.`VoucherCodeID` AS `VoucherCodeID`, `voucher_master`.`Voucher` AS `Voucher`, `voucher_master`.`Date` AS `Date`, `voucher_master`.`Narration` AS `Narration`, `voucher_type`.`VoucherTypeID` AS `VoucherTypeID`, `voucher_type`.`VoucherCode` AS `VoucherCode`, `voucher_type`.`VoucherTypeName` AS `VoucherTypeName`, `branch`.`BranchName` AS `BranchName`, `user`.`FullName` AS `FullName` FROM (((`voucher_master` join `voucher_type` on((`voucher_master`.`VoucherCodeID` = `voucher_type`.`VoucherTypeID`))) join `user` on((`voucher_master`.`UserID` = `user`.`UserID`))) join `branch` on((`user`.`BranchID` = `branch`.`BranchID`)))  ;
 
 --
 -- Indexes for dumped tables
@@ -2135,13 +2201,13 @@ ALTER TABLE `expense_master`
 -- AUTO_INCREMENT for table `invoice_detail`
 --
 ALTER TABLE `invoice_detail`
-  MODIFY `InvoiceDetailID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `InvoiceDetailID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `invoice_master`
 --
 ALTER TABLE `invoice_master`
-  MODIFY `InvoiceMasterID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `InvoiceMasterID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `invoice_type`
@@ -2159,7 +2225,7 @@ ALTER TABLE `item`
 -- AUTO_INCREMENT for table `journal`
 --
 ALTER TABLE `journal`
-  MODIFY `JournalID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `JournalID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 
 --
 -- AUTO_INCREMENT for table `migrations`
@@ -2171,7 +2237,7 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT for table `party`
 --
 ALTER TABLE `party`
-  MODIFY `PartyID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `PartyID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `party_category`
@@ -2195,7 +2261,7 @@ ALTER TABLE `pettycash_master`
 -- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
-  MODIFY `RoleID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=142;
+  MODIFY `RoleID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=145;
 
 --
 -- AUTO_INCREMENT for table `runtotaltestdata`
@@ -2237,7 +2303,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `user_role`
 --
 ALTER TABLE `user_role`
-  MODIFY `RoleId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4641;
+  MODIFY `RoleId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4729;
 
 --
 -- AUTO_INCREMENT for table `visa`

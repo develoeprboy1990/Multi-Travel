@@ -1320,7 +1320,10 @@ $id = DB::table('journal')->where('VoucherMstID',$id)->delete();
               'Total' => $request->input('Total'), 
               'Paid' => $request->input('amountPaid'), 
               'Balance' => $request->input('amountDue'), 
-              'UserID' => $request->input('SalemanID'), 
+              'SalemanID' => $request->input('SalemanID'),
+              'UserID' => session::get('UserID'), 
+
+
 
       );
 
@@ -1870,7 +1873,8 @@ public  function InvoiceUpdate(request $request)
               'Total' => $request->input('Total'), 
               'Paid' => $request->input('amountPaid'), 
               'Balance' => $request->input('amountDue'), 
-              'UserID' => $request->input('SalemanID'), 
+              'SalemanID' => $request->input('SalemanID'), 
+              'UserID' => session::get('UserID'), 
 
       );
 
