@@ -28,7 +28,7 @@ body,td,th {
 
 <?php 
 
-$company = DB::table('company')->get();
+$company = DB::table('company')->first();
 //onload="window.print()"
  ?>
 
@@ -36,20 +36,20 @@ $company = DB::table('company')->get();
   <div align="center">
     <table width="800" border="0" cellspacing="0" cellpadding="0">
       <tr>
-        <td width="50%"><span class="style3">{{$company[0]->Name}} </span></td>
-      <td width="50%" rowspan="4" valign="top"><div align="right"><img src="{{asset('documents/'.$company[0]->Logo)}}" width="30%;" ></div></td>
+        <td width="50%"><span class="style3">{{$branch_det->BranchName}} </span></td>
+      <td width="50%" rowspan="4" valign="top"><div align="right"><img src="{{asset('uploads/'.$branch_det->BranchLogo)}}" width="30%;" ></div></td>
     </tr>
       <tr>
-        <td>{{$company[0]->Address}}</td>
+        <td>{{$branch_det->BranchAddress}}</td>
     </tr>
       <tr>
-        <td><span class="style5">Contact: {{$company[0]->Contact}}</span></td>
+        <td><span class="style5">Contact: {{$branch_det->BranchContact}}</span></td>
     </tr>
       <tr>
-        <td>Email: {{$company[0]->Email}} </td>
+        <td>Email: {{$branch_det->BranchEmail}} </td>
       </tr>
       <tr>
-        <td colspan="2"><div align="center" class="style6"><u>{{$company[0]->SaleInvoiceTitle}}</u> </div></td>
+        <td colspan="2"><div align="center" class="style6"><u>{{$company->SaleInvoiceTitle}}</u> </div></td>
     </tr>
     </table>  
   </div>
@@ -72,20 +72,20 @@ $company = DB::table('company')->get();
           <tr>
             <td width="10%" valign="top">Name:</td>
           <td width="90%" valign="top">
-            {{$invoice_mst[0]->PartyName}}        </td>
+            {{$invoice_mst->PartyName}}        </td>
         </tr>
           <tr>
             <td valign="top">Address:</td>
           <td valign="top"> 
-            {{$invoice_mst[0]->Address}}</td>
+            {{$invoice_mst->Address}}</td>
         </tr>
           <tr>
             <td valign="top">Contact:</td>
-          <td valign="top"><div align="left">  {{$invoice_mst[0]->Phone}}</div></td>
+          <td valign="top"><div align="left">  {{$invoice_mst->Phone}}</div></td>
         </tr>
           <tr>
             <td valign="top">Email:</td>
-          <td valign="top"><div align="left"> {{$invoice_mst[0]->Email}}</div></td>
+          <td valign="top"><div align="left"> {{$invoice_mst->Email}}</div></td>
         </tr>
           <tr>
             <td>&nbsp;</td>
@@ -99,14 +99,14 @@ $company = DB::table('company')->get();
         </tr>
         <tr>
           <td width="47%" valign="top"><div align="left">Invoice#&nbsp;:</div></td>
-          <td width="53%" valign="top">{{$invoice_mst[0]->InvoiceMasterID}}</td>
+          <td width="53%" valign="top">{{$invoice_mst->InvoiceMasterID}}</td>
         </tr>
         <tr>
           <td valign="top"><div align="left">Date :</div></td>
-          <td valign="top">{{dateformatman($invoice_mst[0]->Date)}}</td>
+          <td valign="top">{{dateformatman($invoice_mst->Date)}}</td>
         </tr>
         <tr>
-          <td valign="top"><div align="left">User&nbsp;:</div></td>
+          <td valign="top"><div align="left">Saleman&nbsp;:</div></td>
           <td valign="top"><div align="left">YASEEN</div></td>
         </tr>
         
@@ -161,15 +161,15 @@ $company = DB::table('company')->get();
             <div align="center"></td>
           <td height="25" bgcolor="#CCCCCC" >&nbsp;</td>
           <td width="10%" height="25" bgcolor="#CCCCCC" >&nbsp;</td>
-          <td width="10%" height="25" bgcolor="#CCCCCC" ><div align="right"><strong>{{number_format($invoice_mst[0]->Total,2)}}</strong></div></td>
+          <td width="10%" height="25" bgcolor="#CCCCCC" ><div align="right"><strong>{{number_format($invoice_mst->Total,2)}}</strong></div></td>
         </tr>
         <tr>
           <td height="25"  colspan="7" style="padding-left: 10px;" ><strong>PREVIOUS BALANCE </strong></td>
-     <td height="25" ><div align="right"><strong>{{number_format($invoice_mst[0]->Paid,2)}}</strong></div></td>
+     <td height="25" ><div align="right"><strong>{{number_format($invoice_mst->Paid,2)}}</strong></div></td>
    </tr>
         <tr>
-          <td height="25"  colspan="7" style="padding-left: 10px;" ><strong>NET PAYABLE AED </strong>{{ucwords(convert_number_to_words($invoice_mst[0]->Paid))}} Only/-</td>
-     <td height="25" ><div align="right"><strong>{{number_format($invoice_mst[0]->Balance,2)}}</strong></div></td>
+          <td height="25"  colspan="7" style="padding-left: 10px;" ><strong>NET PAYABLE AED </strong>{{ucwords(convert_number_to_words($invoice_mst->Paid))}} Only/-</td>
+     <td height="25" ><div align="right"><strong>{{number_format($invoice_mst->Balance,2)}}</strong></div></td>
    </tr>
       </table></td>
     </tr>
@@ -182,7 +182,7 @@ $company = DB::table('company')->get();
 
 
     <tr>
-      <td align="center"><img src="{{asset('documents/'.$company[0]->Signature)}}" width="50%;" ></td>
+      <td align="center"><img src="{{asset('documents/'.$company->Signature)}}" width="50%;" ></td>
       <td align="center">{{QrCode::generate(url()->current())}}</td>
     </tr>
   </table>

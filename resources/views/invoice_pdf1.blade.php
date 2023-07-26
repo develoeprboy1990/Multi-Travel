@@ -38,21 +38,21 @@ $company = DB::table('company')->get();
 <table width="80%" border="0" cellspacing="0" cellpadding="0" align="center">
   <tr><td colspan="2">&nbsp;</td></tr>
   <tr>
-    <td width="50%" rowspan="4" valign="top"><img src="{{asset('documents/'.$company[0]->Logo)}}" width="50%;" ></td>
+    <td width="50%" rowspan="4" valign="top"><img src="{{asset('uploads/'.$branch_det->BranchLogo)}}" width="50%;" ></td>
     <td align="right">
     <span class="style5">
-    <img src="{{asset('assets/images/mobile.png')}}" width="3%;"  > {{$company[0]->Contact}}
+    <img src="{{asset('assets/images/mobile.png')}}" width="3%;"  > {{$branch_det->BranchContact}}
     </span>
     </td>
   </tr>
   <tr>
-  <td align="right"><span class="style5"><img src="{{asset('assets/images/telephone.png')}}" width="3%;" > {{$company[0]->Contact}}</span></td>
+  <td align="right"><span class="style5"><img src="{{asset('assets/images/telephone.png')}}" width="3%;" > {{$branch_det->BranchContact}}</span></td>
 </tr>
   <tr>
-  <td align="right"><img src="{{asset('assets/images/mail.jpg')}}" width="3%;" > {{$company[0]->Email}} </td>
+  <td align="right"><img src="{{asset('assets/images/mail.jpg')}}" width="3%;" > {{$branch_det->BranchEmail}} </td>
 </tr>
   <tr>
-  <td align="right"><img src="{{asset('assets/images/map.png')}}" width="3%;" > {{$company[0]->Address}}</td>
+  <td align="right"><img src="{{asset('assets/images/map.png')}}" width="3%;" > {{$branch_det->BranchAddress}}</td>
 </tr>
   <tr><td colspan="2">&nbsp;</td></tr>
   <tr><td colspan="2">&nbsp;</td></tr>
@@ -68,9 +68,9 @@ $company = DB::table('company')->get();
       <table width="100%" cellspacing="1" cellpadding="0" style="background-color: #ffffff; filter: alpha(opacity=40); opacity: 0.95;border:2px black solid;border-radius: 25px;">
         <tr>
           <td valign="top" style="padding: 20px;font-size: 16px;"><b>
-            {{$invoice_mst[0]->PartyName}} <br><br>
-              Contact: {{$invoice_mst[0]->Phone}}<br><br> 
-              {{$invoice_mst[0]->Address}}  <br></b>
+            {{$invoice_mst->PartyName}} <br><br>
+              Contact: {{$invoice_mst->Phone}}<br><br> 
+              {{$invoice_mst->Address}}  <br></b>
             </td>
         </tr>
     </table>
@@ -79,9 +79,9 @@ $company = DB::table('company')->get();
       <table width="80%" align="center" cellpadding="0" cellspacing="3" style="background-color: #ffffff; filter: alpha(opacity=40); opacity: 0.95;border:2px black solid;border-radius: 25px;">
         <tr>
           <td valign="top" style="padding: 15px;">
-            DATE: {{dateformatman($invoice_mst[0]->Date)}} <br><br>
+            DATE: {{dateformatman($invoice_mst->Date)}} <br><br>
             REFERENCE: YASEEN<br><br>
-            CUSTOM CODE: {{$invoice_mst[0]->InvoiceMasterID}}
+            CUSTOM CODE: {{$invoice_mst->InvoiceMasterID}}
             </td>
         </tr>
     </table>
@@ -136,7 +136,7 @@ $company = DB::table('company')->get();
     
     <td width="10%" height="15" >
       <div align="center">
-        <strong>{{number_format($invoice_mst[0]->Total,2)}}</strong>
+        <strong>{{number_format($invoice_mst->Total,2)}}</strong>
       </div>
     </td>
   </tr>
@@ -146,17 +146,17 @@ $company = DB::table('company')->get();
     </td>
    <td height="15" >
     <div align="center">
-      <strong>{{number_format($invoice_mst[0]->Paid,2)}}</strong>
+      <strong>{{number_format($invoice_mst->Paid,2)}}</strong>
     </div>
   </td>
  </tr>
  <tr>
    <td height="15"  style="padding:5px;font-size: 14px;">
     <strong>NET PAYABLE AED </strong>
-    {{ucwords(convert_number_to_words($invoice_mst[0]->Paid))}} Only/-</td>
+    {{ucwords(convert_number_to_words($invoice_mst->Paid))}} Only/-</td>
    <td height="15" >
     <div align="center">
-    <strong>{{number_format($invoice_mst[0]->Balance,2)}}</strong>
+    <strong>{{number_format($invoice_mst->Balance,2)}}</strong>
   </div>
   </td>
  </tr>

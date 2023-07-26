@@ -2477,18 +2477,20 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
 ////////////////////////////END SCRIPT ////////////////////////////////////////////////
 
 
-           session::put('menu','Invoice');     
-           $invoice_type = DB::table('invoice_type')->get();  
+    session::put('menu','Invoice');     
+    $invoice_type = DB::table('invoice_type')->get();  
 
-           $items = DB::table('item')->get();  
-           $supplier = DB::table('supplier')->get();  
- 
-           $vhno = DB::table('invoice_master')->select(DB::raw('max(InvoiceMasterID)+1 as VHNO'))->get();  
- 
- $invoice_mst = DB::table('v_invoice_master')->where('InvoiceMasterID',$id)->get();
- $invoice_det = DB::table('v_invoice_detail')->where('InvoiceMasterID',$id)->get();
+    $items = DB::table('item')->get();  
+    $supplier = DB::table('supplier')->get();  
 
-   return View ('invoice_view',compact('invoice_type','items','supplier','vhno','invoice_mst','invoice_det'));
+    $vhno = DB::table('invoice_master')->select(DB::raw('max(InvoiceMasterID)+1 as VHNO'))->get();  
+
+    $invoice_mst = DB::table('v_invoice_master')->where('InvoiceMasterID',$id)->first();
+    $invoice_det = DB::table('v_invoice_detail')->where('InvoiceMasterID',$id)->get();
+
+    $branch_det = DB::table('v_users')->where('UserID',$invoice_mst->UserID)->first();
+
+   return View ('invoice_view',compact('invoice_type','items','supplier','vhno','invoice_mst','invoice_det','branch_det'));
 
  // $filename = $invoice_mst[0]->InvoiceCode.'-'.$invoice_mst[0]->Date.'-PartyCode-'.$invoice_mst[0]->PartyID;
 
@@ -2520,14 +2522,16 @@ public  function InvoicePDF($id)
  
            $vhno = DB::table('invoice_master')->select(DB::raw('max(InvoiceMasterID)+1 as VHNO'))->get();  
  
- $invoice_mst = DB::table('v_invoice_master')->where('InvoiceMasterID',$id)->get();
+ $invoice_mst = DB::table('v_invoice_master')->where('InvoiceMasterID',$id)->first();
  $invoice_det = DB::table('v_invoice_detail')->where('InvoiceMasterID',$id)->get();
+
+  $branch_det = DB::table('v_users')->where('UserID',$invoice_mst->UserID)->first();
 
    // return View ('invoice_pdf',compact('invoice_type','items','supplier','vhno','invoice_mst','invoice_det'));
 
- $filename = $invoice_mst[0]->InvoiceCode.'-'.$invoice_mst[0]->Date.'-PartyCode-'.$invoice_mst[0]->PartyID;
+ $filename = $invoice_mst->InvoiceCode.'-'.$invoice_mst->Date.'-PartyCode-'.$invoice_mst->PartyID;
 
-      $pdf = PDF::loadView ('invoice_pdf',compact('invoice_type','items','supplier','vhno','invoice_mst','invoice_det'));
+      $pdf = PDF::loadView ('invoice_pdf',compact('invoice_type','items','supplier','vhno','invoice_mst','invoice_det','branch_det'));
    $pdf->setpaper('A4', 'portiate');
  // return $pdf->download($filename.'.pdf');
        return $pdf->stream();
@@ -2554,14 +2558,16 @@ public  function InvoicePDF1($id)
  
            $vhno = DB::table('invoice_master')->select(DB::raw('max(InvoiceMasterID)+1 as VHNO'))->get();  
  
- $invoice_mst = DB::table('v_invoice_master')->where('InvoiceMasterID',$id)->get();
+ $invoice_mst = DB::table('v_invoice_master')->where('InvoiceMasterID',$id)->first();
  $invoice_det = DB::table('v_invoice_detail')->where('InvoiceMasterID',$id)->get();
+
+ $branch_det = DB::table('v_users')->where('UserID',$invoice_mst->UserID)->first();
 
     //return View ('invoice_pdf1',compact('invoice_type','items','supplier','vhno','invoice_mst','invoice_det'));
 
- $filename = $invoice_mst[0]->InvoiceCode.'-'.$invoice_mst[0]->Date.'-PartyCode-'.$invoice_mst[0]->PartyID;
+ $filename = $invoice_mst->InvoiceCode.'-'.$invoice_mst->Date.'-PartyCode-'.$invoice_mst->PartyID;
 
-      $pdf = PDF::loadView ('invoice_pdf1',compact('invoice_type','items','supplier','vhno','invoice_mst','invoice_det'));
+      $pdf = PDF::loadView ('invoice_pdf1',compact('invoice_type','items','supplier','vhno','invoice_mst','invoice_det','branch_det'));
    $pdf->setpaper('A4', 'portiate');
       return $pdf->stream();
 
@@ -2650,7 +2656,10 @@ public  function Ajax_VHNO(request $request)
 $pagetitle='Dashboard';
       
 $invoice_master = DB::table('invoice_master')
-                ->select(DB::raw('ifnull(sum(IFNULL(Paid,0)),0) as Paid'))->where('Date',date('Y-m-d'))->get();
+                ->select(DB::raw('ifnull(sum(IFNULL(Paid,0)),0) as Paid'))
+                ->where('UserID' , session::get('UserID'))
+                ->where('Date',date('Y-m-d'))
+                ->get();
 
   $v_cashflow = DB::table('v_cashflow')->get();
 
@@ -2664,9 +2673,7 @@ foreach ($v_cashflow as $key => $value) {
 
 
  
-
-
-   $expense = DB::table('v_journal')
+$expense = DB::table('v_journal')
             ->select(DB::raw('sum(if(ISNULL(Dr),0,Dr))-sum(if(ISNULL(Cr),0,Cr)) as Balance') )
             ->where('CODE','E')
             ->where(DB::raw('DATE_FORMAT(Date,"%Y-%m")'),date('Y-m'))
