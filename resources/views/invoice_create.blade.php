@@ -251,6 +251,7 @@ $company = DB::table('company')->get();
               <td>
 
                  <select name="ItemID0[]" id="ItemID0_1" class="form-select form-control-sm   changesNoo">
+                  <option>--Select Item--</option>
                   @foreach ($items as $key => $value) 
                     <option value="{{$value->ItemID}}|{{$value->Percentage}}">{{$value->ItemCode}}-{{$value->ItemName}}-{{$value->Percentage}}</option>
                   @endforeach

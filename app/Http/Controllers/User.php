@@ -110,7 +110,7 @@ if(session::get('UserType')=='User')
         $pagetitle = 'User';
 
         $branch= DB::table('branch')->get();
-        $user= DB::table('v_users')->get();
+        $user= DB::table('v_users')->where('BranchID',session::get('BranchID'))->get();
         
         return  view ('user',compact('branch','user','pagetitle'));
      }

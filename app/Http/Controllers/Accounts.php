@@ -153,7 +153,7 @@ class Accounts extends Controller
        $pagetitle='Petty Cash';
 
       ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
-      $allow= check_role(session::get('UserID'),session::get('BranchID'),session::get('BranchID'),'Petty Cash','List');  
+      $allow= check_role(session::get('UserID'),session::get('BranchID'),'Petty Cash','List');  
       if($allow[0]->Allow=='N')
       {
       return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
@@ -172,7 +172,7 @@ public function ajax_pettycash(Request $request)
        session::put('menu','PettyCash');     
            $pagetitle='Petty Cash';
         if ($request->ajax()) {
-            $data = DB::table('v_pettycash_master')->orderBy('PettyMstID')->get();
+            $data = DB::table('v_pettycash_master')->where('UserID',session::get('UserID'))->orderBy('PettyMstID')->get();
             return Datatables::of($data)
                     ->addIndexColumn()
 
@@ -243,7 +243,8 @@ public  function PettyCashCreate()
               'ChOfAcc' => $request->input('ChartOfAcc'), 
               'Date' => $request->input('VHDate'), 
               'Narration' => $request->input('Narration_mst'), 
-              'Credit'=> $request->input('TotalDebit'), 
+              'Credit'=> $request->input('TotalDebit'),
+              'UserID' => session::get('UserID'),
               
 
       );
@@ -341,7 +342,8 @@ public  function PettyCashUpdate(request $request)
                'ChOfAcc' => $request->input('ChartOfAcc'), 
               'Date' => $request->input('VHDate'), 
               'Narration' => $request->input('Narration_mst'), 
-              'Credit'=> $request->input('TotalDebit'), 
+              'Credit'=> $request->input('TotalDebit'),
+              'UserID' => session::get('UserID'),
               
 
       );
@@ -429,7 +431,7 @@ public function ajax_visa(Request $request)
            $pagetitle='Petty Cash';
 
         if ($request->ajax()) {
-            $data = DB::table('v_visa')->get();
+            $data = DB::table('v_visa')->where('UserID',session::get('UserID'))->get();
             return Datatables::of($data)
                     ->addIndexColumn()
 
@@ -470,8 +472,8 @@ public  function VisaCreate()
            $pagetitle='VISA Detail';
            
            
-           $party = DB::table('party')->get();
-           $supplier = DB::table('v_party1')->get();  
+           $party = DB::table('v_party')->where('UserID',session::get('UserID'))->where('PartyCategoryID','!=','6')->get(); 
+           $supplier = DB::table('v_party')->where('UserID',session::get('UserID'))->where('PartyCategoryID','6')->get(); 
            
  
  
@@ -504,7 +506,8 @@ public  function VisaCreate()
               'Nationality' => $request->input('Nationality'), 
               'Phone' => $request->input('Phone'), 
               'Email' => $request->input('Email'), 
-              'Address' => $request->input('Address'), 
+              'Address' => $request->input('Address'),
+              'UserID' => session::get('UserID'),
       ); 
       
        $id= DB::table('visa')->insertGetId($data);
@@ -530,8 +533,9 @@ public  function VisaCreate()
            $pagetitle='Visa';
 
            $visa = DB::table('visa')->where('VisaID',$id)->get();  
-           $party = DB::table('party')->get();
-           $supplier = DB::table('v_party1')->get(); 
+
+           $party = DB::table('v_party')->where('UserID',session::get('UserID'))->where('PartyCategoryID','!=','6')->get(); 
+           $supplier = DB::table('v_party')->where('UserID',session::get('UserID'))->where('PartyCategoryID','6')->get(); 
   
  
     return view ('visa_edit',compact('visa','pagetitle','party','supplier'));
@@ -564,7 +568,8 @@ public  function VisaUpdate(request $request)
               'Nationality' => $request->input('Nationality'),
               'Phone' => $request->input('Phone'), 
               'Email' => $request->input('Email'), 
-              'Address' => $request->input('Address'), 
+              'Address' => $request->input('Address'),
+              'UserID' => session::get('UserID'), 
       );
     // dd($invoice_mst);
     // $id= DB::table('')->insertGetId($data);
@@ -625,7 +630,7 @@ $visaexpirylist = DB::table('v_visa')->where('DueDate','<',Carbon::now()->addDay
 
 
            $supplier = DB::table('supplier')->get();  
-            $party = DB::table('party')->get();  
+            $party = DB::table('party')->where('UserID',session::get('UserID'))->get();  
            $vhno = DB::table('invoice_master')->select(DB::raw('max(InvoiceMasterID)+1 as VHNO'))->get();  
  
  
@@ -667,7 +672,7 @@ public function ajax_voucher(Request $request)
        session::put('menu','Vouchers');     
            $pagetitle='Vouchers';
         if ($request->ajax()) {
-            $data = DB::table('v_voucher')->orderBy('VoucherMstID')->get();
+            $data = DB::table('v_voucher')->where('UserID',session::get('UserID'))->orderBy('VoucherMstID')->get();
             return Datatables::of($data)
                     ->addIndexColumn()
 
@@ -758,7 +763,7 @@ $chartofaccount1 = DB::table('chartofaccount')->where(DB::raw('right(ChartOfAcco
            $voucher_type = DB::table('voucher_type')->where('VoucherCode',$vouchertype)->get();  
            
            $supplier = DB::table('supplier')->get();  
-           $party = DB::table('v_party')->get();  
+           $party = DB::table('v_party')->where('UserID',session::get('UserID'))->get();  
            $vhno = DB::table('invoice_master')->select(DB::raw('max(InvoiceMasterID)+1 as VHNO'))->get();  
  
  $chartofaccount = DB::table('chartofaccount')->where(DB::raw('right(ChartOfAccountID,3)'),'<>',000)
@@ -785,7 +790,8 @@ public function VoucherSave(request $request )
                'VoucherCodeID' => $request->input('VoucherType'), 
                'Voucher' => $request->input('Voucher'), 
                'Narration' => $request->input('Narration_mst'), 
-               'Date' => $request->input('VHDate'), 
+               'Date' => $request->input('VHDate'),
+               'UserID' => session::get('UserID'),
                
 
       );
@@ -931,7 +937,7 @@ public  function VoucherEdit($id)
            $voucher_type = DB::table('voucher_type')->get();  
            $chartofaccount = DB::table('chartofaccount')->where('L3','!=','L2')->where('L1','!=','L2')->get();  
            $supplier = DB::table('supplier')->get();  
-           $party = DB::table('party')->get();  
+           $party = DB::table('party')->where('UserID',session::get('UserID'))->get();  
            $voucher_master = DB::table('voucher_master')->where('VoucherMstID',$id)->get();  
            $voucher_detail = DB::table('voucher_detail')->where('VoucherMstID',$id)->get();  
  
@@ -959,7 +965,8 @@ public  function VoucherEdit($id)
                'VoucherCodeID' => $request->input('VoucherType'), 
                'Voucher' => $request->input('Voucher'), 
                'Narration' => $request->input('Narration_mst'), 
-               'Date' => $request->input('VHDate'), 
+               'Date' => $request->input('VHDate'),
+               'UserID' => session::get('UserID'),
                
 
       );
@@ -1151,7 +1158,7 @@ $id = DB::table('journal')->where('VoucherMstID',$id)->delete();
        session::put('menu','Invoice');     
            $pagetitle='Invoice';
         if ($request->ajax()) {
-            $data = DB::table('v_invoice_detail')->orderBy('InvoiceMasterID')->get();
+            $data = DB::table('v_invoice_detail')->where('UserID',session::get('UserID'))->orderBy('InvoiceMasterID')->get();
             return Datatables::of($data)
                     ->addIndexColumn()
 
@@ -1215,8 +1222,8 @@ $id = DB::table('journal')->where('VoucherMstID',$id)->delete();
            $invoice_type = DB::table('invoice_type')->get();  
 
            $items = DB::table('item')->get();  
-           $party = DB::table('v_party')->where('PartyCategoryID',2)->get();  
-           $customer = DB::table('v_party')->get();  
+           $party = DB::table('v_party')->where('UserID',session::get('UserID'))->where('PartyCategoryID',6)->get();  
+           $customer = DB::table('v_party')->where('UserID',session::get('UserID'))->get();  
 
            $saleman = DB::table('saleman')->get(); 
            $chartofaccount = DB::table('chartofaccount')->whereIn('Category',['CASH','BANK','CARD'])->get(); 
@@ -1346,7 +1353,8 @@ $id = DB::table('journal')->where('VoucherMstID',$id)->delete();
     'InvoiceMasterID' => $request->input('VHNO'), #7A7A7A
     'Date' => $request->input('Date'),
     'Dr' => $request->input('amountPaid'), 
-    'Trace' => 101
+    'Trace' => 101,
+    'UserID' => session::get('UserID')
     );
 
 
@@ -1363,7 +1371,8 @@ $id = DB::table('journal')->where('VoucherMstID',$id)->delete();
     'InvoiceMasterID' => $request->input('VHNO'), #7A7A7A
     'Date' => $request->input('Date'),
     'Cr' => $request->input('amountPaid'), 
-    'Trace' => 102
+    'Trace' => 102,
+    'UserID' => session::get('UserID')
     );
 
 
@@ -1392,7 +1401,8 @@ $id = DB::table('journal')->where('VoucherMstID',$id)->delete();
     'InvoiceMasterID' => $request->input('VHNO'), #7A7A7A
     'Date' => $request->input('Date'),
     'Dr' => $request->input('amountPaid'), 
-    'Trace' => 103
+    'Trace' => 103,
+    'UserID' => session::get('UserID')
     );
 
 
@@ -1409,7 +1419,8 @@ $id = DB::table('journal')->where('VoucherMstID',$id)->delete();
     'InvoiceMasterID' => $request->input('VHNO'), #7A7A7A
     'Date' => $request->input('Date'),
     'Cr' => $request->input('amountPaid'), 
-    'Trace' => 104
+    'Trace' => 104,
+    'UserID' => session::get('UserID')
     );
 
 
@@ -1465,7 +1476,8 @@ if($request->input('InvoiceTypeID')==1)
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Dr' => $request->ItemTotal[$i], 
-    'Trace' => 105
+    'Trace' => 105,
+    'UserID' => session::get('UserID')
   );
 $id= DB::table('journal')->insertGetId($loop_AR);
 
@@ -1480,7 +1492,8 @@ $id= DB::table('journal')->insertGetId($loop_AR);
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Cr' => $request->Fare[$i], 
-    'Trace' => 106
+    'Trace' => 106,
+    'UserID' => session::get('UserID')
   );
 $id= DB::table('journal')->insertGetId($loop_purchase_cr);
 
@@ -1498,7 +1511,8 @@ $id= DB::table('journal')->insertGetId($loop_purchase_cr);
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Cr' => $request->Service[$i], 
-    'Trace' => 107
+    'Trace' => 107,
+    'UserID' => session::get('UserID')
   );
 
  $id= DB::table('journal')->insertGetId($comission);
@@ -1517,7 +1531,8 @@ $id= DB::table('journal')->insertGetId($loop_purchase_cr);
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Dr' => abs($request->Service[$i]), 
-    'Trace' => 108
+    'Trace' => 108,
+    'UserID' => session::get('UserID')
   );
 
  $id= DB::table('journal')->insertGetId($comission);
@@ -1534,7 +1549,8 @@ $id= DB::table('journal')->insertGetId($loop_purchase_cr);
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Dr' => $request->Fare[$i], 
-    'Trace' => 109
+    'Trace' => 109,
+    'UserID' => session::get('UserID')
   );
 
 $id= DB::table('journal')->insertGetId($loop_purchase_dr);
@@ -1551,7 +1567,8 @@ $id= DB::table('journal')->insertGetId($loop_purchase_dr);
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Cr' => $request->Fare[$i], 
-    'Trace' => 110
+    'Trace' => 110,
+    'UserID' => session::get('UserID')
   );
 
 $id= DB::table('journal')->insertGetId($loop_ap);
@@ -1572,7 +1589,8 @@ $tax_payable = array(
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Cr' => $request->TaxAmount[$i],
-    'Trace' => 111 
+    'Trace' => 111,
+    'UserID' => session::get('UserID') 
   );
   $id= DB::table('journal')->insertGetId($tax_payable);
 
@@ -1605,7 +1623,8 @@ $tax_payable = array(
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Dr' => abs($request->TaxAmount[$i]),
-    'Trace' => 111 
+    'Trace' => 111,
+    'UserID' => session::get('UserID') 
   );
   $id= DB::table('journal')->insertGetId($tax_payable);
   }
@@ -1627,7 +1646,8 @@ $tax_payable = array(
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Dr' => $request->Discount[$i], 
-    'Trace' => 203
+    'Trace' => 203,
+    'UserID' => session::get('UserID')
   );
 
  $id= DB::table('journal')->insertGetId($discount_given);
@@ -1659,7 +1679,8 @@ if($request->input('InvoiceTypeID')==2)
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Cr' => $request->ItemTotal[$i], 
-    'Trace' => 201
+    'Trace' => 201,
+    'UserID' => session::get('UserID')
   );
 $id= DB::table('journal')->insertGetId($loop_AR);
 
@@ -1675,7 +1696,8 @@ $id= DB::table('journal')->insertGetId($loop_AR);
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Cr' => $request->Service[$i],
-    'Trace' => 202 
+    'Trace' => 202,
+    'UserID' => session::get('UserID')
   );
 
  $id= DB::table('journal')->insertGetId($comission);
@@ -1693,7 +1715,8 @@ $id= DB::table('journal')->insertGetId($loop_AR);
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Cr' => abs($request->Service[$i]),
-    'Trace' => 2022 
+    'Trace' => 2022,
+    'UserID' => session::get('UserID') 
   );
 
  $id= DB::table('journal')->insertGetId($comission);
@@ -1713,7 +1736,8 @@ $id= DB::table('journal')->insertGetId($loop_AR);
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Cr' => $request->Discount[$i], 
-    'Trace' => 203
+    'Trace' => 203,
+    'UserID' => session::get('UserID')
   );
 
  $id= DB::table('journal')->insertGetId($discount_rec);
@@ -1731,7 +1755,8 @@ $id= DB::table('journal')->insertGetId($loop_AR);
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Cr' => abs( $request->Discount[$i]), 
-    'Trace' => 2033
+    'Trace' => 2033,
+    'UserID' => session::get('UserID')
   );
 
  $id= DB::table('journal')->insertGetId($discount_rec);
@@ -1748,7 +1773,8 @@ $id= DB::table('journal')->insertGetId($loop_AR);
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Dr' => $request->Fare[$i], 
-    'Trace' => 204
+    'Trace' => 204,
+    'UserID' => session::get('UserID')
   );
 
 $id= DB::table('journal')->insertGetId($loop_purchase_dr);
@@ -1764,7 +1790,8 @@ $loop_purchase_cr = array(
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Cr' => $request->Fare[$i], 
-    'Trace' => 205
+    'Trace' => 205,
+    'UserID' => session::get('UserID')
   );
 $id= DB::table('journal')->insertGetId($loop_purchase_cr);
 
@@ -1780,7 +1807,8 @@ $id= DB::table('journal')->insertGetId($loop_purchase_cr);
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Dr' => $request->Fare[$i], 
-    'Trace' => 206
+    'Trace' => 206,
+    'UserID' => session::get('UserID')
   );
 
 $id= DB::table('journal')->insertGetId($loop_ap);
@@ -1831,8 +1859,8 @@ public  function InvoiceEdit($id)
            $supplier = DB::table('supplier')->get();  
 
 
-             $party = DB::table('v_party')->where('PartyCategoryID',2)->get();  
-           $customer = DB::table('v_party')->get();  
+             $party = DB::table('v_party')->where('UserID',session::get('UserID'))->where('PartyCategoryID',2)->get();  
+           $customer = DB::table('v_party')->where('UserID',session::get('UserID'))->get();  
 
 $chartofaccount = DB::table('chartofaccount')->whereIn('Category',['CASH','BANK','CARD'])->get(); 
 
@@ -1907,7 +1935,8 @@ $id = DB::table('journal')->where('InvoiceMasterID',$request->VHNO)->delete();
     'InvoiceMasterID' => $request->input('VHNO'), #7A7A7A
     'Date' => $request->input('Date'),
     'Dr' => $request->input('amountPaid'), 
-    'Trace' => 101
+    'Trace' => 101,
+    'UserID' => session::get('UserID')
     );
 
 
@@ -1924,7 +1953,8 @@ $id = DB::table('journal')->where('InvoiceMasterID',$request->VHNO)->delete();
     'InvoiceMasterID' => $request->input('VHNO'), #7A7A7A
     'Date' => $request->input('Date'),
     'Cr' => $request->input('amountPaid'), 
-    'Trace' => 102
+    'Trace' => 102,
+    'UserID' => session::get('UserID')
     );
 
 
@@ -1953,7 +1983,8 @@ $SR_AR = array(
   'InvoiceMasterID' => $request->input('VHNO'), #7A7A7A
   'Date' => $request->input('Date'),
   'Dr' => $request->input('amountPaid'), 
-  'Trace' => 303
+  'Trace' => 303,
+    'UserID' => session::get('UserID')
   );
 
 
@@ -1970,7 +2001,8 @@ $SR_CASH = array(
   'InvoiceMasterID' => $request->input('VHNO'), #7A7A7A
   'Date' => $request->input('Date'),
   'Cr' => $request->input('amountPaid'), 
-  'Trace' => 304
+  'Trace' => 304,
+    'UserID' => session::get('UserID')
   );
 
 
@@ -2021,7 +2053,8 @@ if($request->input('InvoiceTypeID')==1)
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Dr' => $request->ItemTotal[$i], 
-    'Trace' => 105
+    'Trace' => 105,
+    'UserID' => session::get('UserID')
   );
 $id= DB::table('journal')->insertGetId($loop_AR);
 
@@ -2036,7 +2069,8 @@ $id= DB::table('journal')->insertGetId($loop_AR);
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Cr' => $request->Fare[$i], 
-    'Trace' => 106
+    'Trace' => 106,
+    'UserID' => session::get('UserID')
   );
 $id= DB::table('journal')->insertGetId($loop_purchase_cr);
 
@@ -2054,7 +2088,8 @@ $id= DB::table('journal')->insertGetId($loop_purchase_cr);
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Cr' => $request->Service[$i], 
-    'Trace' => 107
+    'Trace' => 107,
+    'UserID' => session::get('UserID')
   );
 
  $id= DB::table('journal')->insertGetId($comission);
@@ -2073,7 +2108,8 @@ $id= DB::table('journal')->insertGetId($loop_purchase_cr);
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Dr' => abs($request->Service[$i]), 
-    'Trace' => 108
+    'Trace' => 108,
+    'UserID' => session::get('UserID')
   );
 
  $id= DB::table('journal')->insertGetId($comission);
@@ -2090,7 +2126,8 @@ $id= DB::table('journal')->insertGetId($loop_purchase_cr);
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Dr' => $request->Fare[$i], 
-    'Trace' => 109
+    'Trace' => 109,
+    'UserID' => session::get('UserID')
   );
 
 $id= DB::table('journal')->insertGetId($loop_purchase_dr);
@@ -2107,7 +2144,8 @@ $id= DB::table('journal')->insertGetId($loop_purchase_dr);
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Cr' => $request->Fare[$i], 
-    'Trace' => 110
+    'Trace' => 110,
+    'UserID' => session::get('UserID')
   );
 
 $id= DB::table('journal')->insertGetId($loop_ap);
@@ -2128,7 +2166,8 @@ $tax_payable = array(
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Cr' => $request->TaxAmount[$i],
-    'Trace' => 111 
+    'Trace' => 111,
+    'UserID' => session::get('UserID') 
   );
   $id= DB::table('journal')->insertGetId($tax_payable);
 
@@ -2161,7 +2200,8 @@ $tax_payable = array(
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Dr' => abs($request->TaxAmount[$i]),
-    'Trace' => 111 
+    'Trace' => 111,
+    'UserID' => session::get('UserID') 
   );
   $id= DB::table('journal')->insertGetId($tax_payable);
   }
@@ -2183,7 +2223,8 @@ $tax_payable = array(
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Dr' => $request->Discount[$i], 
-    'Trace' => 203
+    'Trace' => 203,
+    'UserID' => session::get('UserID')
   );
 
  $id= DB::table('journal')->insertGetId($discount_given);
@@ -2213,7 +2254,8 @@ if($request->input('InvoiceTypeID')==2)
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Cr' => $request->ItemTotal[$i], 
-    'Trace' => 301
+    'Trace' => 301,
+    'UserID' => session::get('UserID')
   );
 $id= DB::table('journal')->insertGetId($loop_AR);
 
@@ -2229,7 +2271,8 @@ $id= DB::table('journal')->insertGetId($loop_AR);
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Cr' => $request->Service[$i],
-    'Trace' => 302 
+    'Trace' => 302,
+    'UserID' => session::get('UserID') 
   );
 
  $id= DB::table('journal')->insertGetId($comission);
@@ -2247,7 +2290,8 @@ $id= DB::table('journal')->insertGetId($loop_AR);
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Cr' => abs($request->Service[$i]),
-    'Trace' => 3022 
+    'Trace' => 3022,
+    'UserID' => session::get('UserID') 
   );
 
  $id= DB::table('journal')->insertGetId($comission);
@@ -2267,7 +2311,8 @@ $id= DB::table('journal')->insertGetId($loop_AR);
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Cr' => $request->Discount[$i], 
-    'Trace' => 303
+    'Trace' => 303,
+    'UserID' => session::get('UserID')
   );
 
  $id= DB::table('journal')->insertGetId($discount_rec);
@@ -2285,7 +2330,8 @@ $id= DB::table('journal')->insertGetId($loop_AR);
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Cr' => abs( $request->Discount[$i]), 
-    'Trace' => 3033
+    'Trace' => 3033,
+    'UserID' => session::get('UserID')
   );
 
  $id= DB::table('journal')->insertGetId($discount_rec);
@@ -2302,7 +2348,8 @@ $id= DB::table('journal')->insertGetId($loop_AR);
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Dr' => $request->Fare[$i], 
-    'Trace' => 304
+    'Trace' => 304,
+    'UserID' => session::get('UserID')
   );
 
 $id= DB::table('journal')->insertGetId($loop_purchase_dr);
@@ -2318,7 +2365,8 @@ $loop_purchase_cr = array(
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Cr' => $request->Fare[$i], 
-    'Trace' => 305
+    'Trace' => 305,
+    'UserID' => session::get('UserID')
   );
 $id= DB::table('journal')->insertGetId($loop_purchase_cr);
 
@@ -2334,7 +2382,8 @@ $id= DB::table('journal')->insertGetId($loop_purchase_cr);
     'InvoiceMasterID' => $request->input('VHNO'), 
     'Date' => $request->input('Date'),
     'Dr' => $request->Fare[$i], 
-    'Trace' => 306
+    'Trace' => 306,
+    'UserID' => session::get('UserID')
   );
 
 $id= DB::table('journal')->insertGetId($loop_ap);
@@ -2963,7 +3012,8 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
                                   'Phone' => $request->input('Phone'), 
                                   'Email' => $request->input('Email'), 
                                   'Active' => $request->input('Active'), 
-                                  'InvoiceDueDays' => $request->input('InvoiceDueDays'), 
+                                  'InvoiceDueDays' => $request->input('InvoiceDueDays'),
+                                   'UserID' => session::get('UserID'), 
                                   
                                   
                                   
@@ -3058,7 +3108,8 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
                                   'Phone' => $request->input('Phone'), 
                                   'Email' => $request->input('Email'), 
                                   'Active' => $request->input('Active'), 
-                                  'InvoiceDueDays' => $request->input('InvoiceDueDays'), 
+                                  'InvoiceDueDays' => $request->input('InvoiceDueDays'),
+                                  'UserID' => session::get('UserID'), 
                                   
                                   
                                   
@@ -3136,7 +3187,7 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
 $party_category = DB::table('party_category')->get();
  
 
-   $party = DB::table('v_party')->get();
+   $party = DB::table('v_party')->where('UserID',session::get('UserID'))->get();
      return view ('party',compact('pagetitle','party','party_category'));
     }
 
@@ -3185,7 +3236,8 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
                                   'Phone' => $request->input('Phone'), 
                                   'Email' => $request->input('Email'), 
                                   'Active' => $request->input('Active'), 
-                                  'InvoiceDueDays' => $request->input('InvoiceDueDays'), 
+                                  'InvoiceDueDays' => $request->input('InvoiceDueDays'),
+                                  'UserID' => session::get('UserID'), 
                                   
                                   
                                   
@@ -3285,7 +3337,7 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
                                   'Email' => $request->input('Email'), 
                                   'Active' => $request->input('Active'), 
                                   'InvoiceDueDays' => $request->input('InvoiceDueDays'), 
-                                  
+                                  'UserID' => session::get('UserID'),
                                   
                                   
                           );
@@ -3463,13 +3515,13 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
    
 
      $pagetitle='User Rights & Control';
-    $users = DB::table('user')->where('UserID',$UserID)->get();
+    $users = DB::table('user')->where('UserID',$UserID)->first();
 
- 
+    $branch = DB::table('branch')->where('BranchID',$users->BranchID)->first();
     $role = DB::table('role')->select('Table')->distinct()->get();
 
    
-    return view ('role',compact('pagetitle','role','users'));
+    return view ('role',compact('pagetitle','role','users','branch'));
 
   }
 
@@ -3551,11 +3603,11 @@ for($i=0; $i<$tot; $i++)
 
  $data = array(
 
+ 'BranchID' =>$request->BranchID,  
  'UserID' =>$request->UserID,
 'Table' =>$TableName[$i],
 'Action' =>$Action[$i],
 'Allow' =>$Allow[$i],
-
 
               );
 
@@ -3842,7 +3894,7 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
 
     session::put('menu','PartyLedger');     
        $pagetitle='Party Ledger';
-$party = DB::table('v_party')->get();
+$party = DB::table('v_party')->where('UserID',session::get('UserID'))->get();
 $voucher_type = DB::table('voucher_type')->get();
        $chartofaccount = DB::table('chartofaccount')
         ->where('ChartOfAccountID',110400)->get();
@@ -4137,7 +4189,7 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
 
            session::put('menu','AdjustmentBalance');     
            $voucher_type = DB::table('voucher_type')->where('VoucherTypeID',7)->get();  
-            $party = DB::table('party')->get();  
+            $party = DB::table('party')->where('UserID',session::get('UserID'))->get();  
   
  
  
@@ -4175,7 +4227,8 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
                'VoucherCodeID' => $InvoiceTypeID, 
                'Voucher' => $request->input('Voucher'), 
                'Narration' => $request->input('Narration'), 
-               'Date' => $request->input('VHDate'), 
+               'Date' => $request->input('VHDate'),
+               'UserID' => session::get('UserID'),
                
 
       );
@@ -4635,7 +4688,7 @@ $id2= DB::table('voucher_detail')->insert($FEE_CHARGED);
 
 
        $pagetitle='Party List';
-      $party = DB::table('party')->get();
+      $party = DB::table('party')->where('UserID',session::get('UserID'))->get();
 
        
 
@@ -4656,8 +4709,8 @@ $id2= DB::table('voucher_detail')->insert($FEE_CHARGED);
   ////////////////////////////END SCRIPT ////////////////////////////////////////////////
 
  $pagetitle='Party List';
-       $party = DB::table('party')->get();
-      $party = DB::table('party')->get();
+       $party = DB::table('party')->where('UserID',session::get('UserID'))->get();
+      $party = DB::table('party')->where('UserID',session::get('UserID'))->get();
 
       $pdf = PDF::loadView ('party_listPDF',compact('party','pagetitle'));
 //return $pdf->download('pdfview.pdf');
@@ -4676,7 +4729,7 @@ $id2= DB::table('voucher_detail')->insert($FEE_CHARGED);
     {   
       $pagetitle='Out Standing Invoice';
        session::put('menu','OutStandingInvoice');     
-        $party = DB::table('party')->get();
+        $party = DB::table('party')->where('UserID',session::get('UserID'))->get();
          return view ('outstanding_invoice',compact('party','pagetitle')); 
     }
     
@@ -4759,7 +4812,7 @@ $invoice = DB::table('v_invoice_master')->where('PartyID',$request->PartyID)->wh
     session::put('menu','PartyLedger');     
        $pagetitle='Party Ledger';
 $invoice_type = DB::table('invoice_type')->get();
-$party = DB::table('party')->get();
+$party = DB::table('party')->where('UserID',session::get('UserID'))->get();
        
       return view ('partywise_sale',compact('pagetitle','invoice_type','party')); 
  }
@@ -4894,7 +4947,7 @@ $party = DB::table('party')->get();
     session::put('menu','PartyLedger');     
        $pagetitle='Party Balance';
 
-$party = DB::table('party')->get();
+$party = DB::table('party')->where('UserID',session::get('UserID'))->get();
 $party_category = DB::table('party_category')->get();
        
       return view ('party_balance',compact('pagetitle','party','party_category')); 
@@ -5027,7 +5080,7 @@ else
       session::put('menu','SupplierBalance');     
       $pagetitle='SupplierBalance';
 
-      $party = DB::table('v_party')->where('PartyCategoryID',$request->PartyCategoryID)->get();
+      $party = DB::table('v_party')->where('UserID',session::get('UserID'))->where('PartyCategoryID',$request->PartyCategoryID)->get();
             
 
 
@@ -5052,7 +5105,7 @@ public  function PartyYearlyBalance1PDF(request $request)
       session::put('menu','SupplierBalance');     
       $pagetitle='SupplierBalance';
 
-      $party = DB::table('v_party')->where('PartyCategoryID',$request->PartyCategoryID)->get();
+      $party = DB::table('v_party')->where('UserID',session::get('UserID'))->where('PartyCategoryID',$request->PartyCategoryID)->get();
           $pdf = PDF::loadView ('party_yearly_balance1PDF',compact('party'));
 //return $pdf->download('pdfview.pdf');
    $pdf->setpaper('A4', 'landscape');
@@ -5218,7 +5271,7 @@ public function SupplierLedger1PDF(request $request)
     session::put('menu','SupplierLedger');     
        $pagetitle='Supplier Ledger';
 $invoice_type = DB::table('invoice_type')->get();
-$party = DB::table('v_party')->where('PartyCategoryID',2)->get();
+$party = DB::table('v_party')->where('UserID',session::get('UserID'))->where('PartyCategoryID',2)->get();
        
       return view ('supplierwise_sale',compact('pagetitle','invoice_type','party')); 
  }
@@ -5878,7 +5931,7 @@ public function SalemanReport1PDF(request $request)
       session::put('menu','AirlineSummary');     
       $pagetitle='Airline Summary';
       $invoice_type = DB::table('invoice_type')->get();
-      $party = DB::table('v_party')->where('PartyCategoryID',2)->get();
+      $party = DB::table('v_party')->where('UserID',session::get('UserID'))->where('PartyCategoryID',2)->get();
         
       return view ('airline_summary',compact('pagetitle','invoice_type','party')); 
  }
@@ -7040,7 +7093,7 @@ $trial = DB::table('v_journal')
       $invoice_type = DB::table('invoice_type')->get();
       $item = DB::table('item')->get();
       $saleman = DB::table('saleman')->get();
-      $party = DB::table('v_party')->where('PartyCategoryID',2)->get();
+      $party = DB::table('v_party')->where('UserID',session::get('UserID'))->where('PartyCategoryID',2)->get();
         
       return view ('ticket_register',compact('pagetitle','invoice_type','party','item','saleman')); 
  }

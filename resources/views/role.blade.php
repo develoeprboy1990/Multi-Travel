@@ -40,6 +40,13 @@
    
   
    
+    <div class="col-md-4">
+        <div class="mb-3">
+           <label for="basicpill-firstname-input">Branch*</label>
+            <input type="hidden" name="BranchID" value="{{$branch->BranchID}}" >
+            <input type="text" readonly class="form-select" value="{{$branch->BranchName}}">
+        </div>
+    </div>
    
   
   
@@ -47,14 +54,10 @@
          <div class="col-md-4">
    <div class="mb-3">
       <label for="basicpill-firstname-input">User*</label>
-       <select name="UserID" id="UserID" class="form-select">
- 
-       @foreach($users as $value)
-        <option value="{{$value->UserID}}" {{(old('UserID')== $value->UserID) ? 'selected=selected': '' }}>{{$value->FullName}}</option>
-       @endforeach
+      <input type="hidden" name="UserID" value="{{$users->UserID}}" >
       
-    
-    </select>
+      <input type="text" readonly class="form-select" value="{{$users->FullName}}">
+      
     </div>
      </div>
 
