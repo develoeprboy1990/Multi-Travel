@@ -6250,6 +6250,61 @@ $voucher_master = DB::table('voucher_master')
  }
 
 
+  public function AccountSummary()
+ {   
+    session::put('menu','AccountSummary');     
+       $pagetitle='Account Summary';
+        $voucher_type = DB::table('voucher_type')->get();
+       return view ('account_summary',compact('pagetitle','voucher_type')); 
+ }
+
+
+ public function AccountSummary1(request $request)
+ {   
+
+  ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
+ $allow= check_role(session::get('UserID'),session::get('BranchID'),'Voucher Report','View');
+ if($allow[0]->Allow=='N')
+ {
+ return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
+ }
+ ////////////////////////////END SCRIPT ////////////////////////////////////////////////
+
+  
+    session::put('menu','AccountSummary');     
+       $pagetitle='Account Summary';
+
+    // dd($request->all());
+       // dd($request->VoucherTypeID);
+      
+/*
+if($request->VoucherTypeID==0){
+
+      session::put('menu','VoucherReport');     
+       $pagetitle='Voucher Report';
+  
+
+  return redirect ('VoucherReport')->with('error','Please select voucher type')->with('class','danger');
+}
+*/
+
+        $voucher_type = DB::table('voucher_type')
+                       //->where('VoucherTypeID',$request->VoucherTypeID)
+                      ->get();
+
+ 
+
+$voucher_master = DB::table('voucher_master')
+            ->whereBetween('Date',array($request->StartDate,$request->EndDate))
+             //->where('VoucherCodeID',$request->VoucherTypeID)
+            ->get();
+ 
+ 
+        return view ('account_summary1',compact('pagetitle','voucher_type','voucher_master','pagetitle')); 
+ }
+
+
+
 
 public function CashbookReport()
  {   

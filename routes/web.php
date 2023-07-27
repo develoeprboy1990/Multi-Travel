@@ -240,7 +240,8 @@ route::post('/InvoiceSummary1PDF/',[Accounts::class,'InvoiceSummary1PDF']);
 route::get('/ProfitAndLoss/',[Accounts::class,'ProfitAndLoss']);
 route::post('/ProfitAndLoss1/',[Accounts::class,'ProfitAndLoss1']);
 
- 
+route::get('/AccountSummary/',[Accounts::class,'AccountSummary']);
+route::post('/AccountSummary1/',[Accounts::class,'AccountSummary1']);
 
 route::get('/tmp/',[Accounts::class,'tmp']); 
 
