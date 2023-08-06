@@ -25,209 +25,164 @@
     <?php 
       $DrTotal=0;
       $CrTotal=0;
+      $Opening=0;
    ?>
     <div class="card">
       <div class="card-body">
-        @foreach($voucher_master as $key => $value)
-        <div align="center">
-          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+     <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
               <td colspan="2"><div align="center" class="style2"><u><strong>Account Summary</strong></u></div></td>
     </tr>
+   
     <tr>
-      <td colspan="2"><div align="left"><span class="style2">Voucher # {{$value->Voucher}}</span></div></td>
-    </tr>
-    <tr>
-      <td width="50%" height="18" valign="top">From {{request()->StartDate}} TO {{request()->EndDate}}</td>
-    <td width="50%" valign="top"><div align="right">DATED: {{$value->Date}}</div></td>
+      <td width="50%" height="18" valign="top">From {{dateformatreport(request()->StartDate)}} - {{dateformatreport(request()->EndDate)}}</td>
+    <td width="50%" valign="top"><div align="right">DATED: {{date('d M,Y')}} </div></td>
     </tr>
   </table>
- 
-  <!-- <table class="table table-bordered table-sm">
-    <tr class="bg-light">
-      <td><strong>CHOFACC</strong></td>
-      <td><strong>DESCRIPTION</strong></td>
-      <td><strong>CHQ/REF # </strong></td>
-      <td><strong>PARTY</strong></td>
-      <td><strong>SUPPLIER</strong></td>
-      <td><div align="right"><strong>DEBIT</strong></div></td>
-      <td><div align="right"><strong>CREDIT</strong></div></td>
-    </tr>
-  
-<?php 
-
-$voucher = DB::table('v_voucher_detail')
-              ->where('VoucherMstID',$value->VoucherMstID)
-
-            ->get();
-
-
-            $DebitTotal=0;
-            $CreditTotal=0;
-
-?>
-
-
-    @foreach($voucher as $value1)
-     
-
-<?php if(!isset($DebitTotal))
-{
-  $DebitTotal = $value1->Debit;
-  $CrebitTotal = $value1->Crebit;
-}
-else
-{
-$DebitTotal = $DebitTotal+ $value1->Debit;
-$CreditTotal = $CreditTotal+ $value1->Credit;
-}
-
- 
- ?>
-      <tr>
-      <td>{{$value1->ChartOfAccountName}}</td>
-      <td>{{$value1->Narration}}</td>
-      <td>{{$value1->RefNo}}</td>
-      <td>{{$value1->PartyName}}</td>
-      <td>{{$value1->SupplierName}}</td>
       
-      <td><div align="right">{{is_null($value1->Debit) ? '' : number_format($value1->Debit,2)}}</div></td>
-      <td><div align="right">{{is_null($value1->Credit) ? '' : number_format($value1->Credit,2)}}</div></td>
-      </tr>
 
-    @endforeach
+                        
+         <table class="table table-bordered table-sm">
+    <thead class="bg-light">
+    
+   <tr>
+     
+      <th class="col-md-2" align="right">Accounts</th>
+      <th class="col-md-1" align="right">Opening Balance</th>
+      <th class="col-md-1" align="right">Items</th>
+      <th class="col-md-1" align="right">Dhs</th>
+      <th class="col-md-1" align="right">Other Amad <span class="text-success">[+]</span></th>
+      <th class="col-md-1" align="right">Other Raft <span class="text-danger">[-]</span></th>
+      <th class="col-md-2" align="right">Closing Balance</th> 
 
 
-    <tr>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-    </tr>
-    <tr>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-    </tr>
-    <tr>
-      <td colspan="3">AED </td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td><div align="right">{{number_format($DebitTotal,2)}}</div></td>
-      <td><div align="right">{{number_format($CreditTotal,2)}}</div></td>
-    </tr>
-  </table> -->
-
-  <table class="table table-bordered table-sm">
-    <tr class="bg-light">
-      <td><strong></strong></td>
-      <td><strong>Opening Balance</strong></td>
-      <td><strong>Items</strong></td>
-      <td><strong>Dhs</strong></td>
-      <td><strong>Other Ama</strong></td>
-      <td><strong>Other Raft</strong></td>
-      <td><div align="right"><strong>Closing Balance</strong></div></td>
-    </tr>
+   </tr> 
+    
+    </thead>
   
+ 
+
+
+    
+@foreach($chartofaccount as $value)
+
+
 <?php 
 
-$voucher = DB::table('v_voucher_detail')
-              ->where('VoucherMstID',$value->VoucherMstID)
 
+if( ($value->CODE=='A') OR ($value->CODE=='E'))
+{
+
+
+$opening = DB::table('journal')
+            ->select( DB::raw('sum(if(ISNULL(Dr),0,Dr)-if(ISNULL(Cr),0,Cr)) as Balance'))
+            //->select( DB::raw('sum(if(ISNULL(Dr),0,Dr)-if(ISNULL(Cr),0,Cr)) as Balance'))
+            ->where('ChartOfAccountID',$value->ChartOfAccountID)
+            ->where('Date','<',request()->StartDate)
             ->get();
 
 
-            $DebitTotal=0;
-            $CreditTotal=0;
+$dhs = DB::table('journal')
+            ->select( DB::raw('sum(if(ISNULL(Dr),0,Dr)-if(ISNULL(Cr),0,Cr)) as Balance'))
+        ->whereBetween('Date',array(request()->StartDate,request()->EndDate))
+        ->where('ChartOfAccountID',$value->ChartOfAccountID)
+        ->whereNull('VoucherMstID')
+
+        ->get();
+
+
+
+
+
+}
+else
+{
+
+ $opening = DB::table('journal')
+            ->select( DB::raw('sum(if(ISNULL(Cr),0,Cr)-if(ISNULL(Dr),0,Dr)) as Balance'))
+            ->where('ChartOfAccountID',$value->ChartOfAccountID)
+            ->where('Date','<',request()->StartDate)
+            ->get();
+
+
+$dhs = DB::table('journal')
+            ->select( DB::raw('sum(if(ISNULL(Cr),0,Cr)-if(ISNULL(Dr),0,Dr)) as Balance'))
+        ->whereBetween('Date',array(request()->StartDate,request()->EndDate))
+        ->where('ChartOfAccountID',$value->ChartOfAccountID)
+        ->whereNull('VoucherMstID')
+        ->get();
+
+
+ 
+
+}
+
+
+
+ $item = DB::table('journal')
+        // ->where('SupplierID',$request->SupplierID)
+        ->whereBetween('Date',array(request()->StartDate,request()->EndDate))
+        ->where('ChartOfAccountID',$value->ChartOfAccountID)
+        ->whereIn('JournalType',['SI','SR'])
+        ->count();
+
+
+ $Amad = DB::table('journal')
+            ->select( DB::raw('sum(if(ISNULL(Dr),0,Dr)) as Balance'))
+        ->whereBetween('Date',array(request()->StartDate,request()->EndDate))
+        ->where('ChartOfAccountID',$value->ChartOfAccountID)
+        ->whereNotNull('VoucherMstID')
+
+        ->get();
+
+
+$Raft = DB::table('journal')
+            ->select( DB::raw('sum(if(ISNULL(Cr),0,Cr)) as Balance'))
+        ->whereBetween('Date',array(request()->StartDate,request()->EndDate))
+        ->where('ChartOfAccountID',$value->ChartOfAccountID)
+        ->whereNotNull('VoucherMstID')
+
+        ->get();
+
+
+
+
+$Opening=$Opening+$opening[0]->Balance;
+
+
+
+
+
+
 
 ?>
 
 
-    @foreach($voucher as $value1)
-     
 
-<?php if(!isset($DebitTotal))
-{
-  $DebitTotal = $value1->Debit;
-  $CrebitTotal = $value1->Crebit;
-}
-else
-{
-$DebitTotal = $DebitTotal+ $value1->Debit;
-$CreditTotal = $CreditTotal+ $value1->Credit;
-}
-
-
-
- $ClosingBal = $DebitTotal-$CreditTotal;
- ?>
-      <tr>
-      <td>{{$value1->ChartOfAccountName}}</td>
-      <td>200</td>
-      <td>2</td>
-      <td>50</td>
-      <td>100</td>
-      <td>-</td>
-      <td><div align="right">{{is_null($ClosingBal) ? '' : number_format($ClosingBal,2)}}</div></td>
-      </tr>
-
+    <tr>
+      <td>{{$value->ChartOfAccountName}}-{{$value->ChartOfAccountID}}</td>
+      <td align="right">{{number_format($opening[0]->Balance)}}  </td>
+      <td align="right">{{ ($item==0) ?  '-' : $item}}</td>
+      <td align="right">{{ (count($dhs)==0) ?  '-' : $dhs[0]->Balance}}</td>
+      <td align="right">{{ (count($Amad)==0) ?  '-' : $Amad[0]->Balance}}</td>
+      <td align="right">{{ (count($Raft)==0) ?  '-' : $Raft[0]->Balance}}</td>
+      
+       <td align="right">&nbsp;</td>
+    </tr>
     @endforeach
+    <tr style="border-top: 3px double #A5A5A5">
+       <td align="left"><strong>Total</strong></td>
+       <td align="right">{{number_format($Opening)}}</td>
+       <td align="right">&nbsp;</td>
+      <td align="right">&nbsp;</td>
+      <td align="right">&nbsp;</td>
+      <td align="right">&nbsp;</td>
+      <td align="right">&nbsp;</td>
 
 
-    <tr>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-    </tr>
-    <tr>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td><div align="right">{{number_format($CreditTotal,2)}}</div></td>
-    </tr>
-  </table>
 
-  <p><br>
-  </p>
-  <table width="100%" border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td width="33%">PAID / CHECK BY </td>
-      <td width="33%"><div align="center">AUTHORIZED BY </div></td>
-      <td width="33%"><div align="right">RECEIVED BY </div></td>
     </tr>
-    <tr>
-      <td width="33%">(Operator : Administrator </td>
-      <td width="33%">&nbsp;</td>
-      <td width="33%">&nbsp;</td>
-    </tr>
-  </table>
-  <p>&nbsp;</p>
-  <p style="page-break-after: always;">&nbsp;</p>
-</div>
-@endforeach      
+  </table>     
       </div>
   </div>
   

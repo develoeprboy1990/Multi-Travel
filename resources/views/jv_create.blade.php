@@ -53,8 +53,17 @@
       .form-control, .form-select
       {
         border-radius: 0 !important;
-        
+            padding: 0.47rem 0rem !important;
       }
+
+      .select2
+{
+border-radius: 0 !important;
+width: 250px !important;
+
+}
+
+
 
 .swal2-popup {
  font-size: 0.8rem;
@@ -94,7 +103,7 @@
   
  
           <!-- enctype="multipart/form-data" -->
-<form action="{{URL('/VoucherSave')}}" method="post"> 
+<form action="{{URL('/JVSave')}}" method="post"> 
 
  
       <input type="hidden" name="_token" id="csrf" value="{{Session::token()}}">
@@ -152,7 +161,7 @@
                 </div>
               </div>
 
-               <div class="col-12">
+               <div class="col-12 d-none">
                 <div class="mb-1 row">
                   <div class="col-sm-3">
                     <label class="col-form-label" for="password">Chart of Account</label>
@@ -218,8 +227,8 @@
               
               <th width="5%">Invoice</th>
               <th width="5%">Ref No</th>
-              <th width="5%">Debit</th>
-              <th width="5%">Credit</th>
+              <th width="8%">Debit</th>
+              <th width="8%">Credit</th>
             </tr>
           </thead>
           <tbody>
@@ -227,7 +236,7 @@
               <td class=" bg-light border-1 border-light"><input class="case" type="checkbox" style="margin-left: 15px;" /></td>
               <td>
 
-                 <select name="ChOfAcc[]" id="ItemID0_1" class="form-select  form-control-sm   ">
+                 <select name="ChOfAcc[]" id="ItemID0_1" class="form-select select2 form-control-sm   ">
                   <option value="">Select Account</option>
                   @foreach ($chartofaccount as $key => $value) 
                     <option value="{{$value->ChartOfAccountID}}">{{$value->ChartOfAccountID}}-{{$value->ChartOfAccountName}}</option>
@@ -235,7 +244,7 @@
                  </select>
                </td>
              
-              <td> <select name="SupplierID[]" id="SupplierID_1" class="   form-select " onchange="ajax_balance(this.value);">
+              <td> <select name="SupplierID[]" id="SupplierID_1" class=" select2  form-select " onchange="ajax_balance(this.value);">
                   <option value="">Select Supplier</option>
 
                    @foreach ($supplier as $key => $value) 
@@ -244,7 +253,7 @@
                  </select>
 
                 </td>
-                 <td> <select name="PartyID[]" id="PartyID_1" class="   form-select " onchange="ajax_balance(this.value);">
+                 <td> <select name="PartyID[]" id="PartyID_1" class=" select2  form-select " onchange="ajax_balance(this.value);">
                   <option value="">Select PartyID</option>
 
                    @foreach ($party as $key => $value) 
@@ -285,7 +294,7 @@
               <td class=" bg-light border-1 border-light"><input class="case" type="checkbox" style="margin-left: 15px;" /></td>
               <td>
 
-                 <select name="ChOfAcc[]" id="ItemID0_2" class=" form-select form-control-sm   ">
+                 <select name="ChOfAcc[]" id="ItemID0_2" class=" form-select select2 form-control-sm   ">
                   <option value="">Select Account</option>
                   @foreach ($chartofaccount as $key => $value) 
                     <option value="{{$value->ChartOfAccountID}}">{{$value->ChartOfAccountID}}-{{$value->ChartOfAccountName}}</option>
@@ -293,7 +302,7 @@
                  </select>
                </td>
              
-              <td> <select name="SupplierID[]" id="SupplierID_2" class="  form-select " onchange="ajax_balance(this.value);">
+              <td> <select name="SupplierID[]" id="SupplierID_2" class=" select2 form-select " onchange="ajax_balance(this.value);">
                   <option value="">Select Supplier</option>
 
                    @foreach ($supplier as $key => $value) 
@@ -302,7 +311,7 @@
                  </select>
 
                 </td>
-                 <td> <select name="PartyID[]" id="PartyID_2" class="  form-select " onchange="ajax_balance(this.value);">
+                 <td> <select name="PartyID[]" id="PartyID_2" class=" select2 form-select " onchange="ajax_balance(this.value);">
                   <option value="">Select PartyID</option>
 
                    @foreach ($party as $key => $value) 
@@ -348,11 +357,24 @@
               <th width="12%"> </th>
               <th width="10%"> </th>
               
-              
-              <th width="5%"> </th>
-              <th width="5%"> </th>
+         
+              <th width="5%" colspan="2"> TOTAL</th>
               <th width="5%"><input type="text"  readonly="" class=" form-control " id="sum_dr"> </th>
               <th width="5%"><input type="text" readonly="" class=" form-control " id="sum_cr"></th>
+            </tr>
+
+
+             <tr class="bg-light border-1 border-light "  style="height: 40px;">
+              <th width="2%" > </th>
+              <th width="10%">  </th>
+              <th width="10%">  </th>
+              <th width="12%"> </th>
+              <th width="10%"> </th>
+              
+         
+              <th width="5%" colspan="2"> DIFFERENCE</th>
+              <th width="5%" colspan="2"> <div  id="Difference"></div></th>
+               
             </tr>
           </tfooter>
 
@@ -384,7 +406,8 @@
 
 
         
-        
+         <div class="col-md-6"> <iframe src="{{URL('/Attachment')}}" width="100%" height="40%" border="0" scrolling="yes" style="overflow: hidden;"></iframe></div>
+              
           
         
   <!--  <div class='row'>
@@ -442,14 +465,14 @@ var i=$('table tr').length;
 $(".addmore").on('click',function(){
   html = '<tr class="bg-light border-1 border-light ">';
   html += '<td ><input class="case" type="checkbox" style="margin-left: 15px;" /></td>';
-  html += '<td><select name="ChOfAcc[]" id="ItemID0_'+i+'" class="form-select changesNoo"> <option value="">Select Account</option> @foreach ($chartofaccount as $key => $value) <option value="{{$value->ChartOfAccountID}}">{{$value->ChartOfAccountID}}-{{$value->ChartOfAccountName}}</option>@endforeach</select> </td>';
+  html += '<td><select name="ChOfAcc[]" id="ItemID0_'+i+'" class=" select2 form-select changesNoo"> <option value="">Select Account</option> @foreach ($chartofaccount as $key => $value) <option value="{{$value->ChartOfAccountID}}">{{$value->ChartOfAccountID}}-{{$value->ChartOfAccountName}}</option>@endforeach</select> </td>';
 
 
 
   // html += '<td><select name="ItemID[]" id="ItemID_'+i+'" class="form-select changesNoo"><option value="">Select Item</option><option value="">b</option></select></td>';
-  html += '<td><select name="SupplierID[]" id="SupplierID_'+i+'"  onchange="ajax_balance(this.value);" class="form-select"> <option value="">Select Supplier</option>@foreach ($supplier as $key => $value) <option value="{{$value->SupplierID}}">{{$value->SupplierName}}</option>@endforeach</select></td>';
+  html += '<td><select name="SupplierID[]" id="SupplierID_'+i+'"  onchange="ajax_balance(this.value);" class="form-select select2 "> <option value="">Select Supplier</option>@foreach ($supplier as $key => $value) <option value="{{$value->SupplierID}}">{{$value->SupplierName}}</option>@endforeach</select></td>';
    
-  html += '<td><select name="PartyID[]" id="PartyID_'+i+'" class="form-select " onchange="ajax_balance(this.value);"><option value="">Select PartyID</option>@foreach ($party as $key => $value)<option value="{{$value->PartyID}}">{{$value->PartyName}}</option>@endforeach</select></td>';
+  html += '<td><select name="PartyID[]" id="PartyID_'+i+'" class="form-select select2" onchange="ajax_balance(this.value);"><option value="">Select PartyID</option>@foreach ($party as $key => $value)<option value="{{$value->PartyID}}">{{$value->PartyName}}</option>@endforeach</select></td>';
   html += '<td><input type="text" name="Narration[]" id="RefNo_'+i+'" class="form-control changesNo" ></td>';
  
    html += '<td><input type="text" name="Invoice[]" id="OPVAT_'+i+'" class="form-control changesNo" autocomplete="off" onkeypress="return IsNumeric(event);" ondrop="return false;" onpaste="return false;"></td>';
@@ -458,6 +481,7 @@ $(".addmore").on('click',function(){
   html += '<td><input type="number" name="Credit[]" id="credit_'+i+'" class=" form-control changesNo totalLinePrice" autocomplete="off" onkeypress="return IsNumeric(event);" ondrop="return false;" onpaste="return false;" step="0.01" ></td>';
   html += '</tr>';
   $('table').append(html);
+  $('.select2').select2();
   i++;
 });
 
@@ -499,7 +523,7 @@ $.each($('.totalLinePricee'),function() {
    }
    else
    {
-        sum_dr += parseInt($(this).val());  
+        sum_dr += parseFloat($(this).val());  
 
 
 
@@ -521,7 +545,7 @@ $.each($('.totalLinePrice'),function() {
    }
    else
    {
-        sum_cr += parseInt($(this).val());  
+        sum_cr += parseFloat($(this).val());  
      
    }
 });
@@ -530,7 +554,7 @@ $.each($('.totalLinePrice'),function() {
   $("#sum_cr").val(sum_cr); // display in div in html
 
 
-    if (parseInt($('#sum_dr').val())!=parseInt($('#sum_cr').val()) ) {
+    if (parseFloat($('#sum_dr').val())!=parseFloat($('#sum_cr').val()) ) {
         // alert("Debit must be equal to Credit. Please check");
         $('#sum_dr').css("border", "1px dashed red");
         $('#sum_cr').css("border", "1px dashed red");
@@ -545,6 +569,7 @@ $.each($('.totalLinePrice'),function() {
 
   
   
+                    $('#Difference').html(sum_dr - sum_cr);
 }
 
 
@@ -824,6 +849,20 @@ $( "#submit" ).click(function() {
   
  
 </script>
+
+ <script>
+   $( document ).ready(function() {
+    
+  $('body').addClass('sidebar-enable vertical-collpsed')
+ // $('body').removeClass('sidebar-enable vertical-collpsed')
+//setTimeout(function(){
+       //   $("body").removeClass("sidebar-enable vertical-collpsed");
+     //},5000);
+});
+
+ </script>
+
+ 
  
 <script src="{{asset('assets/js/scripts/forms/form-select2.min.js')}}"></script>
  

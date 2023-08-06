@@ -62,6 +62,7 @@ Route::get('/VoucherView/{id}',[Accounts::class,'VoucherView']);
 Route::get('/VoucherPDF/{id}',[Accounts::class,'VoucherPDF']);
 
 Route::get('/JV/',[Accounts::class,'JV']);
+Route::post('/JVSave/',[Accounts::class,'JVSave']);
 
 
 Route::get('/Item',[Accounts::class,'Item']);

@@ -58,7 +58,7 @@
                                     <div class="card-body">
                                         <h4 class="card-title mb-4"></h4>
 
-                                        <form action="{{URL('/BranchSave')}}" method="post" enctype="multipart/form-data">
+                                        <form action="{{URL('/BranchSave')}}" method="post" enctype="multipart/form-data" class="custom-validation">
 
                                          {{csrf_field()}} 
 
@@ -66,7 +66,7 @@
                                            <div class="col-md-4">
                                          <div class="mb-3">
                                          <label for="basicpill-firstname-input">Branch*</label>
-                                         <input type="text" class="form-control" name="BranchName" value="{{old('BranchName')}} ">
+                                         <input type="text" class="form-control" name="BranchName" value="{{old('BranchName')}} " required="">
                                          </div>
                                          </div>
                                          

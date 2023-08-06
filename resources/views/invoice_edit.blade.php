@@ -147,7 +147,7 @@
                   </div>
                 </div>
               </div>
-              <div class="col-12">
+              <div class="col-12 d-none">
                 <div class="mb-1 row">
                   <div class="col-sm-3">
                     <label class="col-form-label" for="contact-info">Due Date</label>

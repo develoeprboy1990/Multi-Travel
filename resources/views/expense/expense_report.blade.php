@@ -42,28 +42,28 @@
   <div class="card">
       <div class="card-body">
           <!-- enctype="multipart/form-data" -->
-          <form action="{{URL('/AccountSummary1')}}" method="post" name="form1" id="form1">
-            {{csrf_field()}} 
+          <form action="{{URL('/ExpenseReport1')}}" method="post" name="form1" id="form1"> {{csrf_field()}} 
 
-           <!--    <div class="col-md-4">
-             <div class="mb-0">
-                <label for="basicpill-firstname-input">Voucher Type</label>
-                 <select name="VoucherTypeID" id="" class="select2 form-select" id="select2-basic" >
-                <option value="0" selected="">ALL</option>
-               <?php foreach ($voucher_type as $key => $value): ?>
-                  <option value="{{$value->VoucherTypeID}}">{{$value->VoucherCode}}-{{$value->VoucherTypeName}}</option>
-                  
-                <?php endforeach ?>
-              </select>
-              </div>
-               </div>  -->
+ 
+            
+                
+ 
+            
 
-                <div class="col-md-4"> 
+
+            
+            
+ 
+
+             
+
+
+                            <div class="col-md-4"> 
                    <label class="col-form-label" for="email-id">From Date</label>
                  <div class="input-group" id="datepicker21">
   <input type="text" name="StartDate"  autocomplete="off" class="form-control" placeholder="yyyy-mm-dd" data-date-format="yyyy-mm-dd" data-date-
 
-container="#datepicker21" data-provide="datepicker" data-date-autoclose="true" value="2023-08-05">
+container="#datepicker21" data-provide="datepicker" data-date-autoclose="true" value="{{date('Y-m-d')}}">
   <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
     </div>
               </div>
@@ -76,13 +76,15 @@ container="#datepicker21" data-provide="datepicker" data-date-autoclose="true" v
 container="#datepicker22" data-provide="datepicker" data-date-autoclose="true" value="{{date('Y-m-d')}}">
   <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
     </div>
-              </div>              
+              </div>
+
+              
+              
          
       </div>
       <div class="card-footer bg-light">
         <button type="submit" class="btn btn-success w-lg float-right" id="online">Submit</button>
-        <!-- <button type="submit" class="btn btn-success w-lg float-right" id="pdf">PDF</button> -->
-                   <a href="{{URL('/')}}" class="btn btn-secondary w-lg float-right">Cancel</a>
+                    <a href="{{URL('/')}}" class="btn btn-secondary w-lg float-right">Cancel</a>
       </div>
   </div>
    </form>
@@ -109,7 +111,7 @@ container="#datepicker22" data-provide="datepicker" data-date-autoclose="true" v
 
   $('#online').click(function(){
      
-   $('#form1').attr('action', '{{URL("/AccountSummary1")}}');
+   $('#form1').attr('action', '{{URL("/ExpenseReport1")}}');
     
 
 });

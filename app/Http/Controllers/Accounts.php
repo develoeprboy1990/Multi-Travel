@@ -25,6 +25,8 @@ use Excel;
 use File;
 use PDF;
 
+use Illuminate\Support\Arr;
+
 
 class Accounts extends Controller
 {
@@ -640,6 +642,75 @@ $visaexpirylist = DB::table('v_visa')->where('DueDate','<',Carbon::now()->addDay
 
 
 
+public function JVSave(request $request )
+{
+   
+   ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
+  
+      ////////////////////////////END SCRIPT ////////////////////////////////////////////////
+
+  // dd($request->all());
+      $voucher_mst = array(
+               'VoucherCodeID' => $request->input('VoucherType'), 
+               'Voucher' => $request->input('Voucher'), 
+               'Narration' => $request->input('Narration_mst'), 
+               'Date' => $request->input('VHDate'), 
+               
+
+      );
+
+       // dd($invoice_mst);
+
+      // $id= DB::table('')->insertGetId($data);
+      
+       $id= DB::table('voucher_master')->insertGetId($voucher_mst);
+
+
+  
+
+// start for loop
+  for ($i = 0; $i < count($request->ChOfAcc); $i++) {
+
+
+      $data = array (
+        'VoucherMstID' => $id, 
+        'Voucher' => $request->input('Voucher'), 
+         'Date' =>  $request->input('VHDate'), 
+        'ChOfAcc' => $request->ChOfAcc[$i],
+        'SupplierID' => $request->SupplierID[$i],
+        'UserID' => session::get('UserID'),
+        'PartyID' => $request->PartyID[$i],
+        'Narration' => $request->Narration[$i],
+        'InvoiceNo' => $request->Invoice[$i],
+        'RefNo' => $request->RefNo[$i],
+        'Debit' => $request->Debit[$i],
+        'Credit' => $request->Credit[$i],
+ 
+               
+        
+    );
+
+
+$id1= DB::table('voucher_detail')->insert($data);
+
+
+
+ 
+
+
+
+      }
+      // end for each
+ 
+  
+             
+    
+    return redirect('Voucher')->with('error','Record Saved')->with('class','success');
+
+
+
+}
+
 
    public  function Voucher()
     {
@@ -992,6 +1063,8 @@ $idd = DB::table('journal')->where('VoucherMstID',$request->input('VoucherMstID'
          'Date' =>  $request->input('VHDate'), 
         'ChOfAcc' => $request->ChOfAcc[$i],
         'SupplierID' => $request->SupplierID[$i],
+                'UserID' => session::get('UserID'),
+
         'PartyID' => $request->PartyID[$i],
         'Narration' => $request->Narration[$i],
         'InvoiceNo' => $request->Invoice[$i],
@@ -1222,7 +1295,7 @@ $id = DB::table('journal')->where('VoucherMstID',$id)->delete();
            $invoice_type = DB::table('invoice_type')->get();  
 
            $items = DB::table('item')->get();  
-           $party = DB::table('v_party')->where('UserID',session::get('UserID'))->where('PartyCategoryID',6)->get();  
+           $party = DB::table('v_party')->where('UserID',session::get('UserID'))->where('PartyCategoryID',2)->get();  
            $customer = DB::table('v_party')->where('UserID',session::get('UserID'))->get();  
 
            $saleman = DB::table('saleman')->get(); 
@@ -3241,6 +3314,7 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
                                    'PartyName' => $request->input('PartyName'), 
                                   'Address' => $request->input('Address'), 
                                   'Phone' => $request->input('Phone'), 
+                                  'Mobile' => $request->input('Mobile'), 
                                   'Email' => $request->input('Email'), 
                                   'Active' => $request->input('Active'), 
                                   'InvoiceDueDays' => $request->input('InvoiceDueDays'),
@@ -3341,6 +3415,7 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
                                    'PartyName' => $request->input('PartyName'), 
                                   'Address' => $request->input('Address'), 
                                   'Phone' => $request->input('Phone'), 
+                                    'Mobile' => $request->input('Mobile'), 
                                   'Email' => $request->input('Email'), 
                                   'Active' => $request->input('Active'), 
                                   'InvoiceDueDays' => $request->input('InvoiceDueDays'), 
@@ -3944,7 +4019,7 @@ $where = array();
 if($request->VoucherTypeID>0) 
 {
 
- $where = array_add( $where, 'JournalType', $vouchertype[0]->VoucherCode);
+ $where = Arr::add( $where, 'JournalType', $vouchertype[0]->VoucherCode);
 
 }
 
@@ -3952,7 +4027,7 @@ if($request->VoucherTypeID>0)
 if($request->PartyID>0) 
 {
 
-$where = array_add( $where, 'PartyID', $request->PartyID);
+$where = Arr::add( $where, 'PartyID', $request->PartyID);
 
 }
 
@@ -4079,7 +4154,7 @@ $where = array();
 if($request->VoucherTypeID>0) 
 {
 
- $where = array_add( $where, 'JournalType', $vouchertype[0]->VoucherCode);
+ $where = Arr::add( $where, 'JournalType', $vouchertype[0]->VoucherCode);
 
 }
 
@@ -4087,7 +4162,7 @@ if($request->VoucherTypeID>0)
 if($request->PartyID>0) 
 {
 
-$where = array_add( $where, 'PartyID', $request->PartyID);
+$where = Arr::add( $where, 'PartyID', $request->PartyID);
 
 }
 
@@ -6252,10 +6327,10 @@ $voucher_master = DB::table('voucher_master')
 
   public function AccountSummary()
  {   
-    session::put('menu','AccountSummary');     
-       $pagetitle='Account Summary';
+        session::put('menu','AccountSummary');     
+        $pagetitle='Account Summary';
         $voucher_type = DB::table('voucher_type')->get();
-       return view ('account_summary',compact('pagetitle','voucher_type')); 
+        return view ('account_summary',compact('pagetitle','voucher_type')); 
  }
 
 
@@ -6263,44 +6338,23 @@ $voucher_master = DB::table('voucher_master')
  {   
 
   ///////////////////////USER RIGHT & CONTROL ///////////////////////////////////////////    
- $allow= check_role(session::get('UserID'),session::get('BranchID'),'Voucher Report','View');
- if($allow[0]->Allow=='N')
- {
- return redirect()->back()->with('error', 'You access is limited')->with('class','danger');
- }
+ 
  ////////////////////////////END SCRIPT ////////////////////////////////////////////////
 
   
     session::put('menu','AccountSummary');     
        $pagetitle='Account Summary';
 
-    // dd($request->all());
-       // dd($request->VoucherTypeID);
-      
-/*
-if($request->VoucherTypeID==0){
-
-      session::put('menu','VoucherReport');     
-       $pagetitle='Voucher Report';
-  
-
-  return redirect ('VoucherReport')->with('error','Please select voucher type')->with('class','danger');
-}
-*/
-
-        $voucher_type = DB::table('voucher_type')
-                       //->where('VoucherTypeID',$request->VoucherTypeID)
-                      ->get();
 
  
 
-$voucher_master = DB::table('voucher_master')
-            ->whereBetween('Date',array($request->StartDate,$request->EndDate))
-             //->where('VoucherCodeID',$request->VoucherTypeID)
-            ->get();
+  $chartofaccount = DB::table('chartofaccount')->whereNotNull('Category')->get();
+
+
  
  
-        return view ('account_summary1',compact('pagetitle','voucher_type','voucher_master','pagetitle')); 
+ 
+        return view ('account_summary1',compact('pagetitle','pagetitle','chartofaccount')); 
  }
 
 
@@ -7195,14 +7249,14 @@ $where = array('InvoiceTypeID' => $request->InvoiceTypeID);
 if($request->PartyID>0) 
 {
 
-$where = array_add( $where, 'PartyID', $request->PartyID);
+$where = Arr::add( $where, 'PartyID', $request->PartyID);
 
 }
 
 if($request->ItemID>0) 
 {
 
-$where = array_add( $where, 'ItemID' , $request->ItemID);
+$where = Arr::add( $where, 'ItemID' , $request->ItemID);
 
 }
 
@@ -7210,7 +7264,7 @@ $where = array_add( $where, 'ItemID' , $request->ItemID);
 if($request->UserID>0) 
 {
 
-$where = array_add( $where, 'UserID' , $request->UserID);
+$where = Arr::add( $where, 'UserID' , $request->UserID);
 
 }
  
@@ -7278,14 +7332,14 @@ $where = array('InvoiceTypeID' => $request->InvoiceTypeID);
 if($request->SupplierID>0) 
 {
 
-$where = array_add( $where, 'SupplierID', $request->SupplierID);
+$where = Arr::add( $where, 'SupplierID', $request->SupplierID);
 
 }
 
 if($request->ItemID>0) 
 {
 
-$where = array_add( $where, 'ItemID' , $request->ItemID);
+$where = Arr::add( $where, 'ItemID' , $request->ItemID);
 
 }
 
@@ -7293,7 +7347,7 @@ $where = array_add( $where, 'ItemID' , $request->ItemID);
 if($request->UserID>0) 
 {
 
-$where = array_add( $where, 'UserID' , $request->UserID);
+$where = Arr::add( $where, 'UserID' , $request->UserID);
 
 }
  
@@ -7464,7 +7518,7 @@ $where = array('InvoiceTypeID' => $request->InvoiceTypeID);
 if($request->UserID>0) 
 {
 
-$where = array_add( $where, 'UserID' , $request->UserID);
+$where = Arr::add( $where, 'UserID' , $request->UserID);
 
 }
 
@@ -7535,7 +7589,7 @@ $where = array('InvoiceTypeID' => $request->InvoiceTypeID);
 if($request->UserID>0) 
 {
 
-$where = array_add( $where, 'UserID' , $request->UserID);
+$where = Arr::add( $where, 'UserID' , $request->UserID);
 
 }
 

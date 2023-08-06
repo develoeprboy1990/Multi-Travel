@@ -309,6 +309,8 @@
         <script src="{{URL('/')}}/assets/js/pages/toastr.init.js"></script>
 
 
+<script src="{{asset('assets/libs/parsleyjs/parsley.min.js')}}"></script>
+<script src="{{asset('assets/js/pages/form-validation.init.js')}}"></script>
         
 
     </body>

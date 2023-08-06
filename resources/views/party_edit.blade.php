@@ -58,6 +58,7 @@
  $PartyName = old('PartyName') ? old('PartyName') : $party[0]->PartyName ;
 $Address = old('Address') ? old('Address') : $party[0]->Address ;
 $Phone = old('Phone') ? old('Phone') : $party[0]->Phone ;
+$Mobile = old('Mobile') ? old('Mobile') : $party[0]->Mobile ;
 $Email = old('Email') ? old('Email') : $party[0]->Email ;
 $InvoiceDueDays = old('InvoiceDueDays') ? old('InvoiceDueDays') : $party[0]->InvoiceDueDays ;
 $Active = old('Active') ? old('Active') : $party[0]->Active ;
@@ -97,6 +98,14 @@ $Active = old('Active') ? old('Active') : $party[0]->Active ;
 <label for="example-url-input" class="col-md-2 col-form-label fw-bold">Phone</label>
 <div class="col-md-4">
 <input class="form-control" type="text"  name="Phone" value="{{$Phone}}" >
+</div>
+
+</div>
+
+<div class="mb-1 row">
+<label for="example-url-input" class="col-md-2 col-form-label fw-bold">Mobile</label>
+<div class="col-md-4">
+<input class="form-control" type="text"  name="Mobile" value="{{$Mobile}}" >
 </div>
 
 </div>

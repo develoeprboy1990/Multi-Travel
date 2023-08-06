@@ -86,6 +86,14 @@
 </div>
 
 <div class="mb-1 row">
+<label for="example-url-input" class="col-md-2 col-form-label fw-bold">Mobile</label>
+<div class="col-md-4">
+<input class="form-control" type="text"  name="Mobile" value="{{old('Mobile')}}" >
+</div>
+
+</div>
+
+<div class="mb-1 row">
 <label for="example-url-input" class="col-md-2 col-form-label fw-bold">Email</label>
 <div class="col-md-4">
 <input class="form-control" type="text"  name="Email" value="{{old('Email')}}"  >

@@ -15,6 +15,14 @@ function dateformatman($date){
 	return ($date==null) ? null :  \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d/m/Y');    	
 
 }
+function dateformatman2($date){
+
+	 
+
+
+	return ($date==null) ? null :  \Carbon\Carbon::createFromFormat('Y-m-d', $date)->format('d M,Y');    	
+
+}
 
 function dateformatmonth($date){
 
