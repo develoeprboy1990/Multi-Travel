@@ -30,7 +30,6 @@
                                     <i class="mdi mdi-passport"></i>
                                     <span key="t-calendar">Visa</span>
                                 </a>
-                            </li> 
                             
 
                              
@@ -42,6 +41,12 @@
                             </li> 
                             
                              
+                            </li>    <li>
+                                <a href="{{URL('/Expense')}}" class="waves-effect">
+                                    <i class="mdi mdi-passport"></i>
+                                    <span key="t-calendar">Expense</span>
+                                </a>
+                            </li> 
                             <li>
                                 <a href="{{URL('/PettyCash')}}" class="waves-effect">
                                     <i class="mdi mdi-account-cash-outline"></i>

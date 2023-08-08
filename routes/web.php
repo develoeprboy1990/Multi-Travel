@@ -99,7 +99,26 @@ Route::get('/PartiesDelete/{id}',[Accounts::class,'PartiesDelete']);
 
 Route::get('/CheckUserRole1/{userid},{tablename},{action}',[Accounts::class,'CheckUserRole1']);
 
+// =====================================Expense Section=====================================
+Route::get('/Expense',[Accounts::class,'Expense']);
+route::get('/ExpenseCreate/',[Accounts::class,'ExpenseCreate']);
+Route::get('/ajax_Expense',[Accounts::class,'ajax_Expense']);
 
+Route::post('/ExpenseSave',[Accounts::class,'ExpenseSave']);
+route::get('/ExpenseEdit/{id}',[Accounts::class,'ExpenseEdit']);
+route::get('/ExpensePDF/{id}',[Accounts::class,'ExpensePDF']);
+route::get('/ExpenseView/{id}',[Accounts::class,'ExpenseView']);
+
+Route::post('/ExpenseUpdate',[Accounts::class,'ExpenseUpdate']);
+route::get('/ExpenseDelete/{id}',[Accounts::class,'ExpenseDelete']); 
+
+
+Route::get('/ExpenseReport/',[Accounts::class,'ExpenseReport']);
+Route::post('/ExpenseReport1/',[Accounts::class,'ExpenseReport1']);
+
+
+route::get('/DailyIncomeExpense/',[Accounts::class,'DailyIncomeExpense']);
+route::post('/DailyIncomeExpense1PDF/',[Accounts::class,'DailyIncomeExpense1PDF']);
 
 
 Route::get('/table',[Accounts::class,'table']);
@@ -117,6 +136,7 @@ route::get('/PettyCashEdit/{id}',[Accounts::class,'PettyCashEdit']);
 Route::post('/PettyCashUpdate',[Accounts::class,'PettyCashUpdate']);
 Route::post('/Ajax_PVHNO',[Accounts::class,'Ajax_PVHNO']);
 
+route::get('/PettyDelete/{id}',[Accounts::class,'PettyDelete']);
 
 // Visa
 

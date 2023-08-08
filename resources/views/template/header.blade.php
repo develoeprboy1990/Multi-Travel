@@ -106,7 +106,8 @@
                 <a class="dropdown-item" href="{{URL('/InvoiceSummary')}}">Invoice Summary List</a>
                 <a class="dropdown-item" href="{{URL('/TicketRegister')}}">Invoice Detail</a>
                 <a class="dropdown-item" href="{{URL('/AccountSummary')}}">Account Summary</a>
-                
+                <a class="dropdown-item" href="{{URL('/ExpenseReport')}}">Expense Report</a>
+
                                                      
                                                 </div>
                                             </div><!-- /btn-group -->

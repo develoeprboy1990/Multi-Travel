@@ -51,8 +51,8 @@
                                     <div class="col-sm-9">
                                         <select name="SupplierID" id="SupplierID" class="form-select select2 mt-5"  required="">
                                             <option value="">Select</option>
-                                            <?php foreach ($supplier as $key => $value) : ?>
-                                                <option value="{{$value->SupplierID}}">{{$value->SupplierName}}</option>
+                                            <?php foreach ($party as $key => $value) : ?>
+                                                <option value="{{$value->PartyID}}">{{$value->PartyName}}</option>
                                             <?php endforeach ?>
                                         </select>
                                     </div>

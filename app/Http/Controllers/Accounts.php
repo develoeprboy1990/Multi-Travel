@@ -401,6 +401,15 @@ $idd= DB::table('pettycash_detail')->where('PettyMstID',$request->input('Voucher
     // petty udate end 
 
 
+public function PettyDelete ($id)
+{
+
+  $id = DB::table('pettycash_master')->where('PettyMstID',$id)->delete();
+  
+  return redirect('PettyCash')->with('error','Deleted Successfully')->with('class','success');
+    
+}
+
 
 // visa start
 
@@ -655,6 +664,8 @@ public function JVSave(request $request )
                'Voucher' => $request->input('Voucher'), 
                'Narration' => $request->input('Narration_mst'), 
                'Date' => $request->input('VHDate'), 
+               'UserID' => session::get('UserID'), 
+
                
 
       );
@@ -856,7 +867,7 @@ public function VoucherSave(request $request )
       }
       ////////////////////////////END SCRIPT ////////////////////////////////////////////////
 
-  // dd($request->all());
+   // dd(session::get('UserID'));
       $voucher_mst = array(
                'VoucherCodeID' => $request->input('VoucherType'), 
                'Voucher' => $request->input('Voucher'), 
@@ -867,8 +878,7 @@ public function VoucherSave(request $request )
 
       );
 
-       // dd($invoice_mst);
-
+ 
       // $id= DB::table('')->insertGetId($data);
       
        $id= DB::table('voucher_master')->insertGetId($voucher_mst);
@@ -891,6 +901,7 @@ if( (substr($request->Voucher,0,2)=='BP') || ((substr($request->Voucher,0,2)=='C
         'InvoiceNo' => $request->Invoice[$i],
         'RefNo' => $request->RefNo[$i],
         'Debit' => $request->Debit[$i],
+         'UserID' => session::get('UserID'),
  
                
         
@@ -910,7 +921,8 @@ $id1= DB::table('voucher_detail')->insert($voucher_det_dr);
         'Narration' => $request->Narration[$i],
         'InvoiceNo' => $request->Invoice[$i],
         'RefNo' => $request->RefNo[$i],
-        'Credit' => $request->Debit[$i],
+        'Credit' => $request->Debit[$i], 
+        'UserID' => session::get('UserID'),
  
                
         
@@ -942,6 +954,7 @@ else
         'InvoiceNo' => $request->Invoice[$i],
         'RefNo' => $request->RefNo[$i],
         'Debit' => $request->Debit[$i],
+         'UserID' => session::get('UserID'),
  
                
         
@@ -962,6 +975,7 @@ $id2= DB::table('voucher_detail')->insert($voucher_det_dr);
         'InvoiceNo' => $request->Invoice[$i],
         'RefNo' => $request->RefNo[$i],
         'Credit' => $request->Debit[$i],
+         'UserID' => session::get('UserID'),
  
                
         
@@ -7973,9 +7987,479 @@ public  function Logout()
     
 
 
+  // expense section
+
+        // ===============Expense Section function==================
+  public  function ExpenseCreate()
+  {
+    $pagetitle = 'Expense';
+
+    session::put('menu', 'Expense');
+    $chartofaccont = DB::table('chartofaccount')->whereIn('Category',['CASH','CARD','BANK'])->get();
+    $items = DB::table('chartofaccount')->where('Level','3')->get();
+    // $items = DB::table('chartofaccount')->where(DB::raw('right(L3,3)'),'<>',000)->get();
+
+    $item = json_encode($items);
+    // dd($item);
+    $party = DB::table('party')->get();
+    $tax = DB::table('tax')->where('Section','Invoice')->get();
+
+    // $tax = DB::table('tax')->get();
+    $user = DB::table('user')->get();
+    $invoice_type = DB::table('invoice_type')->get();
+
+
+    $vhno = DB::table('expense_master')
+      ->select(DB::raw('LPAD(IFNULL(MAX(right(ExpenseNo,5)),0)+1,5,0) as VHNO '))->whereIn(DB::raw('left(ExpenseNo,3)'), ['EXP'])->get();
+
+
+    session::put('VHNO', 'EXP-' . $vhno[0]->VHNO);
+
+
+
+    return view('expense.expensecreate', compact('invoice_type', 'chartofaccont','tax', 'items', 'vhno', 'party', 'pagetitle', 'item', 'user'));
+  }
+
+
+public function ExpenseSave(Request $request)
+
+
+{
+ 
+
+   session::put('menu', 'Expense');
+    $pagetitle = 'Invoice';
+
+   $expense_mst = array(
+    'ExpenseNo' => $request->ExpenseNo,
+    'Date' => $request->Date,
+    'ChartOfAccountID' => $request->ChartOfAccountID_From,
+    'SupplierID' => $request->SupplierID,
+    'ReferenceNo' => $request->ReferenceNo,
+    'Tax' => $request->grandtotaltax,
+    'GrantTotal' => $request->Grandtotal,
+    'Paid' => $request->amountPaid,
+   );
+   // dd($challan_mst);
+  // $id= DB::table('')->insertGetId($data);
+
+  $ExpenseMasterID = DB::table('expense_master')->insertGetId($expense_mst);
+  // dd($InvoiceMasterID);
+
+
+// JOURNAL ENTRY 
+//bank debit
+$bank_cash = array(
+'VHNO' => $request->ExpenseNo,
+ 'ChartOfAccountID' => $request->ChartOfAccountID_From,   // Cash / bank / credit card
+'SupplierID' => $request->input('SupplierID'),
+'ExpenseMasterID' => $ExpenseMasterID,
+
+'Date' => $request->input('Date'),
+
+'Cr' => $request->Grandtotal,
+'Narration' => '',
+'Trace' => 614
+);
+$journal_entry= DB::table('journal')->insertGetId($bank_cash);
+
+
+
+
+
+
+  //  start for item array from invoice
+  for ($i = 0; $i < count($request->ItemID0); $i++) {
+    $expense_detail = array(
+      'ExpenseMasterID' =>  $ExpenseMasterID,
+      'ChartOfAccountID' => $request->ChartOfAccountID[$i],
+      'Notes' => $request->Description[$i],
+      'TaxPer' => $request->Tax[$i],
+      'Tax' => $request->TaxVal[$i],
+      'Amount' => $request->ItemTotal[$i],
+
+    );
+
+    $id = DB::table('expense_detail')->insertGetId($expense_detail);
+
+
+
+if($request->Tax[$i] > 0) {
+
+
+
+
+// A/P debit
+$ar_payment = array(
+'VHNO' => $request->ExpenseNo,
+ 'ChartOfAccountID' => $request->ChartOfAccountID[$i],  // chart of account direct debit
+'SupplierID' => $request->input('SupplierID'),
+'ExpenseMasterID' => $ExpenseMasterID,
+ 'Date' => $request->input('Date'),
+'Dr' => $request->ItemTotal[$i],
+'Narration' => '',
+'Trace' => 615
+);
+
+$journal_entry1= DB::table('journal')->insertGetId($ar_payment);
+
+
+
+//tax grandtotaltax
+
+// Tax Payable debit
+$ar_payment = array(
+'VHNO' => $request->ExpenseNo,
+ 'ChartOfAccountID' => 210300,  // TAX PAYABLES 
+'SupplierID' => $request->input('SupplierID'),
+'ExpenseMasterID' => $ExpenseMasterID,
+ 'Date' => $request->input('Date'),
+'Dr' => $request->TaxVal[$i],
+'Narration' => '',
+'Trace' => 617
+);
+
+$journal_entry11= DB::table('journal')->insertGetId($ar_payment);
+
+
+}
+
+else
+
+{
+
+// debit entry
+$ar_payment = array(
+'VHNO' => $request->ExpenseNo,
+ 'ChartOfAccountID' => $request->ChartOfAccountID[$i],
+'SupplierID' => $request->input('SupplierID'),
+'ExpenseMasterID' => $ExpenseMasterID,
+ 'Date' => $request->input('Date'),
+'Dr' =>$request->ItemTotal[$i],
+'Narration' => '',
+'Trace' => 615
+);
+
+$journal_entry1= DB::table('journal')->insertGetId($ar_payment);
+
+}
+
+
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+// end payment received
+
+// END OF JOURNAL ENTRY
+
+
+
+
+  return view('expense.expense', compact('pagetitle'));
+}
+
+
+  public  function Expense()
+  {
+    session::put('menu', 'Expense');
+    $pagetitle = 'Invoice';
+ 
+
+
+    return view('expense.expense', compact('pagetitle'));
+  }
+
+  public function ajax_Expense(Request $request)
+
+  {
+    session::put('menu', 'Expense');
+    $pagetitle = 'Expense';
+    if ($request->ajax()) {
+      $data = DB::table('v_expense')->orderBy('Date','desc')
+        ->get();
+
+      return Datatables::of($data)
+        ->addIndexColumn()
+        ->addColumn('action', function ($row) {
+          // if you want to use direct link instead of dropdown use this line below
+          // <a href="javascript:void(0)"  onclick="edit_data('.$row->customer_id.')" >Edit</a> | <a href="javascript:void(0)"  onclick="del_data('.$row->customer_id.')"  >Delete</a>
+
+
+          $btn = '
+
+
+            <div class="d-flex align-items-center col-actions">
+
+
+            <a href="' . URL('/ExpenseView/' . $row->ExpenseMasterID) . '"><i class="font-size-18 mdi mdi-eye-outline align-middle me-1 text-secondary"></i></a>
+             <a href="' . URL('/ExpenseEdit/' . $row->ExpenseMasterID) . '"><i class="font-size-18 bx bx-pencil align-middle me-1 text-secondary"></i></a>
+            <a href="' . URL('/ExpenseDelete/' . $row->ExpenseMasterID) . '"><i class="font-size-18 bx bx-trash align-middle me-1 text-danger"></i></a>
+
+
+
+
+            </div>
+            ';
+
+          //class="edit btn btn-primary btn-sm"
+          // <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          return $btn;
+        })
+        ->rawColumns(['action'])
+        ->make(true);
+    }
+
+    return view('expense.expense', 'pagetitle');
+  }
+
+
+public function  ExpenseEdit($id)
+{
+
+
+ $pagetitle = 'Expense';
+
+    session::put('menu', 'Expense');
+
+    $chartofaccount = DB::table('chartofaccount')->get();
+    // $chartofaccount = DB::table('chartofaccount')->where(DB::raw('right(L3,3)'),'<>',000)->get();
+
+     
+    $supplier = DB::table('supplier')->get();
+    $tax = DB::table('tax')->where('Section','Estimate')->get();
+
+    // $tax = DB::table('tax')->get();
+    $user = DB::table('user')->get();
+    
+
+
+    $expense_master = DB::table('expense_master')->where('ExpenseMasterID',$id)->get();
+
+
+    session::put('VHNO', $expense_master[0]->ExpenseNo);
+
+
+$expense_detail = DB::table('expense_detail')->where('ExpenseMasterID',$id)->get();
+
+ 
+
+    return view('expense.expense_edit', compact('tax', 'supplier', 'pagetitle','expense_master' ,'chartofaccount','expense_detail'));
+
+
+}
+
+
+
+
+public function ExpenseUpdate(request $request)
+{
+ 
+
+   session::put('menu', 'Expense');
+    $pagetitle = 'Invoice';
+
+   $expense_mst = array(
+    'ExpenseNo' => $request->ExpenseNo,
+    'Date' => $request->Date,
+    'ChartOfAccountID' => $request->ChartOfAccountID_From,
+    'SupplierID' => $request->SupplierID,
+    'ReferenceNo' => $request->ReferenceNo,
+    'Tax' => $request->grandtotaltax,
+    'GrantTotal' => $request->Grandtotal,
+   );
+   // dd($challan_mst);
+  // $id= DB::table('')->insertGetId($data);
+
+
+
+
+
+  $ExpenseMasterID = DB::table('expense_master')->where('ExpenseMasterID',$request->ExpenseMasterID)->update($expense_mst);
+// dd($InvoiceMasterID);
+
   
+  $idd = DB::table('expense_detail')->where('ExpenseMasterID',$request->ExpenseMasterID)->delete();
+  $id2 = DB::table('journal')->where('ExpenseMasterID',$request->ExpenseMasterID)->delete();
 
 
+  // JOURNAL ENTRY 
+//bank debit
+$bank_cash = array(
+'VHNO' => $request->ExpenseNo,
+ 'ChartOfAccountID' => $request->ChartOfAccountID_From,   // Cash / bank / credit card
+'SupplierID' => $request->input('SupplierID'),
+'ExpenseMasterID' => $request->ExpenseMasterID,
+
+'Date' => $request->input('Date'),
+
+'Cr' => $request->Grandtotal,
+'Narration' => '',
+'Trace' => 614
+);
+$journal_entry= DB::table('journal')->insertGetId($bank_cash);
+
+
+
+    
+
+  //  start for item array from invoice
+  for ($i = 0; $i < count($request->ChartOfAccountID); $i++) {
+    $expense_detail = array(
+      'ExpenseMasterID' =>  $request->ExpenseMasterID,
+      'ChartOfAccountID' => $request->ChartOfAccountID[$i],
+      'Notes' => $request->Description[$i],
+      'TaxPer' => $request->Tax[$i],
+      'Tax' => $request->TaxVal[$i],
+      'Amount' => $request->ItemTotal[$i],
+
+    );
+
+    $id = DB::table('expense_detail')->insertGetId($expense_detail);
+
+
+if($request->Tax[$i] > 0) {
+
+
+
+
+// A/P debit
+$ar_payment = array(
+'VHNO' => $request->ExpenseNo,
+ 'ChartOfAccountID' => $request->ChartOfAccountID[$i],  // chart of account direct debit
+'SupplierID' => $request->input('SupplierID'),
+'ExpenseMasterID' => $request->ExpenseMasterID,
+ 'Date' => $request->input('Date'),
+'Dr' => $request->ItemTotal[$i],
+'Narration' => '',
+'Trace' => 615
+);
+
+$journal_entry1= DB::table('journal')->insertGetId($ar_payment);
+
+
+
+//tax grandtotaltax
+
+// Tax Payable debit
+$ar_payment = array(
+'VHNO' => $request->ExpenseNo,
+ 'ChartOfAccountID' => 210300,  // TAX PAYABLES 
+'SupplierID' => $request->input('SupplierID'),
+'ExpenseMasterID' => $request->ExpenseMasterID,
+ 'Date' => $request->input('Date'),
+'Dr' => $request->TaxVal[$i],
+'Narration' => '',
+'Trace' => 617
+);
+
+$journal_entry11= DB::table('journal')->insertGetId($ar_payment);
+
+
+}
+
+else
+
+{
+
+// debit entry
+$ar_payment = array(
+'VHNO' => $request->ExpenseNo,
+ 'ChartOfAccountID' => $request->ChartOfAccountID[$i],
+'SupplierID' => $request->input('SupplierID'),
+'ExpenseMasterID' => $request->ExpenseMasterID,
+ 'Date' => $request->input('Date'),
+'Dr' =>$request->ItemTotal[$i],
+'Narration' => '',
+'Trace' => 615
+);
+
+$journal_entry1= DB::table('journal')->insertGetId($ar_payment);
+
+}
+
+
+
+
+  }
+  return view('expense.expense', compact('pagetitle'));
+}
+
+
+
+
+public function ExpenseView($id)
+{
+
+  $pagetitle='Expense View ';
+  $company = DB::table('company')->get();
+  $expense_master = DB::table('v_expense')->where('ExpenseMasterID',$id)->get();
+  $expense_detail = DB::table('v_expense_detail')->where('ExpenseMasterID',$id)->get();
+  $journal = DB::table('journal')->where('ExpenseMasterID',$id)->get();
+
+  
+  return view('expense.expense_view',compact('expense_master','expense_detail','pagetitle','company'));
+  
+  
+}
+
+
+public function ExpenseDelete($id)
+{
+
+  
+  $id = DB::table('expense_master')->where('ExpenseMasterID',$id)->delete();
+  $id2 = DB::table('expense_detail')->where('ExpenseMasterID',$id)->delete();
+  $id3 = DB::table('journal')->where('ExpenseMasterID',$id)->delete();
+
+  
+  return redirect('Expense')->with('error','Deleted Successfully')->with('class','success');
+  
+  
+}
+
+
+public function ExpenseReport()
+{
+  $pagetitle='Expense';
+  return view ('expense.expense_report',compact('pagetitle'));
+}  
+
+
+public function ExpenseReport1(request $request)
+    {
+  
+  $pagetitle='Expense Report';
+  
+     
+     $company = DB::table('company')->get();
+    
+      $expense_detail = DB::table('v_expense_detail')
+                    
+                    ->whereBetween('Date',array($request->StartDate,$request->EndDate))
+                     ->orderBy('Date')
+                     ->get();
+                   
+        
+       
+      return View ('expense.expense_report1',compact('expense_detail','pagetitle','company'));
+//return $pdf->download('pdfview.pdf');
+  // $pdf->setpaper('A4', 'portiate');
+
+
+      
+     }
 
 
 }

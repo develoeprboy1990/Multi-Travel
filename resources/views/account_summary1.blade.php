@@ -26,6 +26,11 @@
       $DrTotal=0;
       $CrTotal=0;
       $Opening=0;
+      $Item=0;
+      $DHS=0;
+      $amad=0;
+      $raft=0;
+      
    ?>
     <div class="card">
       <div class="card-body">
@@ -48,12 +53,12 @@
    <tr>
      
       <th class="col-md-2" align="right">Accounts</th>
-      <th class="col-md-1" align="right">Opening Balance</th>
+      <th class="col-md-1 text-danger" align="right">Opening Balance</th>
       <th class="col-md-1" align="right">Items</th>
       <th class="col-md-1" align="right">Dhs</th>
       <th class="col-md-1" align="right">Other Amad <span class="text-success">[+]</span></th>
       <th class="col-md-1" align="right">Other Raft <span class="text-danger">[-]</span></th>
-      <th class="col-md-2" align="right">Closing Balance</th> 
+      <th class="col-md-2 text-success" ><div align="right">Closing Balance</div></th> 
 
 
    </tr> 
@@ -123,7 +128,7 @@ $dhs = DB::table('journal')
         // ->where('SupplierID',$request->SupplierID)
         ->whereBetween('Date',array(request()->StartDate,request()->EndDate))
         ->where('ChartOfAccountID',$value->ChartOfAccountID)
-        ->whereIn('JournalType',['SI','SR'])
+        ->whereIn('JournalType',['SI','SR','BP','BR','CP','CR'])
         ->count();
 
 
@@ -148,6 +153,11 @@ $Raft = DB::table('journal')
 
 
 $Opening=$Opening+$opening[0]->Balance;
+$Item=$Item+$item;
+$DHS = $DHS + $dhs[0]->Balance;
+$amad = $amad + $Amad[0]->Balance;
+$raft = $raft + $Raft[0]->Balance;
+
 
 
 
@@ -160,24 +170,27 @@ $Opening=$Opening+$opening[0]->Balance;
 
 
     <tr>
-      <td>{{$value->ChartOfAccountName}}-{{$value->ChartOfAccountID}}</td>
+      <td>{{$value->ChartOfAccountName}}</td>
       <td align="right">{{number_format($opening[0]->Balance)}}  </td>
       <td align="right">{{ ($item==0) ?  '-' : $item}}</td>
       <td align="right">{{ (count($dhs)==0) ?  '-' : $dhs[0]->Balance}}</td>
       <td align="right">{{ (count($Amad)==0) ?  '-' : $Amad[0]->Balance}}</td>
       <td align="right">{{ (count($Raft)==0) ?  '-' : $Raft[0]->Balance}}</td>
       
-       <td align="right">&nbsp;</td>
+       <td align="right">{{number_format($opening[0]->Balance+$dhs[0]->Balance+$Amad[0]->Balance+$Raft[0]->Balance)}}</td>
     </tr>
     @endforeach
     <tr style="border-top: 3px double #A5A5A5">
        <td align="left"><strong>Total</strong></td>
        <td align="right">{{number_format($Opening)}}</td>
-       <td align="right">&nbsp;</td>
-      <td align="right">&nbsp;</td>
-      <td align="right">&nbsp;</td>
-      <td align="right">&nbsp;</td>
-      <td align="right">&nbsp;</td>
+       <td align="right">{{$Item}}</td>
+       <td align="right">{{number_format($DHS)}}</td>
+       <td align="right">{{number_format($amad)}}</td>
+       <td align="right">{{number_format($raft)}}</td>
+      
+      
+      
+      <td align="right">{{number_format($Opening+$DHS+$amad+$raft)}}</td>
 
 
 

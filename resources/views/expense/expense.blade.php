@@ -100,7 +100,7 @@ $(document).ready(function() {
             { "data": "Date"},
             { "data": "ChartOfAccountName" },
             { "data": "ReferenceNo" },
-            { "data": "SupplierName" },
+            { "data": "PartyName" },
             { "data": "GrantTotal" },
               { "data": "action" },
             
