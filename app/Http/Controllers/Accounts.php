@@ -2838,8 +2838,12 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
      session::put('menu','Item');     
    $pagetitle='Item';
 
-   $item = DB::table('item')->get();
-    return view ('item',compact('pagetitle','item'));
+
+
+   $item = DB::table('v_item')->where('BranchID',session::get('BranchID'))->get();
+$customer = DB::table('v_party')->where('CategoryCode','VC')->get();
+
+    return view ('item',compact('pagetitle','item','customer'));
     }
 
 
@@ -2888,6 +2892,10 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
                                   'ItemName' => $request->input('ItemName'), 
                                   'Taxable' => $request->input('Taxable'), 
                                   'Percentage' => $request->input('Percentage'), 
+                                  'PartyID' => $request->input('PartyID'),
+                                  'UserID' => session::get('UserID'),
+                                  'BranchID' => session::get('BranchID'),
+
                                   
                           );
           
@@ -2929,9 +2937,9 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
  
 
     $item = DB::table('item')->where('ItemID',$id)->get();
+$customer = DB::table('v_party')->where('CategoryCode','VC')->get();
 
-
-    return view ('item_edit',compact('pagetitle','item'));
+    return view ('item_edit',compact('pagetitle','item','customer'));
     }
 
 
@@ -2978,10 +2986,13 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
  
 
              $data = array(
-                                   'ItemCode' => $request->input('ItemCode'), 
+                                       'ItemCode' => $request->input('ItemCode'), 
                                   'ItemName' => $request->input('ItemName'), 
                                   'Taxable' => $request->input('Taxable'), 
                                   'Percentage' => $request->input('Percentage'), 
+                                  'PartyID' => $request->input('PartyID'),
+                                  'UserID' => session::get('UserID'),
+                                  'BranchID' => session::get('BranchID'),
                                   
                           );
  

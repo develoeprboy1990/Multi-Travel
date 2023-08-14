@@ -83,7 +83,7 @@
 
 
 <!-- enctype="multipart/form-data" -->
-<form action="{{URL('/InvoiceSave')}}" method="post"> 
+<form action="{{URL('/InvoiceSave')}}" method="post" class="custom-validation"> 
 
  
       <input type="hidden" name="_token" id="csrf" value="{{Session::token()}}">
@@ -100,36 +100,11 @@ $company = DB::table('company')->get();
  ?>
 
 <div class="row">
-  <div class="col-6"> <img src="{{asset('documents/'.$company[0]->Logo)}}" alt="">
 
 
-<br>
-<br>
-<div class="col-6">
-  <label for="">Invoice Type</label>
- <select class="form-select select2 " name="InvoiceTypeID" required="">
-   <?php foreach ($invoice_type as $key => $value): ?>
-     <option value="{{$value->InvoiceTypeID}}">{{$value->InvoiceTypeCode}}-{{$value->InvoiceType}}</option>
-   <?php endforeach ?>
-</select> 
-
-<div class="clearfix mt-1"></div>
- <label for="">Party</label>
-
-<select name="PartyID" id="PartyID" class="form-select select2 mt-5" name="PartyID" required="">
- <?php foreach ($customer as $key => $value): ?>
-     <option value="{{$value->PartyID}}">{{$value->CategoryCode}}-{{$value->PartyName}}</option>
-   <?php endforeach ?>
-</select>
-</div>
-  </div>
-  <div class="col-2">  </div>
-  <div class="col-4">
-
-
-    <div class="row">
-              <div class="col-12">
-                <div class="mb-1 row">
+<div class="col-md-4 ">
+  
+ <div class="mb-1 row">
                   <div class="col-sm-3">
                     <label class="col-form-label" for="first-name">Invoice #</label>
                   </div>
@@ -137,9 +112,9 @@ $company = DB::table('company')->get();
                     <input type="text" id="first-name" class="form-control" name="VHNO" value="{{$vhno[0]->VHNO}}" >
                   </div>
                 </div>
-              </div>
-              <div class="col-12">
-                <div class="mb-1 row">
+
+
+  <div class="mb-1 row">
                   <div class="col-sm-3">
                     <label class="col-form-label" for="email-id">Date</label>
                   </div>
@@ -150,7 +125,56 @@ $company = DB::table('company')->get();
     </div>
                   </div>
                 </div>
-              </div>
+
+
+
+
+                  <div class="mb-1 row">
+                  <div class="col-sm-3">
+                    <label class="col-form-label" for="email-id">Invoice Type</label>
+                  </div>
+                  <div class="col-sm-9">
+                     <div class="input-group" id="datepicker21">
+  <select class="form-select select2 " name="InvoiceTypeID" required="">
+   <?php foreach ($invoice_type as $key => $value): ?>
+     <option value="{{$value->InvoiceTypeID}}">{{$value->InvoiceTypeCode}}-{{$value->InvoiceType}}</option>
+   <?php endforeach ?>
+</select>     </div>
+                  </div>
+                </div>
+
+
+
+                                 <div class="mb-1 row">
+                  <div class="col-sm-3">
+                    <label class="col-form-label" for="email-id">Party</label>
+                  </div>
+                  <div class="col-sm-9">
+                     <div class="input-group" id="datepicker21">
+<select name="PartyID" id="PartyID" class="form-select select2 mt-5" name="PartyID" required="">
+ <?php foreach ($customer as $key => $value): ?>
+     <option value="{{$value->PartyID}}">{{$value->CategoryCode}}-{{$value->PartyName}}</option>
+   <?php endforeach ?>
+</select>     </div>
+                  </div>
+                </div>
+
+
+
+
+
+ 
+
+
+
+
+</div>
+<div class="col-md-4 "></div>
+<div class="col-md-4  text-center">  <img src="{{asset('documents/'.$company[0]->Logo)}}" alt=""></div>
+
+
+  <div class="row">
+             
               <div class="col-12 d-none">
                 <div class="mb-1 row">
                   <div class="col-sm-3">
@@ -164,7 +188,7 @@ $company = DB::table('company')->get();
                   </div>
                 </div>
               </div>
-              <div class="col-12">
+              <div class="col-12 d-none">
                 <div class="mb-1 row">
                   <div class="col-sm-3">
                     <label class="col-form-label" for="password">Payment Mode </label>
@@ -184,7 +208,7 @@ $company = DB::table('company')->get();
                 </div>
               </div>
 
-<div class="col-12">
+<div class="col-12 d-none">
                 <div class="mb-1 row">
                   <div class="col-sm-3">
                     <label class="col-form-label" for="password">Salesman </label>
@@ -206,13 +230,8 @@ $company = DB::table('company')->get();
               
                
               
-              
              
             </div>
-    
-
-
-  </div>
 </div>
 
 
@@ -228,7 +247,7 @@ $company = DB::table('company')->get();
           <thead>
             <tr class="bg-light borde-1 border-light "  style="height: 40px;">
               <th width="2%" class="p-1"><input id="check_all"  type="checkbox"/></th>
-              <th width="5%">Item</th>
+              <th width="10%">Item</th>
               <th width="15%">Supplier</th>
               <th width="5%">Ref No</th>
               <th width="5%">Visa </th>
@@ -238,8 +257,8 @@ $company = DB::table('company')->get();
               <th width="5%">Fare</th>
               <th width="5%">Tax%</th>
               <th width="5%">Service</th>
-              <th width="5%">O/P Vat</th>
-              <th width="5%">I/P VAT</th>
+              <th width="5%" class="d-none">O/P Vat</th>
+              <th width="5%" class="d-none">I/P VAT</th>
               <th width="6%">Tax</th>
               <th width="4%">Dis</th>
               <th width="10%">Total</th>
@@ -258,7 +277,8 @@ $company = DB::table('company')->get();
                  </select>
                  <input type="hidden" name="ItemID[]" id="ItemID_1">
               </td>
-              <td> <select name="SupplierID[]" id="SupplierID_1" class="form-select changesNo select2" onchange="ajax_balance(this.value);">
+              <td> <select name="SupplierID[]" id="SupplierID_1" class="form-select changesNo select2" onchange="ajax_balance(this.value);" required="">
+                <option value="" >Select</option>
                    <?php foreach ($party as $key => $value): ?>
      <option value="{{$value->PartyID}}">{{$value->CategoryCode}}-{{$value->PartyName}}</option>
    <?php endforeach ?>
@@ -283,7 +303,7 @@ $company = DB::table('company')->get();
                   <input type="text" name="Sector[]" id="Sector_1" class=" form-control  " autocomplete="off" >
                 </td>
               <td>
-                <input type="number" name="Fare[]" id="Fare_1" class=" form-control changesNo" autocomplete="off" onkeypress="return IsNumeric(event);" ondrop="return false;" onpaste="return false;" step="0.01" >
+                <input type="number" name="Fare[]" id="Fare_1"  class=" form-control changesNo" autocomplete="off" onkeypress="return IsNumeric(event);" ondrop="return false;" onpaste="return false;" step="0.01" >
               </td>
               <td>
                 <input type="number" name="Taxable[]"  id="Taxable_1" class=" form-control    " autocomplete="off" onkeypress="return IsNumeric(event);" ondrop="return false;" onpaste="return false;" step="0.01" >
@@ -291,10 +311,10 @@ $company = DB::table('company')->get();
               <td>
                 <input type="number" name="Service[]" id="Service_1" class=" form-control  " autocomplete="off" onkeypress="return IsNumeric(event);" ondrop="return false;" onpaste="return false;" step="0.01">
               </td>
-              <td>
-                <input type="number" name="OPVAT[]" id="OPVAT_1" class=" form-control changesNo " autocomplete="off" onkeypress="return IsNumeric(event);" ondrop="return false;" onpaste="return false;" step="0.01">
+              <td class="d-none">
+                <input type="number" name="OPVAT[]" id="OPVAT_1" class=" form-control changesNo  " autocomplete="off" onkeypress="return IsNumeric(event);" ondrop="return false;" onpaste="return false;" step="0.01">
               </td>
-              <td>
+              <td class="d-none">
                 <input type="number" name="IPVAT[]" id="IPVAT_1" class=" form-control changesNo " autocomplete="off" onkeypress="return IsNumeric(event);" ondrop="return false;" onpaste="return false;" step="0.01">
               </td>
                
@@ -450,7 +470,7 @@ $(".addmore").on('click',function(){
 
 
   // html += '<td><select name="ItemID[]" id="ItemID_'+i+'" class="form-select changesNoo"><option value="">Select Item</option><option value="">b</option></select></td>';
-  html += '<td><select name="SupplierID[]" id="SupplierID_'+i+'"  onchange="ajax_balance(this.value);" class=" form-select select2 cls">@foreach ($party as $key => $value) <option value="{{$value->PartyID}}">{{$value->PartyName}}</option>@endforeach</select></td>';
+  html += '<td><select name="SupplierID[]" id="SupplierID_'+i+'"  onchange="ajax_balance(this.value);" class=" form-select select2 cls" required="" style="width:100% !important;"> <option value="">Select</option> @foreach ($party as $key => $value) <option value="{{$value->PartyID}}">{{$value->PartyName}}</option>@endforeach</select></td>';
   html += '<td><input type="text" name="RefNo[]" id="RefNo_'+i+'" class="form-control  " onchange="ajax_ticket(this.value);"  ></td>';
   html += '<td><input type="text" name="VisaType[]" id="VisaType_'+i+'" class="form-control " ></td>';
   html += '<td><input type="text" name="PaxName[]" id="PaxName_'+i+'" class="form-control " ></td>';
@@ -459,8 +479,8 @@ $(".addmore").on('click',function(){
   html += '<td><input type="text" name="Fare[]" id="Fare_'+i+'" class="form-control  " autocomplete="off" onkeypress="return IsNumeric(event);" ondrop="return false;" onpaste="return false;"></td>';
   html += '<td><input type="text" name="Taxable[]" id="Taxable_'+i+'" class="form-control    " autocomplete="off" onkeypress="return IsNumeric(event);" ondrop="return false;" onpaste="return false;"></td>';
   html += '<td><input type="text" name="Service[]" id="Service_'+i+'" class="form-control  " autocomplete="off" onkeypress="return IsNumeric(event);" ondrop="return false;" onpaste="return false;"></td>';
-  html += '<td><input type="text" name="OPVAT[]" id="OPVAT_'+i+'" class="form-control  changesNo" autocomplete="off" onkeypress="return IsNumeric(event);" ondrop="return false;" onpaste="return false;"></td>';
-  html += '<td><input type="text" name="IPVAT[]" id="IPVAT_'+i+'" class="form-control  changesNo" autocomplete="off" onkeypress="return IsNumeric(event);" ondrop="return false;" onpaste="return false;"></td>';
+  html += '<td class="d-none"><input type="text" name="OPVAT[]" id="OPVAT_'+i+'" class="form-control  changesNo" autocomplete="off" onkeypress="return IsNumeric(event);" ondrop="return false;" onpaste="return false;"></td>';
+  html += '<td class="d-none"><input type="text" name="IPVAT[]" id="IPVAT_'+i+'" class="form-control  changesNo" autocomplete="off" onkeypress="return IsNumeric(event);" ondrop="return false;" onpaste="return false;"></td>';
   html += '<td><input type="text" name="TaxAmount[]" id="quantity_'+i+'" class="form-control  " autocomplete="off" onkeypress="return IsNumeric(event);" ondrop="return false;" onpaste="return false;"></td>';
   html += '<td><input type="text" name="Discount[]" id="discount_'+i+'" class="form-control changesNo " autocomplete="off" onkeypress="return IsNumeric(event);" ondrop="return false;" onpaste="return false;"></td>';
   html += '<td><input type="text" name="ItemTotal[]" id="total_'+i+'" class="form-control totalLinePrice" autocomplete="off" onkeypress="return IsNumeric(event);" ondrop="return false;" onpaste="return false;"></td>';
@@ -937,7 +957,13 @@ $('#result').prepend('<img id="theImg" src="{{asset('assets/images/ajax.gif')}}"
         <script src="{{URL('/')}}/assets/libs/toastr/build/toastr.min.js"></script>
 
         <!-- toastr init -->
+
+
         <script src="{{URL('/')}}/assets/js/pages/toastr.init.js"></script>
+
+<script src="{{asset('assets/libs/parsleyjs/parsley.min.js')}}"></script>
+<script src="{{asset('assets/js/pages/form-validation.init.js')}}"></script>
+
 
  </html>
 

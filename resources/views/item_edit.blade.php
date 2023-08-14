@@ -55,8 +55,24 @@
     </div>
       <div class="card-body">
          <div class="col-md-6">
+
+              <div class="mb-3 row">
+                  <div class="col-sm-3">
+                    <label class="col-form-label fw-bold" for="first-name">Supplier/Party</label>
+                  </div>
+                  <div class="col-sm-9">
+                <select name="PartyID" id="PartyID" class="form-select select2 mt-5" name="PartyID" required="">
+ <?php foreach ($customer as $key => $value): ?>
+     <option value="{{$value->PartyID}}"  {{($value->PartyID== $item[0]->PartyID) ? 'selected=selected':'' }} >{{$value->CategoryCode}}-{{$value->PartyName}}</option>
+   <?php endforeach ?>
+</select>
+                  </div>
+                </div>
+
+
+
                 <div class="mb-1 row">
-                  <div class="col-sm-2">
+                  <div class="col-sm-3">
                     <label class="col-form-label fw-bold" for="first-name">Item Code</label>
                   </div>
                   <div class="col-sm-9">
@@ -65,7 +81,7 @@
                 </div>
 
                 <div class="mb-1 row">
-                  <div class="col-sm-2">
+                  <div class="col-sm-3">
                     <label class="col-form-label fw-bold" for="first-name">Item Name</label>
                   </div>
                   <div class="col-sm-9">
@@ -74,7 +90,7 @@
                 </div>
 
                 <div class="mb-1 row">
-                  <div class="col-sm-2">
+                  <div class="col-sm-3">
                     <label class="col-form-label fw-bold" for="first-name">Taxable</label>
                   </div>
                  
@@ -92,7 +108,7 @@ $Taxable = old('Taxable') ? old('Taxable') : $item[0]->Taxable ;
                 </div>
 
                 <div class="mb-1 row">
-                  <div class="col-sm-2">
+                  <div class="col-sm-3">
                     <label class="col-form-label fw-bold" for="first-name">Percentage</label>
                   </div>
                   <div class="col-sm-9">
