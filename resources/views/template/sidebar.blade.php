@@ -47,6 +47,22 @@
                                     <span key="t-calendar">Expense</span>
                                 </a>
                             </li> 
+
+
+                              <li>
+                                <a href="{{URL('/Raafat')}}" class="waves-effect">
+                                    <i class="mdi mdi-passport"></i>
+                                    <span key="t-calendar">Raafat</span>
+                                </a>
+                            </li> 
+
+
+                                <li>
+                                <a href="{{URL('/Transaction')}}" class="waves-effect">
+                                    <i class="mdi mdi-passport"></i>
+                                    <span key="t-calendar">Transaction</span>
+                                </a>
+                            </li> 
                             <li>
                                 <a href="{{URL('/PettyCash')}}" class="waves-effect">
                                     <i class="mdi mdi-account-cash-outline"></i>
@@ -75,7 +91,15 @@
                                     <i class="mdi mdi-view-list-outline"></i>
                                     <span key="t-calendar">Item</span>
                                 </a>
-                            </li> 
+                            </li>
+
+                                  <li>
+                                <a href="{{URL('/ItemPrice')}}" class="waves-effect">
+                                    <i class="mdi mdi-view-list-outline"></i>
+                                    <span key="t-calendar">ItemPrice</span>
+                                </a>
+                            </li>
+
                            
                             <li>
                                 <a href="{{URL('/Parties')}}" class="waves-effect">

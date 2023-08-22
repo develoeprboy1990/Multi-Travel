@@ -1,6 +1,6 @@
 @extends('template.tmp')
 
-@section('title', 'page title...')
+@section('title', $pagetitle)
  
 
 @section('content')
@@ -14,7 +14,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                                    <h4 class="mb-sm-0 font-size-18">Add Expense</h4>
+                                    <h4 class="mb-sm-0 font-size-18">Add Rafaat</h4>
 
                                     <div class="page-title-right">
                                         <div class="page-title-right">
@@ -64,20 +64,18 @@
 
  
   <!-- enctype="multipart/form-data" -->
-  <form action="{{URL('/ExpenseUpdate')}}" method="post"> 
-  
-  @csrf
+  <form action="{{URL('/RafaatSave')}}" method="post"> 
+  {{csrf_field()}} 
 
 
 <div class="row">
 
-<input type="text" name="ExpenseMasterID" value="{{$expense[0]->ExpenseMasterID}}">
     
     
-     <div class="col-md-3">
+     <div class="col-md-6">
 
      
-         <label for="basicpill-firstname-input">Expense Date <span class="text-danger">*</span></label>
+         <label for="basicpill-firstname-input">Raafat Date <span class="text-danger">*</span></label>
          <div class="input-group" id="datepicker21" style="overflow: visible; z-index: 99999;">
         <input type="text" name="Date" autocomplete="off" class="form-control" placeholder="yyyy-mm-dd" data-date-format="dd/mm/yyyy" data-date-container="#datepicker21" data-provide="datepicker" data-date-autoclose="true" value="{{date('d/m/Y')}}">
         <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
@@ -90,14 +88,14 @@
 
  
 
-    <div class="col-md-3">
+    <div class="col-md-6">
  <div class="mb-3">
-    <label for="basicpill-firstname-input">Branch Account <span class="text-danger">*</span></label>
+    <label for="basicpill-firstname-input">Branch Account [-]<span class="text-danger">*</span></label>
      <select name="ChartOfAccountID" id="ChartOfAccountID" class="form-select">
   
 
  @foreach($chartofaccount as $value)
-  <option value="{{$value->ChartOfAccountID}}"  {{($value->ChartOfAccountID== $expense[0]->ChartOfAccountID) ? 'selected=selected':'' }} >{{$value->ChartOfAccountName}}</option>
+  <option value="{{$value->ChartOfAccountID}}" >{{$value->ChartOfAccountName}}</option>
  @endforeach
 
 
@@ -105,64 +103,38 @@
   </div>
    </div>
 
+    <div class="col-md-6">
+ <div class="mb-3">
+    <label for="basicpill-firstname-input">Party [+] <span class="text-danger">*</span></label>
+     <select name="PartyID" id="PartyID" class="form-select">
+  
+
+ @foreach($party as $value)
+  <option value="{{$value->PartyID}}" >{{$value->PartyName}}</option>
+ @endforeach
 
 
-  <div class="col-md-3">
+  </select>
+  </div>
+   </div>
+
+  <div class="col-md-6">
 <div class="mb-3">
-<label for="basicpill-firstname-input">Meal</label>
-<input type="text" class="form-control" name="Meal" value="{{$expense[0]->Meal}}">
+<label for="basicpill-firstname-input">Amount in AED <span class="text-danger">*</span></label>
+<input type="text" class="form-control" name="Amount" value="0">
 </div>
 </div>
 
 
 
-  <div class="col-md-3">
-<div class="mb-3">
-<label for="basicpill-firstname-input">Transport</label>
-<input type="text" class="form-control" name="Transport" value="{{$expense[0]->Transport}}">
-</div>
-</div>
-
-
-  <div class="col-md-3">
-<div class="mb-3">
-<label for="basicpill-firstname-input">Salary</label>
-<input type="text" class="form-control" name="Salary" value="{{$expense[0]->Salary}}">
-</div>
-</div>
-
-
-
-  <div class="col-md-3">
-<div class="mb-3">
-<label for="basicpill-firstname-input">Rent</label>
-<input type="text" class="form-control" name="Rent" value="{{$expense[0]->Rent}}">
-</div>
-</div>
-
-
-  <div class="col-md-3">
-<div class="mb-3">
-<label for="basicpill-firstname-input">Phone</label>
-<input type="text" class="form-control" name="Phone" value="{{$expense[0]->Phone}}">
-</div>
-</div>
-
-
-
-  <div class="col-md-3">
-<div class="mb-3">
-<label for="basicpill-firstname-input">Other</label>
-<input type="text" class="form-control" name="Other" value="{{$expense[0]->Other}}">
-</div>
-</div>
+  
 
 
 
   <div class="col-md-12">
 <div class="mb-3">
 <label for="basicpill-firstname-input">Description</label>
-<input type="text" class="form-control" name="Description" value="{{$expense[0]->Description}}">
+<input type="text" class="form-control" name="Description" value="">
 </div>
 </div>
 
@@ -171,8 +143,8 @@
  
 
  
- <div><button type="submit" class="btn btn-success w-lg float-right">Update</button>
-      <a href="{{URL('/Expense')}}" class="btn btn-secondary w-lg float-right">Cancel</a>
+ <div><button type="submit" class="btn btn-success w-lg float-right">Submit</button>
+      <a href="{{URL('/Raafat')}}" class="btn btn-secondary w-lg float-right">Cancel</a>
  </div>
  
 

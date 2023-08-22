@@ -247,8 +247,8 @@ $company = DB::table('company')->get();
           <thead>
             <tr class="bg-light borde-1 border-light "  style="height: 40px;">
               <th width="2%" class="p-1"><input id="check_all"  type="checkbox"/></th>
-              <th width="10%">Item</th>
               <th width="15%">Supplier</th>
+              <th width="10%">Item</th>
               <th width="5%">Ref No</th>
               <th width="5%">Visa </th>
               <th width="10%">PAX Name</th>
@@ -267,17 +267,8 @@ $company = DB::table('company')->get();
           <tbody>
             <tr class="p-3">
               <td class="p-1 bg-light borde-1 border-light"><input class="case" type="checkbox"/></td>
-              <td>
 
-                 <select name="ItemID0[]" id="ItemID0_1" class="form-select form-control-sm   changesNoo">
-                  <option>--Select Item--</option>
-                  @foreach ($items as $key => $value) 
-                    <option value="{{$value->ItemID}}|{{$value->Percentage}}">{{$value->ItemCode}}-{{$value->ItemName}}-{{$value->Percentage}}</option>
-                  @endforeach
-                 </select>
-                 <input type="hidden" name="ItemID[]" id="ItemID_1">
-              </td>
-              <td> <select name="SupplierID[]" id="SupplierID_1" class="form-select changesNo select2" onchange="ajax_balance(this.value);" required="">
+    <td> <select name="SupplierID[]" id="SupplierID_1" class="form-select changesNo select2" onchange="ajax_balance(this.value,1);" required="" >
                 <option value="" >Select</option>
                    <?php foreach ($party as $key => $value): ?>
      <option value="{{$value->PartyID}}">{{$value->CategoryCode}}-{{$value->PartyName}}</option>
@@ -285,6 +276,22 @@ $company = DB::table('company')->get();
                  </select>
 
                 </td>
+
+
+              <td>
+
+               <div id="ItemID_1">  <select name="ItemID0[]" id="ItemID0_1" class="form-select form-control-sm   changesNoo">
+                  <option>--Select Item--</option>
+                  @foreach ($items as $key => $value) 
+                    <option value="{{$value->ItemID}}|{{$value->Percentage}}">{{$value->ItemCode}}-{{$value->ItemName}}-{{$value->Percentage}}</option>
+                  @endforeach
+                 </select>
+                 <input type="hidden" name="ItemID[]" id="ItemID_1">
+
+               </div>
+              </td>
+            
+
 
                 <td>
                   <input type="text" name="RefNo[]" id="RefNo_1" class="form-control      " autocomplete="off"  onchange="ajax_ticket(this.value);" >
@@ -461,16 +468,16 @@ $company = DB::table('company')->get();
  */
         
 //adds extra table rows
-var i=$('table tr').length;
+var i=$('table tr').length ;
 $(".addmore").on('click',function(){
   html = '<tr class="bg-light borde-1 border-light ">';
   html += '<td class="p-1"><input class="case" type="checkbox"/></td>';
-  html += '<td><select name="ItemID0[]" id="ItemID0_'+i+'" class="form-select changesNoo"> @foreach ($items as $key => $value) <option value="{{$value->ItemID}}|{{$value->Percentage}}">{{$value->ItemCode}}-{{$value->ItemName}}-{{$value->Percentage}}</option>@endforeach</select><input type="hidden" name="ItemID[]" id="ItemID_'+i+'"></td>';
+  html += '<td><select name="SupplierID[]" id="SupplierID_'+i+'"  onchange="ajax_balance(this.value,i);" class=" form-select select2 cls" required="" style="width:100% !important;"> <option value="">Select</option> @foreach ($party as $key => $value) <option value="{{$value->PartyID}}">{{$value->PartyName}}</option>@endforeach</select></td>';
+  html += '<td><div id="ItemID_'+i+'"><select name="ItemID0[]" id="ItemID0_'+i+'" class="form-select changesNoo"> @foreach ($items as $key => $value) <option value="{{$value->ItemID}}|{{$value->Percentage}}">{{$value->ItemCode}}-{{$value->ItemName}}-{{$value->Percentage}}</option>@endforeach</select><input type="hidden" name="ItemID[]" id="ItemID_'+i+'"></div></td>';
 
 
 
   // html += '<td><select name="ItemID[]" id="ItemID_'+i+'" class="form-select changesNoo"><option value="">Select Item</option><option value="">b</option></select></td>';
-  html += '<td><select name="SupplierID[]" id="SupplierID_'+i+'"  onchange="ajax_balance(this.value);" class=" form-select select2 cls" required="" style="width:100% !important;"> <option value="">Select</option> @foreach ($party as $key => $value) <option value="{{$value->PartyID}}">{{$value->PartyName}}</option>@endforeach</select></td>';
   html += '<td><input type="text" name="RefNo[]" id="RefNo_'+i+'" class="form-control  " onchange="ajax_ticket(this.value);"  ></td>';
   html += '<td><input type="text" name="VisaType[]" id="VisaType_'+i+'" class="form-control " ></td>';
   html += '<td><input type="text" name="PaxName[]" id="PaxName_'+i+'" class="form-control " ></td>';
@@ -680,8 +687,11 @@ val = $('#ItemID0_'+id[1]).val().split("|");
 // alert($('#ItemID0_'+id[1]).val());
 $('#Taxable_'+id[1]).val( val[1]  );
 $('#ItemID_'+id[1]).val( val[0]  );
+$('#Fare_'+id[1]).val(  val[2]       );
   
  
+
+
 
  
 });
@@ -767,9 +777,10 @@ $(function () {
 
  
    
-   function ajax_balance(PartyID) {
+   function ajax_balance(PartyID,ID) {
       
        // alert($("#csrf").val());
+       ajax_item(PartyID,ID);
  
 $('#result').prepend('')
 $('#result').prepend('<img id="theImg" src="{{asset('assets/images/ajax.gif')}}" />')
@@ -808,6 +819,53 @@ $('#result').prepend('<img id="theImg" src="{{asset('assets/images/ajax.gif')}}"
       
 
   }
+
+
+function ajax_item(PartyID,ID)
+{
+  console.log(ID);
+
+
+//   $('#item_'+ID).prepend('')
+// $('#item_'+ID).prepend('<img id="theImg" src="{{asset('assets/images/ajax.gif')}}" />')
+ 
+       var PartyID = PartyID;
+       if(ID!=1)
+       {
+       var ID = (ID-1);
+     }
+       // alert(PartyID);
+       if(PartyID!=""  ){
+        /*  $("#butsave").attr("disabled", "disabled"); */
+        // alert(PartyID);
+          $.ajax({
+              url: "{{URL('/ajax_item')}}",
+              type: "POST",
+              data: {
+                  _token: $("#csrf").val(),
+                   PartyID: PartyID,
+                   ID: ID,
+                 
+              },
+              cache: false,
+              success: function(data){
+            
+
+              
+                    $('#ItemID_'+ID).html(data);
+           
+                 
+                  
+              }
+          });
+      }
+      else{
+          $('#result').prepend('')
+      }
+
+
+}
+
  
 </script>
 
@@ -816,6 +874,8 @@ $('#result').prepend('<img id="theImg" src="{{asset('assets/images/ajax.gif')}}"
 <!-- ajax ticket check -->
  <script>
  
+
+
 
  
    

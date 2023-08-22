@@ -62,7 +62,7 @@
             <div class="container">
 
                 <div class="row">
-                    <div class="col-8">
+                    <div class="col-10">
                         <table class="table table-borderless">
 
                             <tbody class="font">
@@ -70,64 +70,55 @@
                                     <td>Payment Date</td>
                                     <th>{{$expense_master[0]->Date	}}</th>
                                 </tr>
-                                <tr>
-                                    <td>Reference Number</td>
-                                    <th>{{$expense_master[0]->ReferenceNo	}}</th>
-                                </tr>
+                               
                                 <tr>
                                     <td>Expense No</td>
-                                    <th>{{$expense_master[0]->ExpenseNo	}}</th>
+                                    <th>{{$expense_master[0]->ChartOfAccountName	}}</th>
                                 </tr>
                                 
                             </tbody>
                         </table>
-                        Bill To:
-                        <br>
-                        <strong style="font-weight: bold;" class="font">{{$expense_master[0]->SupplierName}}</strong>
+                        
+                      
+
                        
                     </div>
-                    <div class="col-4">
-                        <div class="bg-info text-center pt-4" style="height: 45%; width: 70%; margin-left: -20%;">
+                    <div class="col-2">
+                        <div class="bg-info text-center pt-4" style="height: 85%; width: 70%; margin-left: -20%;">
                             <span class="font" style="color: white;">
                                 Amount Paid <br>
-                                {{session::get('Currency')}} {{$expense_master[0]->GrantTotal	}}
+                                {{session::get('Currency')}} {{$expense_master[0]->Total	}}
                             </span>
                         </div>
 
                     </div>
                 </div>
-                <hr>
+                
+                <table class="table table-bordered table-sm" width="85%;">
+                          <tr class="bg-light" style="font-weight: bolder;">
+                              
+                              <td>Transport</td>
+                              <td>Meal</td>
+                              <td>Salary</td>
+                              <td>Phone</td>
+                               <td>Rent</td>
+                              <td>Other</td>
+                              
 
-                 @if(count($expense_detail)>0)        
-                <table class="table table-sm align-middle table-nowrap mb-0">
-                <tbody><tr class="bg-light">
-                <th scope="col" class="col-md-1">S.No</th>
-                <th scope="col" class="col-md-7">Expense No</th>
-                <th scope="col" class="col-md-3">Expense Account</th>
-                <th scope="col" class="col-md-2">Amount</th>
-                </tr>
-                </tbody>
-                <tbody>
-                @foreach ($expense_detail as $key =>$value)
-                 <tr>
-                 <td >{{$key+1}}</td>
-                 <td >{{$value->ExpenseNo}}</td>
-                 <td >{{$value->ChartOfAccountName}}</td>
-                 <td >{{$value->Amount}}</td>
-                 </tr>
-                 @endforeach   
-                 <tr class="font-weight-bolder">
-                     <td></td>
-                     <td></td>
-                     <td>Total</td>
-                     <td>{{$expense_master[0]->GrantTotal   }} {{session::get('Currency')}} </td>
-                 </tr>
-                 </tbody>
+                          </tr>
 
-                 </table>
-                 @else
-                   <p class=" text-danger">No data found</p>
-                 @endif   
+                           <tr>
+                              
+                              <td>{{$expense_master[0]->Transport}}</td>
+                              <td>{{$expense_master[0]->Meal}}</td>
+                              <td>{{$expense_master[0]->Salary}}</td>
+                              <td>{{$expense_master[0]->Phone}}</td>
+                              <td>{{$expense_master[0]->Rent}}</td>
+                              <td>{{$expense_master[0]->Other}}</td>
+
+                          </tr>
+
+                      </table>
 
             </div>
 

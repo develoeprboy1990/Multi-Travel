@@ -21,8 +21,8 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                                    <h4 class="mb-sm-0 font-size-18">Invoice</h4>
-                                        <a href="{{URL('/ExpenseCreate')}}"  class="btn btn-primary w-md float-right "><i class="bx bx-plus"></i> Add New</a>
+                                    <h4 class="mb-sm-0 font-size-18">Rafaat</h4>
+                                        <a href="{{URL('/RaafatCreate')}}"  class="btn btn-primary w-md float-right "><i class="bx bx-plus"></i> Add New</a>
 
                                    
 
@@ -68,17 +68,13 @@
           <table id="student_table" class="table table-striped table-sm " style="width:100%">
         <thead>
             <tr>
-                <th>EXPENSE #</th>
-                <th>DATE</th>
+                 <th class="col-md-1">DATE</th>
                 <th class="col-md-2">ACCOUNT</th>
-                <th class="col-md-1">Transport</th>
-                <th class="col-md-1">Food</th>
-                  <th class="col-md-1">Salary</th>
-                  <th class="col-md-1">Rent</th>
-                  <th class="col-md-1">Phone</th>
-                  <th class="col-md-1">Other</th>
-                  <th class="col-md-1">AMOUNT</th>
-                   <th>Action</th>
+                <th class="col-md-3">Party</th>
+                  <th class="col-md-4">Description</th>
+                <th class="col-md-1">Amount</th>
+                  
+                    <th>Action</th>
              </tr>
         </thead>
     </table>
@@ -98,18 +94,15 @@ $(document).ready(function() {
        "pageLength": 50,
         "processing": true,
         "serverSide": true,
-        "ajax": "{{ url('ajax_Expense') }}",
+        "ajax": "{{ url('ajax_raafat') }}",
         "columns":[
-            { "data": "VHNO" },
-            { "data": "Date"},
+             { "data": "Date"},
             { "data": "ChartOfAccountName" },
-            { "data": "Transport" },
-            { "data": "Meal" },
-            { "data": "Salary" },
-            { "data": "Rent" },
-            { "data": "Phone" },
-            { "data": "Other" },
-            { "data": "Total" },
+            { "data": "PartyName" },
+            { "data": "Description" },
+            { "data": "Amount" },
+            
+            
               { "data": "action" },
             
         ],

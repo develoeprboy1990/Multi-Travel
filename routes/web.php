@@ -36,6 +36,7 @@ Route::get('/Invoice',[Accounts::class,'Invoice']);
 
 Route::get('/InvoiceCreate',[Accounts::class,'InvoiceCreate']);
 Route::get('/ajax_invoice',[Accounts::class,'ajax_invoice']);
+Route::post('/ajax_item',[Accounts::class,'ajax_item']);
 
 Route::post('/InvoiceSave',[Accounts::class,'InvoiceSave']);
 route::get('/InvoiceEdit/{id}',[Accounts::class,'InvoiceEdit']);
@@ -72,6 +73,11 @@ Route::post('/ItemUpdate/',[Accounts::class,'ItemUpdate']);
 Route::get('/ItemDelete/{id}',[Accounts::class,'ItemDelete']); 
 
 
+Route::get('/ItemPrice/',[Accounts::class,'ItemPrice']);
+Route::post('/ItemPriceSave/',[Accounts::class,'ItemPriceSave']);
+Route::get('/ItemPriceEdit/{id}',[Accounts::class,'ItemPriceEdit']);
+Route::post('/ItemPriceUpdate/',[Accounts::class,'ItemPriceUpdate']);
+Route::get('/ItemPriceDelete/{id}',[Accounts::class,'ItemPriceDelete']);
 
 
 Route::get('/User',[User::class,'Show']);
@@ -297,4 +303,36 @@ Route::get('/CompanyDelete/{id}',[CompanyController::class,'CompanyDelete']);
  route::get('/BranchDelete/{id}',[Accounts::class,'BranchDelete']);
  route::get('/BranchEdit/{id}',[Accounts::class,'BranchEdit']);
  route::post('/BranchUpdate/',[Accounts::class,'BranchUpdate']);
+
+
+ Route::get('/Raafat',[Accounts::class,'Raafat']);
+route::get('/RaafatCreate/',[Accounts::class,'RaafatCreate']);
+Route::get('/ajax_raafat',[Accounts::class,'ajax_raafat']);
+
+Route::post('/RaafatSave',[Accounts::class,'RaafatSave']);
+route::get('/RaafatEdit/{id}',[Accounts::class,'RaafatEdit']);
+route::get('/RaafatPDF/{id}',[Accounts::class,'RaafatPDF']);
+route::get('/RaafatView/{id}',[Accounts::class,'RaafatView']);
+
+Route::post('/RaafatUpdate',[Accounts::class,'RaafatUpdate']);
+route::get('/RaafatDelete/{id}',[Accounts::class,'RaafatDelete']); 
+
+
+
+ Route::get('/Transaction',[Accounts::class,'Transaction']);
+route::get('/TransactionCreate/',[Accounts::class,'TransactionCreate']);
+Route::get('/ajax_transaction',[Accounts::class,'ajax_transaction']);
+
+Route::post('/TransactionSave',[Accounts::class,'TransactionSave']);
+route::get('/TransactionEdit/{id}',[Accounts::class,'TransactionEdit']);
+route::get('/TransactionPDF/{id}',[Accounts::class,'TransactionPDF']);
+route::get('/TransactionView/{id}',[Accounts::class,'TransactionView']);
+
+Route::post('/TransactionUpdate',[Accounts::class,'TransactionUpdate']);
+route::get('/TransactionDelete/{id}',[Accounts::class,'TransactionDelete']); 
+
+
+
+
+
 });

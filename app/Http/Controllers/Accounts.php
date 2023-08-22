@@ -1323,7 +1323,23 @@ $id = DB::table('journal')->where('VoucherMstID',$id)->delete();
     }
 
 
+ public  function ajax_item(request $request)
+    {
+        
 
+        //110400 -> A/C RECEIVABLE. 
+
+ 
+
+      $item = DB::table('v_item_price')->where('PartyID',$request->PartyID)->get();
+ 
+     
+
+
+  // return ($request->ID);
+         return view('ajax_item',compact('item'));            
+    
+    }
 
 
   public  function Ajax_Balance(request $request)
@@ -2892,7 +2908,7 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
                                   'ItemName' => $request->input('ItemName'), 
                                   'Taxable' => $request->input('Taxable'), 
                                   'Percentage' => $request->input('Percentage'), 
-                                  'PartyID' => $request->input('PartyID'),
+                                 
                                   'UserID' => session::get('UserID'),
                                   'BranchID' => session::get('BranchID'),
 
@@ -2990,8 +3006,7 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
                                   'ItemName' => $request->input('ItemName'), 
                                   'Taxable' => $request->input('Taxable'), 
                                   'Percentage' => $request->input('Percentage'), 
-                                  'PartyID' => $request->input('PartyID'),
-                                  'UserID' => session::get('UserID'),
+                                   'UserID' => session::get('UserID'),
                                   'BranchID' => session::get('BranchID'),
                                   
                           );
@@ -3035,6 +3050,104 @@ return redirect()->back()->with('error', 'You access is limited')->with('class',
             
             
             }
+
+
+
+
+
+public function ItemPrice()
+{
+$pagetitle='Item Price';
+$item = DB::table('item')->get();
+$party = DB::table('v_party')->where('CategoryCode','VC')->get();
+$item_price = DB::table('v_item_price')->get();
+return view ('item_price',compact('item','party','pagetitle','item_price'));
+
+
+}
+
+
+
+public function ItemPriceSave(request $request)
+{
+
+
+    $data = array(
+                       'PartyID' => $request->PartyID,  
+                       'ItemID' => $request->ItemID,  
+                       'Price' => $request->Price,                         
+                       'UserID' => session::get('UserID'),                         
+                       'BranchID' => session::get('BranchID'),                         
+                  );
+  
+    $id= DB::table('Item_price')->insertGetId($data);  
+  
+    return redirect('ItemPrice')->with('error','Save successfully')->with('class','success');
+
+
+}
+
+
+public function ItemPriceEdit($id)
+{
+
+$pagetitle='Item Price';
+$item = DB::table('item')->get();
+$party = DB::table('v_party')->where('CategoryCode','VC')->get();
+  
+$item_price = DB::table('item_price')->where('ItemPriceID',$id)->get();
+
+
+return view ('item_price_edit',compact('item','party','pagetitle','item_price'));
+
+
+
+
+}
+
+
+public function ItemPriceDelete ($id)
+{
+
+  $id = DB::table('item_price')->where('ItemPriceID',$id)->delete();
+  
+  return redirect('ItemPrice')->with('error','Deleted Successfully')->with('class','success');
+    
+}
+
+
+public function ItemPriceUpdate(request $request)
+{
+
+
+
+  $data = array(
+                  
+
+                  'PartyID' => $request->PartyID,
+                  'ItemID' => $request->ItemID,
+                  'Price' => $request->Price,
+                        
+                   'UserID' => session::get('UserID'),                         
+                       'BranchID' => session::get('BranchID'),       
+                        
+                );
+
+
+
+
+$id= DB::table('item_price')->where('ItemPriceID' , $request->ItemPriceID)->update($data);
+
+
+    return redirect('ItemPrice')->with('error','updated successfully')->with('class','success');
+
+
+
+
+}
+
+
+
 
 
 
@@ -8006,18 +8119,19 @@ public  function Logout()
     $pagetitle = 'Expense';
 
     session::put('menu', 'Expense');
-    $chartofaccont = DB::table('chartofaccount')->whereIn('Category',['CASH','CARD','BANK'])->get();
-    $items = DB::table('chartofaccount')->where('Level','3')->get();
-    // $items = DB::table('chartofaccount')->where(DB::raw('right(L3,3)'),'<>',000)->get();
 
-    $item = json_encode($items);
-    // dd($item);
-    $party = DB::table('party')->get();
-    $tax = DB::table('tax')->where('Section','Invoice')->get();
 
-    // $tax = DB::table('tax')->get();
-    $user = DB::table('user')->get();
-    $invoice_type = DB::table('invoice_type')->get();
+    $chartofaccount = DB::table('chartofaccount')->whereIn('Category',['CASH','BANK'])->get();
+    
+
+    
+    
+    
+    
+
+    
+    
+    
 
 
     $vhno = DB::table('expense_master')
@@ -8028,7 +8142,7 @@ public  function Logout()
 
 
 
-    return view('expense.expensecreate', compact('invoice_type', 'chartofaccont','tax', 'items', 'vhno', 'party', 'pagetitle', 'item', 'user'));
+    return view('expense.expensecreate', compact( 'chartofaccount','pagetitle' ));
   }
 
 
@@ -8039,128 +8153,66 @@ public function ExpenseSave(Request $request)
  
 
    session::put('menu', 'Expense');
-    $pagetitle = 'Invoice';
+    $pagetitle = 'Expense';
 
    $expense_mst = array(
-    'ExpenseNo' => $request->ExpenseNo,
-    'Date' => $request->Date,
-    'ChartOfAccountID' => $request->ChartOfAccountID_From,
-    'SupplierID' => $request->SupplierID,
-    'ReferenceNo' => $request->ReferenceNo,
-    'Tax' => $request->grandtotaltax,
-    'GrantTotal' => $request->Grandtotal,
-    'Paid' => $request->amountPaid,
+    
+    'Date' => dateformatpc($request->Date),
+    'ChartOfAccountID' => $request->ChartOfAccountID,
+    'Meal' => $request->Meal,
+    'Transport' => $request->Transport,
+    'Salary' => $request->Salary,
+    'Rent' => $request->Rent,
+    'Phone' => $request->Phone,
+    'Other' => $request->Other,
+    'Description' => $request->Description,
+    'UserID' => session::get('UserID'),
+    'BranchID' => session::get('BranchID'),
+    'VHNO' => session::get('VHNO'),
+    
    );
-   // dd($challan_mst);
-  // $id= DB::table('')->insertGetId($data);
+ 
 
-  $ExpenseMasterID = DB::table('expense_master')->insertGetId($expense_mst);
+  $ExpenseMasterID = DB::table('expense')->insertGetId($expense_mst);
   // dd($InvoiceMasterID);
 
+
+$total = $request->Meal+$request->Transport+$request->Salary+$request->Rent+$request->Phone+$request->Other;
 
 // JOURNAL ENTRY 
 //bank debit
 $bank_cash = array(
-'VHNO' => $request->ExpenseNo,
- 'ChartOfAccountID' => $request->ChartOfAccountID_From,   // Cash / bank / credit card
-'SupplierID' => $request->input('SupplierID'),
+'VHNO' => session::get('VHNO'),
+ 'ChartOfAccountID' => $request->ChartOfAccountID,   // Cash / bank / credit card
+
 'ExpenseMasterID' => $ExpenseMasterID,
 
-'Date' => $request->input('Date'),
+'Date' => dateformatpc($request->Date),
 
-'Cr' => $request->Grandtotal,
-'Narration' => '',
+'Cr' => $total,
+'Narration' => $request->Description,
 'Trace' => 614
 );
-$journal_entry= DB::table('journal')->insertGetId($bank_cash);
+ $journal_entry= DB::table('journal')->insertGetId($bank_cash);
 
 
 
 
 
-
-  //  start for item array from invoice
-  for ($i = 0; $i < count($request->ItemID0); $i++) {
-    $expense_detail = array(
-      'ExpenseMasterID' =>  $ExpenseMasterID,
-      'ChartOfAccountID' => $request->ChartOfAccountID[$i],
-      'Notes' => $request->Description[$i],
-      'TaxPer' => $request->Tax[$i],
-      'Tax' => $request->TaxVal[$i],
-      'Amount' => $request->ItemTotal[$i],
-
-    );
-
-    $id = DB::table('expense_detail')->insertGetId($expense_detail);
-
-
-
-if($request->Tax[$i] > 0) {
-
-
-
-
-// A/P debit
-$ar_payment = array(
-'VHNO' => $request->ExpenseNo,
- 'ChartOfAccountID' => $request->ChartOfAccountID[$i],  // chart of account direct debit
-'SupplierID' => $request->input('SupplierID'),
-'ExpenseMasterID' => $ExpenseMasterID,
- 'Date' => $request->input('Date'),
-'Dr' => $request->ItemTotal[$i],
-'Narration' => '',
-'Trace' => 615
-);
-
-$journal_entry1= DB::table('journal')->insertGetId($ar_payment);
-
-
-
-//tax grandtotaltax
+ //tax grandtotaltax
 
 // Tax Payable debit
 $ar_payment = array(
-'VHNO' => $request->ExpenseNo,
- 'ChartOfAccountID' => 210300,  // TAX PAYABLES 
-'SupplierID' => $request->input('SupplierID'),
-'ExpenseMasterID' => $ExpenseMasterID,
- 'Date' => $request->input('Date'),
-'Dr' => $request->TaxVal[$i],
-'Narration' => '',
+'VHNO' => session::get('VHNO'),
+ 'ChartOfAccountID' => 550100,  // OFFICE EXPENSES   
+ 'ExpenseMasterID' => $ExpenseMasterID,
+ 'Date' => dateformatpc($request->Date),
+'Dr' =>$total,
+'Narration' => $request->Description,
 'Trace' => 617
 );
 
-$journal_entry11= DB::table('journal')->insertGetId($ar_payment);
-
-
-}
-
-else
-
-{
-
-// debit entry
-$ar_payment = array(
-'VHNO' => $request->ExpenseNo,
- 'ChartOfAccountID' => $request->ChartOfAccountID[$i],
-'SupplierID' => $request->input('SupplierID'),
-'ExpenseMasterID' => $ExpenseMasterID,
- 'Date' => $request->input('Date'),
-'Dr' =>$request->ItemTotal[$i],
-'Narration' => '',
-'Trace' => 615
-);
-
-$journal_entry1= DB::table('journal')->insertGetId($ar_payment);
-
-}
-
-
-
-
-
-
-  }
+ $journal_entry11= DB::table('journal')->insertGetId($ar_payment);
 
 
 
@@ -8177,8 +8229,10 @@ $journal_entry1= DB::table('journal')->insertGetId($ar_payment);
 
 
 
+return redirect('Expense')->with('error','save successfully')->with('class','success');
 
-  return view('expense.expense', compact('pagetitle'));
+
+  
 }
 
 
@@ -8198,7 +8252,7 @@ $journal_entry1= DB::table('journal')->insertGetId($ar_payment);
     session::put('menu', 'Expense');
     $pagetitle = 'Expense';
     if ($request->ajax()) {
-      $data = DB::table('v_expense')->orderBy('Date','desc')
+      $data = DB::table('v_expense_mini')->where('BranchID',session::get('BranchID'))->orderBy('Date','desc')
         ->get();
 
       return Datatables::of($data)
@@ -8244,29 +8298,14 @@ public function  ExpenseEdit($id)
 
     session::put('menu', 'Expense');
 
-    $chartofaccount = DB::table('chartofaccount')->get();
-    // $chartofaccount = DB::table('chartofaccount')->where(DB::raw('right(L3,3)'),'<>',000)->get();
-
-     
-    $supplier = DB::table('supplier')->get();
-    $tax = DB::table('tax')->where('Section','Estimate')->get();
-
-    // $tax = DB::table('tax')->get();
-    $user = DB::table('user')->get();
+    $chartofaccount = DB::table('chartofaccount')->whereIn('Category',['CASH','BANK'])->get();
     
 
-
-    $expense_master = DB::table('expense_master')->where('ExpenseMasterID',$id)->get();
-
-
-    session::put('VHNO', $expense_master[0]->ExpenseNo);
+    $expense = DB::table('expense')->where('ExpenseMasterID',$id)->get();
 
 
-$expense_detail = DB::table('expense_detail')->where('ExpenseMasterID',$id)->get();
-
- 
-
-    return view('expense.expense_edit', compact('tax', 'supplier', 'pagetitle','expense_master' ,'chartofaccount','expense_detail'));
+  
+    return view('expense.expense_edit', compact( 'chartofaccount','pagetitle','expense' ));
 
 
 }
@@ -8278,133 +8317,85 @@ public function ExpenseUpdate(request $request)
 {
  
 
+  {
+ 
+
    session::put('menu', 'Expense');
-    $pagetitle = 'Invoice';
+    $pagetitle = 'Expense';
 
    $expense_mst = array(
-    'ExpenseNo' => $request->ExpenseNo,
-    'Date' => $request->Date,
-    'ChartOfAccountID' => $request->ChartOfAccountID_From,
-    'SupplierID' => $request->SupplierID,
-    'ReferenceNo' => $request->ReferenceNo,
-    'Tax' => $request->grandtotaltax,
-    'GrantTotal' => $request->Grandtotal,
+    
+    'Date' => dateformatpc($request->Date),
+    'ChartOfAccountID' => $request->ChartOfAccountID,
+    'Meal' => $request->Meal,
+    'Transport' => $request->Transport,
+    'Salary' => $request->Salary,
+    'Rent' => $request->Rent,
+    'Phone' => $request->Phone,
+    'Other' => $request->Other,
+    'Description' => $request->Description,
+    'UserID' => session::get('UserID'),
+    'BranchID' => session::get('BranchID'),
+    'VHNO' => session::get('VHNO'),
+    
    );
-   // dd($challan_mst);
-  // $id= DB::table('')->insertGetId($data);
+ 
+
+ 
+ $id= DB::table('expense')->where('ExpenseMasterID' , $request->ExpenseMasterID)->update($expense_mst);
+ 
+
+ 
 
 
+$total = $request->Meal+$request->Transport+$request->Salary+$request->Rent+$request->Phone+$request->Other;
 
-
-
-  $ExpenseMasterID = DB::table('expense_master')->where('ExpenseMasterID',$request->ExpenseMasterID)->update($expense_mst);
-// dd($InvoiceMasterID);
-
-  
-  $idd = DB::table('expense_detail')->where('ExpenseMasterID',$request->ExpenseMasterID)->delete();
-  $id2 = DB::table('journal')->where('ExpenseMasterID',$request->ExpenseMasterID)->delete();
-
-
-  // JOURNAL ENTRY 
+// JOURNAL ENTRY 
 //bank debit
 $bank_cash = array(
-'VHNO' => $request->ExpenseNo,
- 'ChartOfAccountID' => $request->ChartOfAccountID_From,   // Cash / bank / credit card
-'SupplierID' => $request->input('SupplierID'),
+'VHNO' => session::get('VHNO'),
+ 'ChartOfAccountID' => $request->ChartOfAccountID,   // Cash / bank / credit card
+
 'ExpenseMasterID' => $request->ExpenseMasterID,
 
-'Date' => $request->input('Date'),
+'Date' => dateformatpc($request->Date),
 
-'Cr' => $request->Grandtotal,
-'Narration' => '',
+'Cr' => $total,
+'Narration' => $request->Description,
 'Trace' => 614
 );
-$journal_entry= DB::table('journal')->insertGetId($bank_cash);
+ $journal_entry= DB::table('journal')->insertGetId($bank_cash);
 
 
-
-    
-
-  //  start for item array from invoice
-  for ($i = 0; $i < count($request->ChartOfAccountID); $i++) {
-    $expense_detail = array(
-      'ExpenseMasterID' =>  $request->ExpenseMasterID,
-      'ChartOfAccountID' => $request->ChartOfAccountID[$i],
-      'Notes' => $request->Description[$i],
-      'TaxPer' => $request->Tax[$i],
-      'Tax' => $request->TaxVal[$i],
-      'Amount' => $request->ItemTotal[$i],
-
-    );
-
-    $id = DB::table('expense_detail')->insertGetId($expense_detail);
-
-
-if($request->Tax[$i] > 0) {
-
-
-
-
-// A/P debit
-$ar_payment = array(
-'VHNO' => $request->ExpenseNo,
- 'ChartOfAccountID' => $request->ChartOfAccountID[$i],  // chart of account direct debit
-'SupplierID' => $request->input('SupplierID'),
-'ExpenseMasterID' => $request->ExpenseMasterID,
- 'Date' => $request->input('Date'),
-'Dr' => $request->ItemTotal[$i],
-'Narration' => '',
-'Trace' => 615
-);
-
-$journal_entry1= DB::table('journal')->insertGetId($ar_payment);
-
-
-
-//tax grandtotaltax
+ //tax grandtotaltax
 
 // Tax Payable debit
 $ar_payment = array(
-'VHNO' => $request->ExpenseNo,
- 'ChartOfAccountID' => 210300,  // TAX PAYABLES 
-'SupplierID' => $request->input('SupplierID'),
-'ExpenseMasterID' => $request->ExpenseMasterID,
- 'Date' => $request->input('Date'),
-'Dr' => $request->TaxVal[$i],
-'Narration' => '',
+'VHNO' => session::get('VHNO'),
+ 'ChartOfAccountID' => 550100,  // OFFICE EXPENSES   
+ 'ExpenseMasterID' => $request->ExpenseMasterID,
+ 'Date' => dateformatpc($request->Date),
+'Dr' =>$total,
+'Narration' => $request->Description,
 'Trace' => 617
 );
 
-$journal_entry11= DB::table('journal')->insertGetId($ar_payment);
+ $journal_entry11= DB::table('journal')->insertGetId($ar_payment);
 
 
-}
+// end payment received
 
-else
+// END OF JOURNAL ENTRY
 
-{
 
-// debit entry
-$ar_payment = array(
-'VHNO' => $request->ExpenseNo,
- 'ChartOfAccountID' => $request->ChartOfAccountID[$i],
-'SupplierID' => $request->input('SupplierID'),
-'ExpenseMasterID' => $request->ExpenseMasterID,
- 'Date' => $request->input('Date'),
-'Dr' =>$request->ItemTotal[$i],
-'Narration' => '',
-'Trace' => 615
-);
 
-$journal_entry1= DB::table('journal')->insertGetId($ar_payment);
+return redirect('Expense')->with('error','save successfully')->with('class','success');
 
+
+  
 }
 
 
-
-
-  }
-  return view('expense.expense', compact('pagetitle'));
 }
 
 
@@ -8415,12 +8406,11 @@ public function ExpenseView($id)
 
   $pagetitle='Expense View ';
   $company = DB::table('company')->get();
-  $expense_master = DB::table('v_expense')->where('ExpenseMasterID',$id)->get();
-  $expense_detail = DB::table('v_expense_detail')->where('ExpenseMasterID',$id)->get();
-  $journal = DB::table('journal')->where('ExpenseMasterID',$id)->get();
+  $expense_master = DB::table('v_expense_mini')->where('ExpenseMasterID',$id)->get();
+   $journal = DB::table('journal')->where('ExpenseMasterID',$id)->get();
 
   
-  return view('expense.expense_view',compact('expense_master','expense_detail','pagetitle','company'));
+  return view('expense.expense_view',compact('expense_master','pagetitle','company'));
   
   
 }
@@ -8430,9 +8420,9 @@ public function ExpenseDelete($id)
 {
 
   
-  $id = DB::table('expense_master')->where('ExpenseMasterID',$id)->delete();
-  $id2 = DB::table('expense_detail')->where('ExpenseMasterID',$id)->delete();
-  $id3 = DB::table('journal')->where('ExpenseMasterID',$id)->delete();
+  $id = DB::table('expense')->where('ExpenseMasterID',$id)->delete();
+  
+  
 
   
   return redirect('Expense')->with('error','Deleted Successfully')->with('class','success');
@@ -8473,4 +8463,532 @@ public function ExpenseReport1(request $request)
      }
 
 
+
+  public  function Raafat()
+    {
+                
+$pagetitle = 'Raafat';
+
+ 
+ 
+    return view ('raafat.raafat',compact('pagetitle'));
+    }
+
+
+ public function ajax_raafat(Request $request)
+
+  {
+    session::put('menu', 'Expense');
+    $pagetitle = 'Expense';
+
+    if ($request->ajax()) {
+      $data = DB::table('v_raafat')->where('BranchID',session::get('BranchID'))->orderBy('Date','desc')
+        ->get();
+
+      return Datatables::of($data)
+        ->addIndexColumn()
+        ->addColumn('action', function ($row) {
+          // if you want to use direct link instead of dropdown use this line below
+          // <a href="javascript:void(0)"  onclick="edit_data('.$row->customer_id.')" >Edit</a> | <a href="javascript:void(0)"  onclick="del_data('.$row->customer_id.')"  >Delete</a>
+
+
+          $btn = '
+
+
+            <div class="d-flex align-items-center col-actions">
+
+
+            <a href="' . URL('/RaafatView/' . $row->RaafatID) . '"><i class="font-size-18 mdi mdi-eye-outline align-middle me-1 text-secondary"></i></a>
+             <a href="' . URL('/RaafatEdit/' . $row->RaafatID) . '"><i class="font-size-18 bx bx-pencil align-middle me-1 text-secondary"></i></a>
+            <a href="' . URL('/RaafatDelete/' . $row->RaafatID) . '"><i class="font-size-18 bx bx-trash align-middle me-1 text-danger"></i></a>
+
+
+
+
+            </div>
+            ';
+
+          //class="edit btn btn-primary btn-sm"
+          // <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          return $btn;
+        })
+        ->rawColumns(['action'])
+        ->make(true);
+    }
+
+    return view('raafat.raafat', compact('pagetitle'));
+  }
+
+
+  public  function RaafatCreate()
+    {
+                
+$pagetitle = 'Raafat';
+
+$party = DB::table('v_party')->get();
+    $chartofaccount = DB::table('chartofaccount')->whereIn('Category',['CASH','BANK'])->get();
+
+
+
+    return view ('raafat.raafat_create',compact('party','chartofaccount','pagetitle'));
+    }
+
+
+
+
+public function RaafatSave(Request $request)
+
+
+{
+ 
+
+   session::put('menu', 'Expense');
+    $pagetitle = 'Expense';
+
+   $expense_mst = array(
+    
+    'Date' => dateformatpc($request->Date),
+    'ChartOfAccountID' => $request->ChartOfAccountID,
+    'PartyID' => $request->PartyID,
+    'Amount' => $request->Amount,
+    
+    'Description' => $request->Description,
+    'UserID' => session::get('UserID'),
+    'BranchID' => session::get('BranchID'),
+
+    
+   );
+ 
+
+  $ExpenseMasterID = DB::table('raafat')->insertGetId($expense_mst);
+  // dd($InvoiceMasterID);
+
+
+
+
+
+// // JOURNAL ENTRY 
+// //bank debit
+// $bank_cash = array(
+// 'VHNO' => session::get('VHNO'),
+//  'ChartOfAccountID' => $request->ChartOfAccountID,   // Cash / bank / credit card
+
+// 'ExpenseMasterID' => $ExpenseMasterID,
+
+// 'Date' => dateformatpc($request->Date),
+
+// 'Cr' => $total,
+// 'Narration' => $request->Description,
+// 'Trace' => 614
+// );
+//  $journal_entry= DB::table('journal')->insertGetId($bank_cash);
+
+
+
+
+
+//  //tax grandtotaltax
+
+// // Tax Payable debit
+// $ar_payment = array(
+// 'VHNO' => session::get('VHNO'),
+//  'ChartOfAccountID' => 550100,  // OFFICE EXPENSES   
+//  'ExpenseMasterID' => $ExpenseMasterID,
+//  'Date' => dateformatpc($request->Date),
+// 'Dr' =>$total,
+// 'Narration' => $request->Description,
+// 'Trace' => 617
+// );
+
+//  $journal_entry11= DB::table('journal')->insertGetId($ar_payment);
+
+
+
+
+
+
+
+
+
+
+// end payment received
+
+// END OF JOURNAL ENTRY
+
+
+
+return redirect('Raafat')->with('error','save successfully')->with('class','success');
+
+
+  
 }
+
+
+
+
+  public  function RaafatEdit($id)
+    {
+                
+$pagetitle = 'Raafat';
+
+$party = DB::table('v_party')->get();
+    $chartofaccount = DB::table('chartofaccount')->whereIn('Category',['CASH','BANK'])->get();
+
+
+$raafat = DB::table('raafat')->where('RaafatID',$id)->get();
+    return view ('raafat.raafat_edit',compact('party','chartofaccount','raafat'));
+    }
+
+
+
+public function RaafatUpdate(Request $request)
+
+
+{
+ 
+
+   session::put('menu', 'Expense');
+
+    $pagetitle = 'Expense';
+
+   $expense_mst = array(
+    
+    'Date' => dateformatpc($request->Date),
+    'ChartOfAccountID' => $request->ChartOfAccountID,
+    'PartyID' => $request->PartyID,
+    'Amount' => $request->Amount,
+    
+    'Description' => $request->Description,
+    'UserID' => session::get('UserID'),
+    'BranchID' => session::get('BranchID'),
+
+    
+   );
+ 
+
+
+
+
+$id= DB::table('raafat')->where('RaafatID' , $request->RafaatID)->update($expense_mst);
+
+ 
+
+return redirect('Raafat')->with('error','save successfully')->with('class','success');
+
+
+  
+}
+
+
+public function RaafatView($id)
+{
+
+$raafat = DB::table('v_raafat')->get();
+
+$branch = DB::table('branch')->where('BranchID',session::get('BranchID'))->get();
+return view ('raafat.rafaat_view',compact('raafat','branch'));
+
+}
+
+
+public function RaafatDelete ($id)
+{
+
+  $id = DB::table('raafat')->where('Raafat',$id)->delete();
+  
+  return redirect('Raafat')->with('error','Deleted Successfully')->with('class','success');
+    
+}
+
+
+
+
+public  function Transaction()
+    {
+                
+$pagetitle = 'Transcation';
+
+ 
+ 
+    return view ('transaction.transaction',compact( 'pagetitle'));
+    }
+
+
+ public function ajax_transaction(Request $request)
+
+  {
+    session::put('menu', 'Expense');
+    $pagetitle = 'Expense';
+    if ($request->ajax()) {
+      $data = DB::table('transaction')->where('BranchID',session::get('BranchID'))->orderBy('Date','desc')
+        ->get();
+
+      return Datatables::of($data)
+        ->addIndexColumn()
+        ->addColumn('action', function ($row) {
+          // if you want to use direct link instead of dropdown use this line below
+          // <a href="javascript:void(0)"  onclick="edit_data('.$row->customer_id.')" >Edit</a> | <a href="javascript:void(0)"  onclick="del_data('.$row->customer_id.')"  >Delete</a>
+
+
+          $btn = '
+
+
+            <div class="d-flex align-items-center col-actions">
+
+
+            <a href="' . URL('/TransactionView/' . $row->TransactionID) . '"><i class="font-size-18 mdi mdi-eye-outline align-middle me-1 text-secondary"></i></a>
+             <a href="' . URL('/TransactionEdit/' . $row->TransactionID) . '"><i class="font-size-18 bx bx-pencil align-middle me-1 text-secondary"></i></a>
+            <a href="' . URL('/TransactionDelete/' . $row->TransactionID) . '"><i class="font-size-18 bx bx-trash align-middle me-1 text-danger"></i></a>
+
+
+
+
+            </div>
+            ';
+
+          //class="edit btn btn-primary btn-sm"
+          // <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          return $btn;
+        })
+        ->rawColumns(['action'])
+        ->make(true);
+    }
+
+    return view('transaction.transaction',compact('pagetitle'));
+  }
+
+
+  public  function TransactionCreate()
+    {
+                
+$pagetitle = 'Rafaat';
+
+$party = DB::table('v_party')->get();
+    $chartofaccount = DB::table('chartofaccount')->whereIn('Category',['CASH','BANK'])->get();
+
+
+
+    return view ('transaction.transaction_create',compact('party','chartofaccount'));
+    }
+
+
+
+
+public function TransactionSave(Request $request)
+
+
+{
+ 
+
+   session::put('menu', 'Expense');
+    $pagetitle = 'Expense';
+
+   $expense_mst = array(
+    
+    'Date' => dateformatpc($request->Date),
+    'FromAccount' => $request->FromAccount,
+    'ToAccount' => $request->ToAccount,
+    
+    'Amount' => $request->Amount,
+    
+    'Description' => $request->Description,
+    'UserID' => session::get('UserID'),
+    'BranchID' => session::get('BranchID'),
+
+    
+   );
+ 
+
+  $ExpenseMasterID = DB::table('transaction')->insertGetId($expense_mst);
+  // dd($InvoiceMasterID);
+
+
+// $total = $request->Meal+$request->Transport+$request->Salary+$request->Rent+$request->Phone+$request->Other;
+
+// // JOURNAL ENTRY 
+// //bank debit
+// $bank_cash = array(
+// 'VHNO' => session::get('VHNO'),
+//  'ChartOfAccountID' => $request->ChartOfAccountID,   // Cash / bank / credit card
+
+// 'ExpenseMasterID' => $ExpenseMasterID,
+
+// 'Date' => dateformatpc($request->Date),
+
+// 'Cr' => $total,
+// 'Narration' => $request->Description,
+// 'Trace' => 614
+// );
+//  $journal_entry= DB::table('journal')->insertGetId($bank_cash);
+
+
+
+
+
+//  //tax grandtotaltax
+
+// // Tax Payable debit
+// $ar_payment = array(
+// 'VHNO' => session::get('VHNO'),
+//  'ChartOfAccountID' => 550100,  // OFFICE EXPENSES   
+//  'ExpenseMasterID' => $ExpenseMasterID,
+//  'Date' => dateformatpc($request->Date),
+// 'Dr' =>$total,
+// 'Narration' => $request->Description,
+// 'Trace' => 617
+// );
+
+//  $journal_entry11= DB::table('journal')->insertGetId($ar_payment);
+
+
+
+
+
+
+
+
+
+
+// end payment received
+
+// END OF JOURNAL ENTRY
+
+
+
+return redirect('Transaction')->with('error','save successfully')->with('class','success');
+
+
+  
+}
+
+
+
+
+  public  function TransactionEdit($id)
+    {
+                
+$pagetitle = 'Rafaat';
+
+$party = DB::table('v_party')->get();
+$chartofaccount = DB::table('chartofaccount')->whereIn('Category',['CASH','BANK'])->get();
+
+
+$transaction = DB::table('transaction')->where('TransactionID',$id)->get();
+
+    return view ('transaction.transaction_edit',compact('party','chartofaccount','transaction'));
+    }
+
+
+
+
+public function TransactionUpdate(Request $request)
+
+
+{
+ 
+
+   session::put('menu', 'Expense');
+    $pagetitle = 'Expense';
+
+   $expense_mst = array(
+    
+    'Date' => dateformatpc($request->Date),
+    'FromAccount' => $request->FromAccount,
+    'ToAccount' => $request->ToAccount,
+    
+    'Amount' => $request->Amount,
+    
+    'Description' => $request->Description,
+    'UserID' => session::get('UserID'),
+    'BranchID' => session::get('BranchID'),
+
+    
+   );
+ 
+
+  $ExpenseMasterID = DB::table('transaction')->insertGetId($expense_mst);
+  // dd($InvoiceMasterID);
+
+
+// $total = $request->Meal+$request->Transport+$request->Salary+$request->Rent+$request->Phone+$request->Other;
+
+// // JOURNAL ENTRY 
+// //bank debit
+// $bank_cash = array(
+// 'VHNO' => session::get('VHNO'),
+//  'ChartOfAccountID' => $request->ChartOfAccountID,   // Cash / bank / credit card
+
+// 'ExpenseMasterID' => $ExpenseMasterID,
+
+// 'Date' => dateformatpc($request->Date),
+
+// 'Cr' => $total,
+// 'Narration' => $request->Description,
+// 'Trace' => 614
+// );
+//  $journal_entry= DB::table('journal')->insertGetId($bank_cash);
+
+
+
+
+
+//  //tax grandtotaltax
+
+// // Tax Payable debit
+// $ar_payment = array(
+// 'VHNO' => session::get('VHNO'),
+//  'ChartOfAccountID' => 550100,  // OFFICE EXPENSES   
+//  'ExpenseMasterID' => $ExpenseMasterID,
+//  'Date' => dateformatpc($request->Date),
+// 'Dr' =>$total,
+// 'Narration' => $request->Description,
+// 'Trace' => 617
+// );
+
+//  $journal_entry11= DB::table('journal')->insertGetId($ar_payment);
+
+
+
+
+
+
+
+
+
+
+// end payment received
+
+// END OF JOURNAL ENTRY
+
+
+
+return redirect('Transaction')->with('error','save successfully')->with('class','success');
+
+
+  
+}
+
+
+  public  function TransactionView($id)
+    {
+                
+$pagetitle = 'Rafaat';
+
+$party = DB::table('v_party')->get();
+$chartofaccount = DB::table('chartofaccount')->whereIn('Category',['CASH','BANK'])->get();
+
+$branch = DB::table('branch')->where('BranchID',session::get('BranchID'))->get();
+$transaction = DB::table('transaction')->where('TransactionID',$id)->get();
+
+    return view ('transaction.transaction_view',compact('party','chartofaccount','transaction','branch'));
+    }
+
+
+
+
+
+
+
+
+}
+
